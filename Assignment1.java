@@ -5,22 +5,17 @@
 // For COMP 248 Section S – Fall 2025
 // --------------------------------------------------------
 
-
-
 import java.util.Scanner;
 import java.lang.Math;
 import java.lang.String;
 import java.util.Random;
 
 public class Assignment1 {
-	
-	public void KeyScanning() {
-		Scanner myKeyboard = new Scanner(System.in);
-	}
 
 	public static void main(String[] args) {
+		Scanner myKeyboard = new Scanner(System.in);
+		int firstHour, firstMinute, secondHour, secondMinute;
 
-		
 		//First part: Collection of data. User will input data in this field. Will be displayed later.
 		
 		/*
@@ -28,116 +23,19 @@ public class Assignment1 {
 		 *0 ≤ first/second Hour ≤ 23 and minutes, 0 ≤ first/second Minute ≤ 59.
 		 */
 		System.out.print("Enter hours for first time (0-23): ");
-		int firstHour = myKeyboard.nextInt();
-		
-		if(firstHour < 0) {
-			System.out.print("Value of hour is less than 0. Please enter a different value: ");
-			int fHnewValue = myKeyboard.nextInt();
-			
-			if(fHnewValue < 0 || fHnewValue > 23) {
-				System.exit(0);
-			}
-			else {
-				firstHour = fHnewValue;
-			}
-		}
-		else if(firstHour > 23) {
-			System.out.print("Value of hour is over 23. Please enter a different value: ");
-			int fHnewValue2 = myKeyboard.nextInt();
-			
-			if(fHnewValue2 < 0 || fHnewValue2 > 23) {
-				System.exit(0);
-			}
-			else {
-				firstHour = fHnewValue2;
-			}
-		}
-		
-		
+		firstHour = myKeyboard.nextInt();
+
 		System.out.print("Enter minutes for first time (0-59): ");
-		int firstMinute = myKeyboard.nextInt();
-		
-		if(firstMinute < 0) {
-			System.out.print("Value of hour is less than 0. Please enter a different value: ");
-			int fHnewValue3 = myKeyboard.nextInt();
-			
-			if(fHnewValue3 < 0 || fHnewValue3 > 59) {
-				System.exit(0);
-			}
-			else {
-				firstMinute = fHnewValue3;
-			}
-		}
-		else if(firstMinute > 59) {
-			System.out.print("Value of hour is over 59. Please enter a different value: ");
-			int fHnewValue4 = myKeyboard.nextInt();
-			
-			if(fHnewValue4 < 0 || fHnewValue4 > 59) {
-				System.exit(0);
-			}
-			else {
-				firstMinute = fHnewValue4;
-			}
-		}
-		
-		
+		firstMinute = myKeyboard.nextInt();
+
 		System.out.print("Enter hours for second time (0-23): ");
-		int secondHour = myKeyboard.nextInt();
-		
-		if(secondHour < 0) {
-			System.out.print("Value of hour is less than 0. Please enter a different value: ");
-			int fHnewValue5 = myKeyboard.nextInt();
-			
-			if(fHnewValue5 < 0 || fHnewValue5 > 23) {
-				System.exit(0);
-			}
-			else {
-				secondHour = fHnewValue5;
-			}
-		}
-		else if(secondHour > 23) {
-			System.out.print("Value of hour is over 23. Please enter a different value: ");
-			int fHnewValue6 = myKeyboard.nextInt();
-			
-			if(fHnewValue6 < 0 || fHnewValue6 > 23) {
-				System.exit(0);
-			}
-			else {
-				secondHour = fHnewValue6;
-			}
-		}
-		
-		
+		secondHour = myKeyboard.nextInt();
+	
 		System.out.print("Enter minutes for second time (0-59): "); 
-		int secondMinute = myKeyboard.nextInt();
-		
-		if(secondMinute < 0) {
-			System.out.print("Value of hour is less than 0. Please enter a different value: ");
-			int fHnewValue7 = myKeyboard.nextInt();
-			
-			if(fHnewValue7 < 0 || fHnewValue7 > 59) {
-				System.exit(0);
-			}
-			else {
-				secondMinute = fHnewValue7;
-			}
-		}
-		else if(secondMinute > 59) {
-			System.out.print("Value of hour is over 59. Please enter a different value: ");
-			int fHnewValue8 = myKeyboard.nextInt();
-			
-			if(fHnewValue8 < 0 || fHnewValue8 > 59) {
-				System.exit(0);
-			}
-			else {
-				secondMinute = fHnewValue8;
-			}
-		}
-		
-			
+		secondMinute = myKeyboard.nextInt();
+
 		System.out.println();
-		
-		
+				
 		//Second part: Displaying the data. Data input by user will be displayed here in this section.		
 		
 		System.out.println("First time: " + (firstHour < 10 ? "0" + firstHour : firstHour) + ":" + (firstMinute < 10 ? "0" + firstMinute : firstMinute));
@@ -158,32 +56,55 @@ public class Assignment1 {
 	}
 	
 	
-	public void HourLimit(int firstHour, int secondHour) {
-		if(firstHour < 0 || secondHour < 0) {
-			System.out.print("Value of hour is less than 0. Please enter a different value: ");
-			int fHnewValue = myKeyboard.nextInt();
+	public static void HourLimit(int firstHour, int secondHour) {
+		Scanner hKeyboard = new Scanner(System.in);
+		if(0 > firstHour || firstHour > 23 || 0 > secondHour || secondHour > 23) {
+		
+			System.out.print("Value of hour is invalid. Please enter a different value: ");
 			
-			if(fHnewValue < 0 || fHnewValue > 23) {
+			int hnewValue = hKeyboard.nextInt();
+
+			if (0 > hnewValue || hnewValue > 23) {
 				System.exit(0);
 			}
-			else {
-				firstHour = fHnewValue;
+			else if (firstHour < 0 || firstHour > 23) {
+				firstHour = hnewValue;
 			}
-		}
-		else if(firstHour > 23) {
-			System.out.print("Value of hour is over 23. Please enter a different value: ");
-			int fHnewValue2 = myKeyboard.nextInt();
-			
-			if(fHnewValue2 < 0 || fHnewValue2 > 23) {
+			else if (secondHour < 0 || secondHour > 23) {
+				secondHour = hnewValue;
+			}
+			else {
 				System.exit(0);
-			}
-			else {
-				firstHour = fHnewValue2;
 			}
 		}
 	}
-	
-	/*public void HourLimit(int firstHour, int secondHour) {
+	public static void MinuteLimit(int firstMinute, int secondMinute) {
+		Scanner mKeyboard = new Scanner(System.in);
+		if (0 > firstMinute || firstMinute > 59 || 0 > secondMinute || secondMinute > 59) {
+			System.out.print("Value of minute is invalid. Please enter a different value: ");
+			
+			int mnewValue = mKeyboard.nextInt();
+
+			if (0 > mnewValue || mnewValue > 59) {
+				System.exit(0);
+			}
+			else if (firstMinute < 0 || firstMinute > 59) {
+				firstMinute = mnewValue;
+			}
+			else if (secondMinute < 0 || secondMinute > 59) {
+				secondMinute = mnewValue;
+			}
+			else {
+				System.exit(0);
+			}
+		}
+	}
+
+
+
+
+	/*
+	public void HourLimit(int firstHour, int secondHour) {
 		if(firstHour < 0 || firstHour > 23 || secondHour < 0 || secondHour > 23) {
 			throw new IllegalArgumentException("Hour must be between 0 and 23");
 		}
