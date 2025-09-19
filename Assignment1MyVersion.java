@@ -10,7 +10,7 @@ import java.lang.Math;
 import java.lang.String;
 import java.util.Random;
 
-public class Assignment1 {
+public class Assignment1MyVersion {
 
 	public static void main(String[] args) {
 		Scanner myKeyboard = new Scanner(System.in);
