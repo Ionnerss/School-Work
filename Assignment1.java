@@ -35,6 +35,32 @@ public class Assignment1 {
 		secondMinute = myKeyboard.nextInt();
 
 		System.out.println();
+		
+		
+		while(0 > firstHour || firstHour > 23 || 0 > secondHour || secondHour > 23 ||
+				0 > firstMinute || firstMinute > 59 || 0 > secondMinute || secondMinute > 59) {
+			if(0 > firstHour || firstHour > 23 || 0 > secondHour || secondHour > 23 ||
+					0 > firstMinute || firstMinute > 59 || 0 > secondMinute || secondMinute > 59) {
+				
+				if(0 > firstHour || firstHour > 23) {
+				firstHour = HourLimit(firstHour, secondHour);
+				}
+				else if(0 > secondHour || secondHour > 23) {
+					secondHour = HourLimit(firstHour, secondHour);
+				}
+				else if(0 > firstMinute || firstMinute > 59) {
+					firstMinute = MinuteLimit(firstMinute, secondMinute);
+				}
+				else if(0 > secondMinute || secondMinute > 59) {
+					secondMinute = MinuteLimit(firstMinute, secondMinute);
+				}
+			}
+		}
+		
+		
+		
+		
+		System.out.println();
 				
 		//Second part: Displaying the data. Data input by user will be displayed here in this section.		
 		
@@ -50,13 +76,13 @@ public class Assignment1 {
 		 * to add a zero to the variable if it is less than 10, making it easier to read for the user.
 		 */
 		
-		int diffInMinutes = ((secondHour * 60) + secondMinute) - ((firstHour * 60) + firstMinute);
+		int diffInMinutes = Math.abs(((secondHour * 60) + secondMinute) - ((firstHour * 60) + firstMinute));
 		System.out.println("Difference in minutes: " + diffInMinutes);
 		/* We simply calculate the difference between the two values with the data we have received from the user. */
 	}
 	
 	
-	public static void HourLimit(int firstHour, int secondHour) {
+	public static int HourLimit(int firstHour, int secondHour) {
 		Scanner hKeyboard = new Scanner(System.in);
 		if(0 > firstHour || firstHour > 23 || 0 > secondHour || secondHour > 23) {
 		
@@ -67,18 +93,15 @@ public class Assignment1 {
 			if (0 > hnewValue || hnewValue > 23) {
 				System.exit(0);
 			}
-			else if (firstHour < 0 || firstHour > 23) {
-				firstHour = hnewValue;
-			}
-			else if (secondHour < 0 || secondHour > 23) {
-				secondHour = hnewValue;
-			}
-			else {
-				System.exit(0);
-			}
+			return hnewValue;
 		}
+		// You need to fill out all cases and make it return a number
+		//having public static int means "I WILL GIVE YOU A NUMBER ONCE IT'S DONE". 
+		//so having ANY case where it doesn't return any number would create errors
+		return 0;
 	}
-	public static void MinuteLimit(int firstMinute, int secondMinute) {
+	
+	public static int MinuteLimit(int firstMinute, int secondMinute) {
 		Scanner mKeyboard = new Scanner(System.in);
 		if (0 > firstMinute || firstMinute > 59 || 0 > secondMinute || secondMinute > 59) {
 			System.out.print("Value of minute is invalid. Please enter a different value: ");
@@ -88,35 +111,9 @@ public class Assignment1 {
 			if (0 > mnewValue || mnewValue > 59) {
 				System.exit(0);
 			}
-			else if (firstMinute < 0 || firstMinute > 59) {
-				firstMinute = mnewValue;
-			}
-			else if (secondMinute < 0 || secondMinute > 59) {
-				secondMinute = mnewValue;
-			}
-			else {
-				System.exit(0);
-			}
-		}
+			return mnewValue;
+		} //what if this if statement doesn't go through, then u need to add a return here
+		
+		return 0; //The check failed and input is incorrect
 	}
-
-
-
-
-	/*
-	public void HourLimit(int firstHour, int secondHour) {
-		if(firstHour < 0 || firstHour > 23 || secondHour < 0 || secondHour > 23) {
-			throw new IllegalArgumentException("Hour must be between 0 and 23");
-		}
-		this.HourLimit(firstHour, secondHour);
-	}
-	
-	public void MinuteLimit(int firstMinute, int secondMinute) {
-		if (firstMinute < 0 || firstMinute > 59 || secondMinute < 0 || secondMinute > 59) {
-			throw new IllegalArgumentException("Minute must be between 0 and 59");
-		}
-		this.MinuteLimit(firstMinute, secondMinute);
-	}
-	*/
-
 }
