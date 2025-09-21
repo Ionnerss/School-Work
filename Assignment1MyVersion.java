@@ -93,11 +93,10 @@ public class Assignment1MyVersion {
 			if (0 > hnewValue || hnewValue > 23) {
 				System.exit(0);
 			}
+			hKeyboard.close();
 			return hnewValue;
 		}
-		// You need to fill out all cases and make it return a number
-		//having public static int means "I WILL GIVE YOU A NUMBER ONCE IT'S DONE". 
-		//so having ANY case where it doesn't return any number would create errors
+		hKeyboard.close();
 		return 0;
 	}
 	
@@ -111,9 +110,10 @@ public class Assignment1MyVersion {
 			if (0 > mnewValue || mnewValue > 59) {
 				System.exit(0);
 			}
+			mKeyboard.close();
 			return mnewValue;
-		} //what if this if statement doesn't go through, then u need to add a return here
-		
-		return 0; //The check failed and input is incorrect
+		}	
+		mKeyboard.close();
+		return 0; 
 	}
 }
