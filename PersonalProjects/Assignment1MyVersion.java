@@ -79,6 +79,8 @@ public class Assignment1MyVersion {
 		int diffInMinutes = Math.abs(((secondHour * 60) + secondMinute) - ((firstHour * 60) + firstMinute));
 		System.out.println("Difference in minutes: " + diffInMinutes);
 		/* We simply calculate the difference between the two values with the data we have received from the user. */
+		System.out.println("Thank you for using my program. Goodbye!");
+		myKeyboard.close();
 	}
 	
 	

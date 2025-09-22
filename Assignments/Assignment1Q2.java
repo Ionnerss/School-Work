@@ -1,72 +1,11 @@
-// ------------------------------------------------------- 
-// Assignment 1
-// Written by: Catalin-Ion Besleaga (40347936)
-// For COMP 248 Section S – Fall 2025
-// --------------------------------------------------------
-
+package Assignments;
 import java.util.Scanner;
-import java.lang.Math;
-import java.lang.String;
-import java.util.Random;
 
-/*
- * This program prompts the user to enter two times in hours and minutes, calculates the difference in minutes between the two times,
- * and generates a screen name and secret code based on the user's favorite color, animal, and birth city.
- */
-
-public class Assignment1 {
+public class Assignment1Q2 {
 
 	public static void main(String[] args) {
-		/*
-		 * The program will display the statements to the user, allowing them to enter any given value of hours,
-		 * 0 ≤ first/second Hour ≤ 23 and minutes, 0 ≤ first/second Minute ≤ 59.
-		 */
-		System.out.println("Welcome to my program!");
-		Scanner keyReader = new Scanner(System.in);
-		
-		System.out.print("Enter hours for first time: ");
-		int firstHour = keyReader.nextInt();
-		
-		System.out.print("Enter minutes for first time: ");
-		int firstMinute = keyReader.nextInt();
-		
-		System.out.print("Enter hours for second time: ");
-		int secondHour = keyReader.nextInt();
-		
-		System.out.print("Enter minutes for second time: ");
-		int secondMinute = keyReader.nextInt();
-		
-		System.out.println();
-
-		
-		int diffTime = Math.abs(((secondHour * 60) + secondMinute) - ((firstHour * 60) + firstMinute));
-		/*
-		 * EXPLANATION:
-		 * - The hours are converted to minutes by multiplying them by 60.
-		 * - The total minutes for each time is calculated by adding the converted hours and the minutes.
-		 */
-		
-		System.out.println("First time: " + (firstHour < 10 ? "0" + firstHour : firstHour) + 
-				":" + (firstMinute < 10 ? "0" + firstMinute : firstMinute));
-		System.out.println("Second time:" + (secondHour < 10 ? "0" + secondHour : secondHour) + 
-				":" + (secondMinute < 10 ? "0" + secondMinute : secondMinute));
-		System.out.println("Difference in minutes: " + diffTime);
-		/*
-		 * - The times are displayed in HH:MM format, ensuring that single-digit hours and minutes are prefixed with a zero for proper formatting.
-		 * - The difference in minutes between the two times is displayed.
-		 * 
-		 * EXPLANATION: (firstHour < 10 ? "0" + firstHour : firstHour)
-		 * - If the value of firstHour is less than ten then we display the value of the variable with a zero before it.
-		 * - Otherwise, if the value is larger than 10, the variable will be displayed as is.
-		 * 
-		 * This is an if statement used within the method that allows me to display the time correctly. I have the ability 
-		 * to add a zero to the variable if it is less than 10, making it easier to read for the user.
-		 */
-		
-		
-		System.out.println("--------------------------------------------------------------------------------------------------------------------");
-		
-		System.out.println("Welcome! Let's generate your screen name nd secret code.");
+        Scanner keyReader = new Scanner(System.in);
+		System.out.println("Welcome! Let's generate your screen name and secret code.");
 		/*
 		 * The program will prompt the user to enter their favorite color, animal, and birth city.
 		 */
