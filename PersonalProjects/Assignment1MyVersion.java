@@ -8,7 +8,6 @@
 import java.util.Scanner;
 import java.lang.Math;
 import java.lang.String;
-import java.util.Random;
 
 public class Assignment1MyVersion {
 

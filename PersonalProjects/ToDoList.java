@@ -12,7 +12,7 @@ public class ToDoList {
 		}
 		
 				
-
+		keyReader.close();
 	}
 	
 	public static int ChoiceVerif(int choice) {

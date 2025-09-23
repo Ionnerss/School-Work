@@ -1,11 +1,23 @@
 package Assignments;
+// ------------------------------------------------------- 
+// Assignment 1 - Question #2
+// Written by: Catalin-Ion Besleaga (40347936)
+// For COMP 248 Section S – Fall 2025
+// --------------------------------------------------------
+
 import java.util.Scanner;
+
+/*
+ * This program prompts the user to enter their favorite color, animal, and their city of birth. It will then generate a
+ * "Screen name" and "Secret code" which it will display to the user to utilize.
+ */
 
 public class Assignment1Q2 {
 
 	public static void main(String[] args) {
         Scanner keyReader = new Scanner(System.in);
 		System.out.println("Welcome! Let's generate your screen name and secret code.");
+		System.out.println();
 		/*
 		 * The program will prompt the user to enter their favorite color, animal, and birth city.
 		 */
@@ -77,8 +89,7 @@ public class Assignment1Q2 {
 		 * - The substring method is used to extract the parts of the secret code before and after the third character.
 		 * - A random integer between 1 and 9 is generated using Math.random(), which is then scaled and shifted to the desired range.
 		 */
-
-		System.out.println();
+		
 		System.out.println("Generated secret code: " + secretCodeSub1 + "*" + secretCodeSub2 + randomInt);
 		System.out.println();
 		System.out.println("Thank you for using my program. Goodbye!");
