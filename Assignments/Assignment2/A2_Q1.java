@@ -94,17 +94,17 @@ public class A2_Q1 {
         if (age < 12) {
             discount = (subtotal/50.0);
             discountedTotal = discount;
-            discountType = "(Children 50%)";
+            discountType = "Children 50%";
         }
         else if (age >= 13 || age <= 25) {
             discount = (subtotal/4);
             discountedTotal = (subtotal - discount);
-            discountType = "(Student 25%)";
+            discountType = "Student 25%";
         }
         else if (age > 65) {
             discount = (subtotal/3);
             discountedTotal = (subtotal - discount);
-            discountType = "(Senior 30%)";
+            discountType = "Senior 30%";
         }
         else {
             discountedTotal = subtotal;
@@ -155,21 +155,22 @@ public class A2_Q1 {
          * Reciept section
          */
         System.out.println("------- Reciept for " + name + " -------");
-        System.out.println("Base drink: " + selectedDrink + " $" + drink);
-        System.out.println("Add-ons total: $" + (addEspresso + addCream + addSyrup));
-        System.out.println("Subtotal: $" + subtotal);
-        System.out.println("Discount " + discountType + ": -$" + discount);
-        System.out.println("After discount: $" + discountedTotal);
-        System.out.println("Tip: $" + tip);
-        System.out.println("Charity donation: $" + roundup);
-        System.out.println("-----------------------------------------");
-        System.out.println("Final total: $" + roundedTotal);
+        System.out.printf("Base drink: " + selectedDrink + " $%.2f%n", drink);
+        System.out.printf("Add-ons total: $%.2f%n", (addEspresso + addCream + addSyrup));
+        System.out.printf("Subtotal: $%.2f%n", subtotal);
+        System.out.printf("Discount (" + discountType + "): -$%.2f%n", discount); //Conversion of '(' find the mistake
+        System.out.printf("After discount: $%.2f%n", discountedTotal);
+        System.out.printf("Tip: $%.2f%n", tip);
+        System.out.printf("Charity donation: $%.2f%n", roundup);
+        System.out.println("------------------------------------");
+        System.out.printf("Final total: $%.2f%n", roundedTotal);
 
         System.out.println();
 
         System.out.println("Thank you for visiting JavaBeans Coffee Shop!");
 
-
-
+        // %.2f\n
         }
+
+
 }
