@@ -5,19 +5,19 @@ package Assignments.Assignment2;
 // For COMP 248 Section S – Fall 2025
 // --------------------------------------------------------
 
+//Algorithm 1: Coffee Shop Drink Price Estimator Program
+
 import java.util.Scanner;
 
-
-
 public class A2_Q1 {
-    public static Scanner scanner = new Scanner(System.in);
-
     public static void main(String[] args) {
         System.out.println("\\---------------------------------------------------------\\");
         System.out.println("/               Welcome to JavaBeans Coffee Shop!          /");
         System.out.println("\\---------------------------------------------------------\\");
         
         System.out.println();
+
+        Scanner scanner = new Scanner(System.in);
 
         System.out.println("Please enter your name: ");
         String name = scanner.next();
@@ -92,22 +92,23 @@ public class A2_Q1 {
         String discountType = "";
 
         if (age < 12) {
-            discount = (subtotal/50.0);
+            discount = subtotal/50.0;
             discountedTotal = discount;
             discountType = "Children 50%";
         }
-        else if (age >= 13 || age <= 25) {
-            discount = (subtotal/4);
+        else if (age >= 13 && age <= 25) {
+            discount = subtotal/4;
             discountedTotal = (subtotal - discount);
             discountType = "Student 25%";
         }
         else if (age > 65) {
-            discount = (subtotal/3);
+            discount = subtotal/3;
             discountedTotal = (subtotal - discount);
             discountType = "Senior 30%";
         }
         else {
             discountedTotal = subtotal;
+            discountType = "none";
         }
 
          /*
@@ -150,26 +151,22 @@ public class A2_Q1 {
             roundup = roundedTotal - total;
         }
 
-
-        /*
-         * Reciept section
-         */
         System.out.println("------- Reciept for " + name + " -------");
         System.out.printf("Base drink: " + selectedDrink + " $%.2f%n", drink);
         System.out.printf("Add-ons total: $%.2f%n", (addEspresso + addCream + addSyrup));
         System.out.printf("Subtotal: $%.2f%n", subtotal);
-        System.out.printf("Discount (" + discountType + "): -$%.2f%n", discount); //Conversion of '(' find the mistake
+        System.out.printf("Discount (%s): -$%.2f%n", discountType, discount); // Fixed format string
         System.out.printf("After discount: $%.2f%n", discountedTotal);
         System.out.printf("Tip: $%.2f%n", tip);
         System.out.printf("Charity donation: $%.2f%n", roundup);
-        System.out.println("------------------------------------");
+        System.out.println("-----------------------------------");
         System.out.printf("Final total: $%.2f%n", roundedTotal);
 
         System.out.println();
 
-        System.out.println("Thank you for visiting JavaBeans Coffee Shop!");
+        scanner.close();
 
-        // %.2f\n
+        System.out.println("Thank you for visiting JavaBeans Coffee Shop!");
         }
 
 
