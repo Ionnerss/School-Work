@@ -28,7 +28,26 @@ public class A2_Q2 {
 
         System.out.println();
         System.out.print("Your choice: ");
-        String optionChoice = scanner.next();
+        int optionChoice = scanner.nextInt();
+
+        switch {
+            case optionChoice == 1
+                System.out.println("Today's special is Grilled Salmon with Rice - $14.99");
+            case optionChoice == 2
+                System.out.println("You ordered a Burger Combo.");
+                double burger = 7.99;
+                double fries = 2.50;
+                double drink = 1.50;
+
+                System.out.println("Burger $" + burger + " Fries $" + fries + " Drink $" + drink);
+                System.out.println("Your total is $" + (burger + fries + drink));
+
+
+            case optionChoice == 3
+            case optionChoice == 4
+            case optionChoice == 5
+            case optionChoice == 6
+        }
 
 
 
