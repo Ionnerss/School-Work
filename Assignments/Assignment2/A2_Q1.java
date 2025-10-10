@@ -85,7 +85,6 @@ public class A2_Q1 {
         }
 
 
-
         double subtotal = (drink + addEspresso + addCream + addSyrup);
         double discount = 0;
         double discountedTotal = 0;
@@ -111,9 +110,7 @@ public class A2_Q1 {
             discountType = "none";
         }
 
-         /*
-         * adding a tip section
-         */
+
         System.out.println("Would you like to add a tip?");
         System.out.println("0 - No tip");
         System.out.println("1 - 10%");
@@ -155,7 +152,7 @@ public class A2_Q1 {
         System.out.printf("Base drink: " + selectedDrink + " $%.2f%n", drink);
         System.out.printf("Add-ons total: $%.2f%n", (addEspresso + addCream + addSyrup));
         System.out.printf("Subtotal: $%.2f%n", subtotal);
-        System.out.printf("Discount (%s): -$%.2f%n", discountType, discount); // Fixed format string
+        System.out.printf("Discount (%s): -$%.2f%n", discountType, discount);
         System.out.printf("After discount: $%.2f%n", discountedTotal);
         System.out.printf("Tip: $%.2f%n", tip);
         System.out.printf("Charity donation: $%.2f%n", roundup);
@@ -168,6 +165,4 @@ public class A2_Q1 {
 
         System.out.println("Thank you for visiting JavaBeans Coffee Shop!");
         }
-
-
 }

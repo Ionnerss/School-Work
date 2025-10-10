@@ -1,10 +1,17 @@
 package ToDoList_Project;
 
-//import java.util.Scanner;
+import java.io.File;
+import java.nio.file.Path;
 
 public class TaskCreator {
 
     public void TaskProcessor(String[] info){
-        //MAKE THE TASK VISUAL SIDE + BACKEND SIDE THAT IS ALL WRITTEN ABOUT IN TODOLIST.JAVA
+        File file = new File("TaskLibrary.json");
+        Path path = file.toPath();
+
+
+
+
+
     }
 }
