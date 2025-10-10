@@ -1,7 +1,6 @@
 package ToDoList_Project;
 
 import java.io.File;
-import java.nio.file.Path;
 
 public class TaskCreator {
 
@@ -20,23 +19,29 @@ public class TaskCreator {
          *      ]
          *   }
          */
-        String jsonString = "{\"data\": [{\"id\": 1, \"Title\": \"Item A\", \"Date\": \"february 2nd\", \"Description\": \"Whatever\"}, {\"id\": 2, \"Title\": \"Item B\", \"Date\": \"february 3rd\", \"Description\": \"Whatever\"}]}";
+        String jsonString = file.toString();
 
-        JSONObject jsonObject = new JSONObject(jsonString);
+
+
+
+
+
+
+        // JSONObject jsonObject = new JSONObject(jsonString);
         
-        JSONArray dataArray = jsonObject.getJSONArray("data");
+        // JSONArray dataArray = jsonObject.getJSONArray("data");
 
-        JSONObject newItem = new JSONObject();
-        newItem.put("id", (dataArray.length() + 1));
-        newItem.put("Title", name);
-        newItem.put("Date", time);
-        newItem.put("Description", description);
+        // JSONObject newItem = new JSONObject();
+        // newItem.put("id", (dataArray.length() + 1));
+        // newItem.put("Title", name);
+        // newItem.put("Date", time);
+        // newItem.put("Description", description);
 
-        dataArray.put(newItem);
-        jsonObject.put("data", dataArray);
+        // dataArray.put(newItem);
+        // jsonObject.put("data", dataArray);
 
-        String updatedjsonString = jsonObject.toString(2);
-        System.out.println(updatedjsonString);
+        // String updatedjsonString = jsonObject.toString(2);
+        // System.out.println(updatedjsonString);
 
 
 
