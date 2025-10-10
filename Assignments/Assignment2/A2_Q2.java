@@ -33,6 +33,7 @@ public class A2_Q2 {
         switch {
             case optionChoice == 1
                 System.out.println("Today's special is Grilled Salmon with Rice - $14.99");
+
             case optionChoice == 2
                 System.out.println("You ordered a Burger Combo.");
                 double burger = 7.99;
@@ -44,9 +45,45 @@ public class A2_Q2 {
 
 
             case optionChoice == 3
+                System.out.print("Pllease enter your age: ");
+                int age = scanner.nextInt();
+
+                int discount = 0;
+                String discountTxt = "";
+                if (age < 12) {
+                    System.out.println("Discount: 50% (children under 12)");
+                else if (age >= 12 && age <= 25)
+                    System.out.println("Discount: 20% (ages 12-25)");
+                else if (age >= 65)
+                    System.out.println("Discount: 30% (ages 65+)")
+                else
+                    System.out.println("Discount: none");
+
             case optionChoice == 4
+                System.out.println("Food delivery may be available to you for an extra fee.");
+                System.out.priintln("Please enter the estimated distance (kms) from the restaurant to your destination <<integer>>: ");
+                int distance = scanner.nextInt();
+
+                System.out.println();
+                
+                if (distance < 10)
+                    System.out.println("An extra 5$ for delivery will be added to your oreder.");
+                else if (distance >= 10 && distance < 20)
+                    System.out.println("An extra 10$ for delivery will be added to your order.");
+                else if (distance >= 20 && distance <= 30)
+                    System.out.println("An extra 20$ for delivery will be added to your order.");
+                else if (distance > 30)
+                    System.out.println("Oops! This locaiton is outside our delivery range.");
+
             case optionChoice == 5
+                System.out.println("Restaurant Hours: Mon-Sun: 11:00 AM - 10:00 PM");       
+
             case optionChoice == 6
+                System.out.println("Thank you for using Smart Restaurant Assistant Program!");
+                scanner.close();
+            
+            default
+                System.out.println("Invalid option. Please try again.");
         }
 
 
