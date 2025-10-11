@@ -1,0 +1,9 @@
+{
+    "java.project.sourcePaths": [
+        ".",
+        "PersonalProjects"
+    ],
+    "java.project.referencedLibraries": [
+        "PersonalProjects\\ToDoList_Project\\json.jar"
+    ]
+}

@@ -22,10 +22,11 @@ public class ToDoList {
 
 		boolean redoUIP = true;
 
-		while(redoUIP) {
+		do {
 			UserInputProcess(redoUIP);
 			redoUIP = UserInputProcess(redoUIP);
 		}
+		while(redoUIP);
 
 		if (redoUIP == false) {
 			System.out.println("Thank you for using my program!");
@@ -120,36 +121,22 @@ public class ToDoList {
 				descChoice = DescChoiceVerif(descChoice);
 				}
 
+				String[] info;
+				String description;
 				if(descChoice.equalsIgnoreCase("no")) {
-					String[] info = {name, time};
+					description = "";
+					info = new String[] {name, time, description};
 					TaskCreator obj = new TaskCreator();
 					obj.TaskProcessor(info);
 				}
 				else if(descChoice.equalsIgnoreCase("yes")) {
 					System.out.println("What would you like to add?");
-					String description = scanner.next();
+					description = scanner.next();
 
-					String[] info = {name, time, description};
+					info = new String[] {name, time, description};
 					TaskCreator obj = new TaskCreator();
 					obj.TaskProcessor(info);
 				}
-
-				System.out.println();
-				System.out.println("Would you like to create another task (yes/no)? ");
-				String anotherTask = scanner.next();
-
-				if (anotherTask.equalsIgnoreCase("yes")) 
-					redoUIP = true;
-				else if (anotherTask.equalsIgnoreCase("no")) 
-					redoUIP = false;
-				else {
-					anotherTask = ChoiceVerif(anotherTask);
-					if (anotherTask.equalsIgnoreCase("yes")) 
-						redoUIP = true;
-					else if (anotherTask.equalsIgnoreCase("no")) 
-						redoUIP = false;			
-					}
-
 				break;
 			case 2:
 				break;
@@ -160,6 +147,21 @@ public class ToDoList {
 			case 5:
 				break;
 		}
+		System.out.println();
+		System.out.println("Would you like to create another task (yes/no)? ");
+		String anotherTask = scanner.next();
+
+		if (anotherTask.equalsIgnoreCase("yes")) 
+			redoUIP = true;
+		else if (anotherTask.equalsIgnoreCase("no")) 
+			redoUIP = false;
+		else {
+			anotherTask = ChoiceVerif(anotherTask);
+			if (anotherTask.equalsIgnoreCase("yes")) 
+				redoUIP = true;
+			else if (anotherTask.equalsIgnoreCase("no")) 
+				redoUIP = false;			
+			}
 		return redoUIP;
 	}
 }

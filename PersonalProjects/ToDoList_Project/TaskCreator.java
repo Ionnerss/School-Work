@@ -1,6 +1,8 @@
 package ToDoList_Project;
 
 import java.io.File;
+import org.json.JSONObject;
+import org.json.JSONArray;
 
 public class TaskCreator {
 
@@ -20,32 +22,34 @@ public class TaskCreator {
          *   }
          */
         String jsonString = file.toString();
-
-
-
-
-
-
-
-        // JSONObject jsonObject = new JSONObject(jsonString);
+        JSONObject jsonObject = new JSONObject(jsonString);
         
-        // JSONArray dataArray = jsonObject.getJSONArray("data");
+        JSONArray dataArray = jsonObject.getJSONArray("data");
 
-        // JSONObject newItem = new JSONObject();
-        // newItem.put("id", (dataArray.length() + 1));
-        // newItem.put("Title", name);
-        // newItem.put("Date", time);
-        // newItem.put("Description", description);
+        // Assuming info[0]=name, info[1]=time, info[2]=description
+        String name = info[0];
+        String time = info[1];
+        String description = info[2];
 
-        // dataArray.put(newItem);
-        // jsonObject.put("data", dataArray);
+        JSONObject newItem = new JSONObject();
+        newItem.put("id", (dataArray.length() + 1));
+        newItem.put("Title", name);
+        newItem.put("Date", time);
+        newItem.put("Description", description);
 
-        // String updatedjsonString = jsonObject.toString(2);
-        // System.out.println(updatedjsonString);
+        dataArray.put(newItem);
+        jsonObject.put("data", dataArray);
+
+        String updatedjsonString = jsonObject.toString(2);
+        System.out.println(updatedjsonString);
 
 
 
 
 
+    }
+
+    public static void main(String[] args) {
+        // test code here
     }
 }
