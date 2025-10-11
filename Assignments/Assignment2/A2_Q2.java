@@ -30,84 +30,70 @@ public class A2_Q2 {
         System.out.print("Your choice: ");
         int optionChoice = scanner.nextInt();
 
-        switch (optionChoice) {
-            case 1:
-                System.out.println();
-                System.out.println("Today's special is Grilled Salmon with Rice - $14.99");
+        System.out.println();
 
+        String output = switch (optionChoice) {
+            case 1:
                 scanner.close();
-                break;
+                yield("Today's special is Grilled Salmon with Rice - $14.99 \n");
 
             case 2:
-                System.out.println();
-                System.out.println("You ordered a Burger Combo.");
+                scanner.close();
+                yield("\n");
+                yield("You ordered a Burger Combo. \n");
                 double burger = 7.99;
                 double fries = 2.50;
                 double drink = 1.50;
 
-                System.out.println("Burger $" + burger + " Fries $" + fries + " Drink $" + drink);
-                System.out.println("Your total is $" + (burger + fries + drink));
-
-                scanner.close();
-                break;
+                yield("Burger $" + burger + " Fries $" + fries + " Drink $" + drink + "\n");
+                yield("Your total is $" + (burger + fries + drink) + "\n");
 
             case 3:
-                System.out.print("Please enter your age: ");
+                yield("Please enter your age: \n");
                 int age = scanner.nextInt();
 
                 System.out.println();
 
                 if (age < 12)
-                    System.out.println("Discount: 50% (children under 12)");
+                    yield("Discount: 50% (children under 12) \n");
                 else if (age >= 12 && age <= 25)
-                    System.out.println("Discount: 20% (ages 12-25)");
+                    yield("Discount: 20% (ages 12-25) \n");
                 else if (age >= 65)
-                    System.out.println("Discount: 30% (ages 65+)");
+                    yield("Discount: 30% (ages 65+) \n");
                 else
-                    System.out.println("Discount: none");
+                    yield("Discount: none \n");
                 
                 scanner.close();
-                break;
 
             case 4:
-                System.out.println("Food delivery may be available to you for an extra fee.");
-                System.out.print("Please enter the estimated distance (kms) from the restaurant to your destination <<integer>>: ");
+                yield("Food delivery may be available to you for an extra fee.\n");
+                yield("Please enter the estimated distance (kms) from the restaurant to your destination <<integer>>: ");
                 int distance = scanner.nextInt();
 
-                System.out.println();
+                yield("\n");
                 
                 if (distance < 10)
-                    System.out.println("An extra 5$ for delivery will be added to your oreder.");
+                    yield("An extra 5$ for delivery will be added to your oreder.\n");
                 else if (distance >= 10 && distance < 20)
-                    System.out.println("An extra 10$ for delivery will be added to your order.");
+                    yield("An extra 10$ for delivery will be added to your order.\n");
                 else if (distance >= 20 && distance <= 30)
-                    System.out.println("An extra 20$ for delivery will be added to your order.");
+                    yield("An extra 20$ for delivery will be added to your order.\n");
                 else if (distance > 30)
-                    System.out.println("Oops! This locaiton is outside our delivery range.");
+                    yield("Oops! This locaiton is outside our delivery range.\n");
                 
                 scanner.close();
-                break;
 
             case 5:
-                System.out.println();
-                System.out.println("Restaurant Hours: Mon-Sun: 11:00 AM - 10:00 PM");   
-                
+                yield("Restaurant Hours: Mon-Sun: 11:00 AM - 10:00 PM\n");   
                 scanner.close();
-                break;
 
             case 6:
-                System.out.println();
-                System.out.println("Thank you for using Smart Restaurant Assistant Program!");
-                
+                yield("Thank you for using Smart Restaurant Assistant Program!\n");
                 scanner.close();
-                break;
             
             default:
-                System.out.println("Invalid option. Please try again.");
-                
                 scanner.close();
-                break;
-            
-            }
+                yield("Invalid option. Please try again.\n");
         }
     }
+}
