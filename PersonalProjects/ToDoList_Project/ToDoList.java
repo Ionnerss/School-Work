@@ -19,6 +19,7 @@ public class ToDoList {
 	public static Scanner scanner = new Scanner(System.in);
     public static void main(String[] args) {
 		System.out.println("Welcome to the ToDo List App!");
+		System.out.println();
 
 		boolean redoUIP = true;
 
@@ -100,9 +101,11 @@ public class ToDoList {
 
 		switch (actionChoice) {
 			case 1:
-				System.out.println("|--------------------------|");
-				System.out.println("| Let's create a new task! |");
-				System.out.println("|--------------------------|");
+				System.out.println();
+				System.out.println("|------------------------------|");
+				System.out.println("|   Let's create a new task!   |");
+				System.out.println("|------------------------------|");
+				System.out.println();
 
 				System.out.print("What will the name of the new task be? ");
 				String name = scanner.next();
@@ -112,7 +115,7 @@ public class ToDoList {
 				String time = scanner.next();
 				System.out.println();
 
-				System.out.println("Perfect! Would you like to add any details to the task (yes / no)? ");
+				System.out.print("Perfect! Would you like to add any details to the task (yes / no)? ");
 				String descChoice = scanner.next();
 				System.out.println();
 			
@@ -145,10 +148,14 @@ public class ToDoList {
 			case 4:
 				break;
 			case 5:
+				System.out.println();
+				System.out.println("Thank you for using my program!");
+				scanner.close();
+				System.exit(0);
 				break;
 		}
 		System.out.println();
-		System.out.println("Would you like to create another task (yes/no)? ");
+		System.out.print("Would you like to create another task (yes/no)? ");
 		String anotherTask = scanner.next();
 
 		if (anotherTask.equalsIgnoreCase("yes")) 

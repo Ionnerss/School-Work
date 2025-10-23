@@ -1,8 +1,6 @@
 package ToDoList_Project;
 
 import java.io.File;
-import org.json.JSONObject;
-import org.json.JSONArray;
 
 public class TaskCreator {
 
@@ -21,31 +19,42 @@ public class TaskCreator {
          *      ]
          *   }
          */
-        String jsonString = file.toString();
-        JSONObject jsonObject = new JSONObject(jsonString);
+            StringBuilder jsonStringBuilder = new StringBuilder();
+            try (java.util.Scanner scanner = new java.util.Scanner(file)) {
+                while (scanner.hasNextLine()) {
+                    jsonStringBuilder.append(scanner.nextLine());
+                }
+            } catch (java.io.FileNotFoundException e) {
+                // If file doesn't exist, initialize with empty JSON object
+                jsonStringBuilder.append("{\"data\":[]}");
+            }
+            String jsonString = jsonStringBuilder.toString();
+            if (jsonString.isEmpty()) {
+                jsonString = "{\"data\":[]}";
+            }
+        // JSONObject jsonObject = new JSONObject(jsonString);
         
-        JSONArray dataArray = jsonObject.getJSONArray("data");
+        // JSONArray dataArray = jsonObject.getJSONArray("data");
 
-        // Assuming info[0]=name, info[1]=time, info[2]=description
-        String name = info[0];
-        String time = info[1];
-        String description = info[2];
+        // // Assuming info[0]=name, info[1]=time, info[2]=description
+        // String name = info[0];
+        // String time = info[1];
+        // String description = info[2];
 
-        JSONObject newItem = new JSONObject();
-        newItem.put("id", (dataArray.length() + 1));
-        newItem.put("Title", name);
-        newItem.put("Date", time);
-        newItem.put("Description", description);
+        // JSONObject newItem = new JSONObject();
+        // newItem.put("id", (dataArray.length()));
+        // newItem.put("Title", name);
+        // newItem.put("Date", time);
+        // newItem.put("Description", description);
 
-        dataArray.put(newItem);
-        jsonObject.put("data", dataArray);
+        // dataArray.put(newItem);
+        // jsonObject.put("data", dataArray);
 
-        String updatedjsonString = jsonObject.toString(2);
-        System.out.println(updatedjsonString);
+        // ObjectMapper objectMapper = new ObjectMapper();
+        // objectMapper.writeValue(file, jsonObject);
 
-
-
-
+        // String updatedjsonString = jsonObject.toString(2);
+        // System.out.println(updatedjsonString);
 
     }
 

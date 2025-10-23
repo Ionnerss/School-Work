@@ -4,6 +4,8 @@
         "PersonalProjects"
     ],
     "java.project.referencedLibraries": [
-        "PersonalProjects\\ToDoList_Project\\json.jar"
+        "lib\\jackson-core-2.15.2.jar",
+        "lib\\jackson-databind-2.15.2.jar",
+        "lib\\json.jar"
     ]
 }
