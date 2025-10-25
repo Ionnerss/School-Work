@@ -1,13 +1,13 @@
 package ToDoList_Project;
 
 import java.io.File;
+// import org.json.JSONObject;
+// import org.json.JSONArray;
+// import java.io.FileWriter;
 
 public class TaskCreator {
 
     public void TaskProcessor(String[] info){
-
-        File file = new File("TaskLibrary.json");
-
         /*
          * This represents the key/value pair they talked about in the vid. Basically the key (data)
          * allows us to go fetch specific information about an object within this array. We have multiple ids
@@ -19,19 +19,15 @@ public class TaskCreator {
          *      ]
          *   }
          */
-            StringBuilder jsonStringBuilder = new StringBuilder();
-            try (java.util.Scanner scanner = new java.util.Scanner(file)) {
-                while (scanner.hasNextLine()) {
-                    jsonStringBuilder.append(scanner.nextLine());
-                }
-            } catch (java.io.FileNotFoundException e) {
-                // If file doesn't exist, initialize with empty JSON object
-                jsonStringBuilder.append("{\"data\":[]}");
-            }
-            String jsonString = jsonStringBuilder.toString();
-            if (jsonString.isEmpty()) {
-                jsonString = "{\"data\":[]}";
-            }
+
+        File file = new File("TaskLibrary.json");
+        String path = file.getPath();
+
+
+
+        
+        // File file = new File("TaskLibrary.json");
+        // String jsonString = file.toString();
         // JSONObject jsonObject = new JSONObject(jsonString);
         
         // JSONArray dataArray = jsonObject.getJSONArray("data");
@@ -42,7 +38,7 @@ public class TaskCreator {
         // String description = info[2];
 
         // JSONObject newItem = new JSONObject();
-        // newItem.put("id", (dataArray.length()));
+        // newItem.put("id", (dataArray.length() + 1));
         // newItem.put("Title", name);
         // newItem.put("Date", time);
         // newItem.put("Description", description);
@@ -50,11 +46,15 @@ public class TaskCreator {
         // dataArray.put(newItem);
         // jsonObject.put("data", dataArray);
 
-        // ObjectMapper objectMapper = new ObjectMapper();
-        // objectMapper.writeValue(file, jsonObject);
+        // FileWriter fileWriter = new Filewriter("TaskLibrary.json");
+
 
         // String updatedjsonString = jsonObject.toString(2);
         // System.out.println(updatedjsonString);
+
+
+
+
 
     }
 

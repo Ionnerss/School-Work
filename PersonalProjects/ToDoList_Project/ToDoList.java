@@ -16,12 +16,14 @@ import java.util.Scanner;
  */
 public class ToDoList {
 
-	public static Scanner scanner = new Scanner(System.in);
+	static Scanner scanner = new Scanner(System.in);
+	static boolean redoUIP; 
+	// check static vs instance variable (when var is defined in class, not method); 
+	//static int x; -> static | int x; -> instance 
+
     public static void main(String[] args) {
 		System.out.println("Welcome to the ToDo List App!");
 		System.out.println();
-
-		boolean redoUIP = true;
 
 		do {
 			UserInputProcess(redoUIP);
