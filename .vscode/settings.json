@@ -4,8 +4,8 @@
         "PersonalProjects"
     ],
     "java.project.referencedLibraries": [
-        "lib\\jackson-core-2.15.2.jar",
-        "lib\\jackson-databind-2.15.2.jar",
-        "lib\\json.jar"
+        "lib/json.jar",
+        "lib/jackson-databind-2.15.2.jar",
+        "lib/jackson-core-2.15.2.jar"
     ]
 }
