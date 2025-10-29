@@ -1,6 +1,9 @@
 package ToDoList_Project;
 
 import java.io.File;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 public class TaskCreator {
 
@@ -32,29 +35,35 @@ public class TaskCreator {
             if (jsonString.isEmpty()) {
                 jsonString = "{\"data\":[]}";
             }
-        // JSONObject jsonObject = new JSONObject(jsonString);
         
-        // JSONArray dataArray = jsonObject.getJSONArray("data");
+        JSONObject jsonObject = new JSONObject(jsonString);
+        
+        JSONArray dataArray = jsonObject.getJSONArray("data");
 
-        // // Assuming info[0]=name, info[1]=time, info[2]=description
-        // String name = info[0];
-        // String time = info[1];
-        // String description = info[2];
+        // Assuming info[0]=name, info[1]=time, info[2]=description
+        String name = info[0];
+        String time = info[1];
+        String description = info[2];
 
-        // JSONObject newItem = new JSONObject();
-        // newItem.put("id", (dataArray.length()));
-        // newItem.put("Title", name);
-        // newItem.put("Date", time);
-        // newItem.put("Description", description);
+        JSONObject newItem = new JSONObject();
+        newItem.put("id", (dataArray.length()));
+        newItem.put("Title", name);
+        newItem.put("Date", time);
+        newItem.put("Description", description);
 
-        // dataArray.put(newItem);
-        // jsonObject.put("data", dataArray);
+        dataArray.put(newItem);
+        jsonObject.put("data", dataArray);
 
-        // ObjectMapper objectMapper = new ObjectMapper();
-        // objectMapper.writeValue(file, jsonObject);
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            objectMapper.writeValue(file, jsonObject);
+        } catch (java.io.IOException e) {
+            // Handle the exception (log or print). IOException covers StreamWriteException and DatabindException.
+            e.printStackTrace();
+        }
 
-        // String updatedjsonString = jsonObject.toString(2);
-        // System.out.println(updatedjsonString);
+        String updatedjsonString = jsonObject.toString(2);
+        System.out.println(updatedjsonString);
 
     }
 
