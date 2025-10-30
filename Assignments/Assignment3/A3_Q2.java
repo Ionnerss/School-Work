@@ -13,6 +13,7 @@ public class A3_Q2 {
     static String species3;
     static String species4;
     static String species5;
+    static String[] species = new String[] {species1, species2, species3, species4, species5};
     static int[] s1Zones;
     static int[] s2Zones;
     static int[] s3Zones;
@@ -32,27 +33,33 @@ public class A3_Q2 {
         System.out.println("----------------------------------------------");
         System.out.println("Enter sightings for 5 species (format: name zone1 zone2 zone3)");
 
-        System.out.print("Species 1: ");
-        String input1 = scanner.next();
-        species1 = input1.substring(0, input1.indexOf(""));
-        s1Zones = new int[] {input1.indexOf(""), input1.length()};
-        
+        for (int i = 1 ; i <= 5 ; i++) {
+            System.out.print("Species " + i + ": ");
+            String input = scanner.next();
 
-        System.out.print("Species 2: ");
-        species2 = scanner.nextLine();
-        s2Zones = new int[] {scanner.nextInt()};
-
-        System.out.print("Species 3: ");
-        species3 = scanner.nextLine();
-        s3Zones = new int[] {scanner.nextInt()};
-
-        System.out.print("Species 4: ");
-        species4 = scanner.nextLine();
-        s4Zones = new int[] {scanner.nextInt()};
-
-        System.out.print("Species 5: ");
-        species5 = scanner.nextLine();
-        s5Zones = new int[] {scanner.nextInt()};
+            switch (i) {
+                case 1:
+                    species1 = input.substring(0, input.indexOf(""));
+                    s1Zones = new int[] {input.indexOf(""), input.length()};
+                    break;
+                case 2:
+                    species2 = input.substring(0, input.indexOf(""));
+                    s2Zones = new int[] {input.indexOf(""), input.length()};
+                    break;
+                case 3:
+                    species3 = input.substring(0, input.indexOf(""));
+                    s3Zones = new int[] {input.indexOf(""), input.length()};
+                    break;
+                case 4:
+                    species4 = input.substring(0, input.indexOf(""));
+                    s4Zones = new int[] {input.indexOf(""), input.length()};
+                    break;
+                case 5:
+                    species5 = input.substring(0, input.indexOf(""));
+                    s5Zones = new int[] {input.indexOf(""), input.length()};
+                    break;
+            }
+        }
 
         for (int i = 0 ; i <=3 ; i++) {
             s1_Total += s1Zones[i];
@@ -97,6 +104,42 @@ public class A3_Q2 {
                 System.out.println("------------------------------------------");
                 break;
             case 2:
+                System.out.println("Enter species name to update: ");
+                String sToUpdate = scanner.next();
+ 
+                if ((!sToUpdate.equalsIgnoreCase(species1)) || (!sToUpdate.equalsIgnoreCase(species2)) || (!sToUpdate.equalsIgnoreCase(species3)) || 
+                    (!sToUpdate.equalsIgnoreCase(species4)) || (!sToUpdate.equalsIgnoreCase(species5))) {
+                    System.out.println("Species not found.");
+                }
+                else {
+                    String specificSpecies = "";
+                    for (int i = 0 ; i <= 4 ; i++) {
+                        if (sToUpdate.equalsIgnoreCase(species[i])) {
+                            specificSpecies = species[i];
+                        }
+                        else {
+                            continue;
+                        }
+                    }
+
+                    System.out.println("Enter zone number (1-3): ");
+                    int zone = scanner.nextInt();
+                    if ((zone >= 1) && (zone <= 3)) {
+                        System.out.println("Enter new sightings count: ");
+                        int newSightings = scanner.nextInt();
+
+                        if (newSightings <= 0) {
+                            System.out.println("Sightings cannot be negative. Setting to 0.");
+                            
+                        }
+                        else {
+                            System.out.println("Sightings updated successfully!");
+                        }
+                    }
+                    else {
+                        System.out.println("Invalid zone number!");
+                    }
+                }
                 break;
             case 3:
                 break;
