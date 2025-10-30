@@ -1,6 +1,6 @@
 package ToDoList_Project;
 
-import java.io.File;
+//import java.io.File;
 // import org.json.JSONObject;
 // import org.json.JSONArray;
 // import java.io.FileWriter;
@@ -20,8 +20,8 @@ public class TaskCreator {
          *   }
          */
 
-        File file = new File("TaskLibrary.json");
-        String path = file.getPath();
+        // File file = new File("TaskLibrary.json");
+        // String path = file.getPath();
 
 
 
@@ -30,12 +30,12 @@ public class TaskCreator {
         // String jsonString = file.toString();
         // JSONObject jsonObject = new JSONObject(jsonString);
         
-        JSONArray dataArray = jsonObject.getJSONArray("data");
+        // JSONArray dataArray = jsonObject.getJSONArray("data");
 
         // Assuming info[0]=name, info[1]=time, info[2]=description
-        String name = info[0];
-        String time = info[1];
-        String description = info[2];
+        // String name = info[0];
+        // String time = info[1];
+        // String description = info[2];
 
         // JSONObject newItem = new JSONObject();
         // newItem.put("id", (dataArray.length() + 1));
@@ -43,8 +43,8 @@ public class TaskCreator {
         // newItem.put("Date", time);
         // newItem.put("Description", description);
 
-        dataArray.put(newItem);
-        jsonObject.put("data", dataArray);
+        // dataArray.put(newItem);
+        // jsonObject.put("data", dataArray);
 
         // FileWriter fileWriter = new Filewriter("TaskLibrary.json");
 

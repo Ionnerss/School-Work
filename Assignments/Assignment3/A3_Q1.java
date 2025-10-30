@@ -8,20 +8,19 @@ package Assignments.Assignment3;
 import java.util.Scanner;
 
 public class A3_Q1 {
-
     static Scanner scanner = new Scanner(System.in);
-    static boolean mainMenu;
+    static boolean mainMenu = true;
     static double totalCF;
     static double value;
 
-    public static void main(String[] args){
+    public static void main(String[] args) {
         System.out.println("Welcome to the Carbon Footprint Tracker!");
         System.out.println();
 
-        while (mainMenu) {
-            BaseMenu(mainMenu);
+        do {
             mainMenu = BaseMenu(mainMenu);
         }
+        while(mainMenu == true);
 
         if (mainMenu == false) {
             System.out.println("Thank you for tracking your carbon footprint. Stay green!");
@@ -50,6 +49,29 @@ public class A3_Q1 {
                 System.out.println();
                 break;
             case 3:
+                int min = 1;
+                int max = 5;
+                int random = (int)(Math.random() * (max - min + 1) + min);
+                String ecoTip = "";
+                switch (random) {
+                    case 1:
+                        ecoTip = "Consider biking or walking for short distances.";
+                        break;
+                    case 2:
+                        ecoTip = "Turn off appliances when not in use.";
+                        break;
+                    case 3:
+                        ecoTip = "Switch to renewable energy providers.";
+                        break;
+                    case 4:
+                        ecoTip = "Use energy-efficient appliances.";
+                        break;
+                    case 5:
+                        ecoTip = "Fly less and consider local vacations.";
+                        break;
+                }
+                System.out.println("Eco Tip: " + ecoTip);
+                System.out.println();
                 break;
             case 4:
                 totalCF = 0.0;
@@ -84,7 +106,12 @@ public class A3_Q1 {
                 System.out.print("Enter km: ");
                 value = scanner.nextDouble();
 
-                switch (activityChoice) {
+                if (value == 0) {
+                    System.out.println("Invalid input. Value must be greater than 0.");
+                    System.out.println();
+                }
+                else {
+                    switch (activityChoice) {
                     case 1:
                         kgValue = value * 0.271;
                         break;
@@ -98,18 +125,18 @@ public class A3_Q1 {
                         kgValue = value * 0.150;
                     default:
                         break;
-                }
+                    }
 
-                totalCF += kgValue;
-                System.out.printf("Activity logged: %.2f kg CO2e.%n", kgValue);
-                System.out.println();
+                    totalCF += kgValue;
+                    System.out.printf("Activity logged: %.2f kg CO2e.%n", kgValue);
+                    System.out.println();
+                }
             }
             else if (activityChoice == 5) {
                 System.out.print("Enter kWh: ");
-                value = scanner.nextInt();
+                value = scanner.nextDouble();
 
                 kgValue = value * 0.475;
-
                 totalCF += kgValue;
                 System.out.printf("Activity logged: %.2f kg CO2e.%n", kgValue);
                 System.out.println();
