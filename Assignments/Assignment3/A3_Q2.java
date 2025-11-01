@@ -13,17 +13,23 @@ public class A3_Q2 {
     static String species3;
     static String species4;
     static String species5;
-    static String[] species = new String[] {species1, species2, species3, species4, species5};
+    static String[] species = {species1, species2, species3, species4, species5};
     static int[] s1Zones;
     static int[] s2Zones;
     static int[] s3Zones;
     static int[] s4Zones;
     static int[] s5Zones;
+    static int[][] sZones = {s1Zones, s2Zones, s3Zones, s4Zones, s5Zones};
     static int s1_Total;
     static int s2_Total;
     static int s3_Total;
     static int s4_Total;
     static int s5_Total;
+    static int[] totals = {s1_Total, s2_Total, s3_Total, s4_Total, s5_Total};
+    static String selectedSpecies;
+    static int[] ssZone;
+
+
 
     static boolean mainMenu = true;
     static Scanner scanner = new Scanner(System.in);
@@ -105,45 +111,74 @@ public class A3_Q2 {
                 break;
             case 2:
                 System.out.println("Enter species name to update: ");
-                String sToUpdate = scanner.next();
- 
-                if ((!sToUpdate.equalsIgnoreCase(species1)) || (!sToUpdate.equalsIgnoreCase(species2)) || (!sToUpdate.equalsIgnoreCase(species3)) || 
-                    (!sToUpdate.equalsIgnoreCase(species4)) || (!sToUpdate.equalsIgnoreCase(species5))) {
-                    System.out.println("Species not found.");
-                }
-                else {
-                    String specificSpecies = "";
-                    for (int i = 0 ; i <= 4 ; i++) {
-                        if (sToUpdate.equalsIgnoreCase(species[i])) {
-                            specificSpecies = species[i];
-                        }
-                        else {
-                            continue;
-                        }
-                    }
+                selectedSpecies = scanner.next();
 
+                boolean exist = true;
+                
+                for (int i = 0 ; i <= 4 ; i++) {
+                    if (selectedSpecies.equalsIgnoreCase(species[i])){
+                        selectedSpecies = species[i];
+                        ssZone = sZones[i];
+                        exist = true;
+                    }     
+                    else 
+                        exist = false;
+                }
+
+                if (exist == false)
+                    System.out.println("Species not found.");
+                else {
                     System.out.println("Enter zone number (1-3): ");
-                    int zone = scanner.nextInt();
-                    if ((zone >= 1) && (zone <= 3)) {
+                    int selectedZone = scanner.nextInt();
+
+                    if ((selectedZone > 0) && (selectedZone < 4)) {
                         System.out.println("Enter new sightings count: ");
                         int newSightings = scanner.nextInt();
 
-                        if (newSightings <= 0) {
-                            System.out.println("Sightings cannot be negative. Setting to 0.");
-                            
+                        if (newSightings > 0) {
+                            ssZone[selectedZone] = newSightings;
+                            System.out.println("Sightings updated successfully!");
                         }
                         else {
+                            System.out.println("Sightings cannot be negative. Setting to 0.");
                             System.out.println("Sightings updated successfully!");
                         }
                     }
                     else {
-                        System.out.println("Invalid zone number!");
+                        System.out.println("Invalid zone number !");
                     }
                 }
+                
                 break;
             case 3:
+                System.out.println("Enter species name to search: ");
+                selectedSpecies = scanner.next();
+                int ssTotal = 0;
+
+                for (int i = 0 ; i <= 4 ; i++) {
+                    if (selectedSpecies.equalsIgnoreCase(species[i])){
+                        selectedSpecies = species[i];
+                        ssZone = sZones[i];
+                        ssTotal = totals[i];
+                    }     
+                    else 
+                        continue;
+                }
+                System.out.println(selectedSpecies + " -> " + "Zone 1: " + ssZone[0] + ", Zone 2: " + ssZone[1] + ", Zone 3: " + 
+                                    ssZone[2] + "(Total:" + ssTotal + ")");
                 break;
             case 4:
+                int largestNum = 0;
+                
+                for (int i = 0 ; i <= 4 ; i++) {
+                    if (largestNum < totals[i]) {
+                        largestNum = totals[i];
+                        selectedSpecies = species[i];
+                    } 
+                    else
+                        continue;
+                }    
+                System.out.println("Species with highest total sightings: " + selectedSpecies + " (" + largestNum + " sightings)");
                 break;
             case 5:
                 break;

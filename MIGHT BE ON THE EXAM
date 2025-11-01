@@ -1,0 +1,14 @@
+//LIST OF STUFF THAT MIGHT BE ON THE EXAM SINCE HE LOVES GIVING NICHE QUESTIONS:
+
+/*
+1. int[] scores  == int scores [] == int scores[]
+
+2. int[] scores = {1,2,3}
+system.out.println("Scores: " + scores);
+this will print out the adress of scores so some random bs. you have to add [] to get specific values.
+
+
+
+
+
+*/
