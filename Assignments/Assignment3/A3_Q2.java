@@ -181,6 +181,17 @@ public class A3_Q2 {
                 System.out.println("Species with highest total sightings: " + selectedSpecies + " (" + largestNum + " sightings)");
                 break;
             case 5:
+                int zone1Total = 0;
+                int zone2Total = 0;
+                int zone3Total = 0;
+
+                for (int i = 0 ; i <= 3 ; i++) {
+                    zone1Total += sZones[i][0];
+                    zone2Total += sZones[i][1];
+                    zone3Total += sZones[i][2];
+                }
+
+                
                 break;
             case 6:
                 break;
