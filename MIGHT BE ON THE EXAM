@@ -12,3 +12,10 @@ this will print out the adress of scores so some random bs. you have to add [] t
 
 
 */
+
+/*
+ * IMPORTANT NOTES FOR REFERENCE:
+ * - When writing loops or functions state the fail condition first so we can assume the remaining code 
+ * is perfect. This shortens the amount of processes the computer has to go through and reduces the amount of
+ * data used.
+ */
