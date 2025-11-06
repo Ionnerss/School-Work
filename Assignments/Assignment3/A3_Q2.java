@@ -167,7 +167,9 @@ public class A3_Q2 {
                 System.out.println("------------------------------------------");
                 break;
             case 5:
-                int lowestZone = (zoneTotals[0] + zoneTotals[1] + zoneTotals[2]); //random int which will strictly be bigger than any of the zone totals.
+                int lowestZone = (zoneTotals[0] + zoneTotals[1] + zoneTotals[2]); 
+                //random int (composed of all zone totals) which will strictly be bigger than any of the zone totals.
+                //Assures that this int will always be bigger than any of the totals without hardcoding
                 String specificZone = "";
 
                 for (int i = 0; i <= 2 ; i++) {
@@ -184,7 +186,7 @@ public class A3_Q2 {
                 System.out.println(specificZone + " has the lowest total sightings: " + lowestZone);
                 System.out.println("------------------------------------------");
                 break;
-            case 6: //Works fine
+            case 6:
                 System.out.println("Compute averages:");
                 System.out.println("1. Per species");
                 System.out.println("2. Per zone");
