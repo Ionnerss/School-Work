@@ -1,8 +1,12 @@
 package Assignments.Assignment3;
-// ------------------------------------------------------- 
+// -------------------------------------------------------- 
 // Assignment 3 - Question #1
 // Written by: Catalin-Ion Besleaga (40347936)
 // For COMP 248 Section S – Fall 2025
+// --------------------------------------------------------
+
+
+// Algorithm #1:  Carbon Footprint Tracker
 // --------------------------------------------------------
 
 import java.util.Scanner;
