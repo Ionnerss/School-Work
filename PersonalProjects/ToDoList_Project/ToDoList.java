@@ -26,7 +26,6 @@ public class ToDoList {
 		System.out.println();
 
 		do {
-			UserInputProcess(redoUIP);
 			redoUIP = UserInputProcess(redoUIP);
 		}
 		while(redoUIP);
