@@ -118,11 +118,10 @@ public class A3_Q2 {
                 // Print the table header and 5 rows (one per species).
                 System.out.printf("%-10s  %-5s   %-5s   %-5s   %-5s%n", "Species", "Zone1", "Zone2", "Zone3", "Total");
                 System.out.println("------------------------------------------");
-                System.out.printf("%-10s  %-5s   %-5s   %-5s   %-5s%n", species[0], sZones[0][0], sZones[0][1], sZones[0][2], speciesTotals[0]);
-                System.out.printf("%-10s  %-5s   %-5s   %-5s   %-5s%n", species[1], sZones[1][0], sZones[1][1], sZones[1][2], speciesTotals[1]);
-                System.out.printf("%-10s  %-5s   %-5s   %-5s   %-5s%n", species[2], sZones[2][0], sZones[2][1], sZones[2][2], speciesTotals[2]);
-                System.out.printf("%-10s  %-5s   %-5s   %-5s   %-5s%n", species[3], sZones[3][0], sZones[3][1], sZones[3][2], speciesTotals[3]);
-                System.out.printf("%-10s  %-5s   %-5s   %-5s   %-5s%n", species[4], sZones[4][0], sZones[4][1], sZones[4][2], speciesTotals[4]);
+                for (int i = 0; i <= species.length; i++) {
+                    System.out.printf("%-10s  %-5s   %-5s   %-5s   %-5s%n", species[i], 
+                                        sZones[i][0], sZones[i][1], sZones[i][2], speciesTotals[i]);
+                }
                 System.out.println("------------------------------------------");
                 break;
 
