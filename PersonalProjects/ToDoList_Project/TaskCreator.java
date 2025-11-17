@@ -7,7 +7,7 @@ package ToDoList_Project;
 
 public class TaskCreator {
 
-    public void TaskProcessor(String[] info){
+    public static void TaskProcessor(String[] info){
         /*
          * This represents the key/value pair they talked about in the vid. Basically the key (data)
          * allows us to go fetch specific information about an object within this array. We have multiple ids

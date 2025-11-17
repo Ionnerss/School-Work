@@ -130,16 +130,19 @@ public class ToDoList {
 				if(descChoice.equalsIgnoreCase("no")) {
 					description = "";
 					info = new String[] {name, time, description};
-					TaskCreator obj = new TaskCreator();
-					obj.TaskProcessor(info);
+					
+					// TaskCreator obj = new TaskCreator();
+					// obj.TaskProcessor(info);
+					TaskCreator.TaskProcessor(info);
 				}
 				else if(descChoice.equalsIgnoreCase("yes")) {
 					System.out.println("What would you like to add?");
 					description = scanner.next();
-
 					info = new String[] {name, time, description};
-					TaskCreator obj = new TaskCreator();
-					obj.TaskProcessor(info);
+
+					// TaskCreator obj = new TaskCreator();
+					// obj.TaskProcessor(info);
+					TaskCreator.TaskProcessor(info);
 				}
 				break;
 			case 2:
