@@ -4,96 +4,101 @@ public class GymPasses {
     public static final int regularPrice = 7, studentPrice = 5, seniorPrice = 4 , weekendPrice = 12, weeklyPrice = 42;
     public static final int[] passPrices = {regularPrice, studentPrice, seniorPrice, weekendPrice, weeklyPrice};
 
-    private int regularPasses, studentPasses, seniorPasses, weekendPasses, weeklyPasses;
-    private int[] passCounts = {regularPasses, studentPasses, seniorPasses, weekendPasses, weeklyPasses};
+    private int regularCount, studentCount, seniorCount, weekendCount, weeklyCount;
+    private int[] passCounts = {regularCount, studentCount, seniorCount, weekendCount, weeklyCount};
 
     public GymPasses() {
-        this.regularPasses = 0;
-        this.studentPasses = 0;
-        this.seniorPasses = 0;
-        this.weekendPasses = 0;
-        this.weeklyPasses = 0;
+        this.regularCount = 0;
+        this.studentCount = 0;
+        this.seniorCount = 0;
+        this.weekendCount = 0;
+        this.weeklyCount = 0;
     }
 
-    public GymPasses(int regularPasses, int studentPasses, int seniorPasses, int weekendPasses, int weeklyPasses) {
-        this.regularPasses = regularPasses;
-        this.studentPasses = studentPasses;
-        this.seniorPasses = seniorPasses;
-        this.weekendPasses = weekendPasses;
-        this.weeklyPasses = weeklyPasses;
+    public GymPasses(int regularCount, int studentCount, int seniorCount, int weekendCount, int weeklyCount) {
+        this.regularCount = regularCount;
+        this.studentCount = studentCount;
+        this.seniorCount = seniorCount;
+        this.weekendCount = weekendCount;
+        this.weeklyCount = weeklyCount;
     }
 
     public GymPasses(GymPasses other) {
-        this.regularPasses = other.regularPasses;
-        this.studentPasses = other.studentPasses;
-        this.seniorPasses = other.seniorPasses;
-        this.weekendPasses = other.weekendPasses;
-        this.weeklyPasses = other.weeklyPasses;
+        this.regularCount = other.regularCount;
+        this.studentCount = other.studentCount;
+        this.seniorCount = other.seniorCount;
+        this.weekendCount = other.weekendCount;
+        this.weeklyCount = other.weeklyCount;
     }
     
     //--------------------------------
     public int getRegularCount() {
-        return this.regularPasses;
+        return this.regularCount;
     }
 
     public int getStudentCount() {
-        return this.studentPasses;
+        return this.studentCount;
     }
 
     public int getSeniorCount() {
-        return this.seniorPasses;
+        return this.seniorCount;
     }
 
     public int getWeekendCount() {
-        return this.weekendPasses;
+        return this.weekendCount;
     }
 
     public int getWeeklyCount() {
-        return this.weeklyPasses;
+        return this.weeklyCount;
     }
 
     //--------------------------------
-    public void setRegularCount(int regularPasses) {
-        this.regularPasses = regularPasses;
+    public void setRegularCount(int regularCount) {
+        this.regularCount = regularCount;
     }
 
-    public void setStudentCount(int studentPasses) {
-        this.studentPasses = studentPasses;
+    public void setStudentCount(int studentCount) {
+        this.studentCount = studentCount;
     }
 
-    public void setSeniorCount(int seniorPasses) {
-        this.seniorPasses = studentPasses;
+    public void setSeniorCount(int seniorCount) {
+        this.seniorCount = seniorCount;
     }
 
-    public void setWeekendCount(int weekendPasses) {
-        this.weekendPasses = weekendPasses;
+    public void setWeekendCount(int weekendCount) {
+        this.weekendCount = weekendCount;
     }
 
-    public void setWeeklyCount(int weeklyPasses) {
-        this.weeklyPasses = weeklyPasses;
+    public void setWeeklyCount(int weeklyCount) {
+        this.weeklyCount = weeklyCount;
     }
 
     //--------------------------------
-    private void addGymPasses(int regularPasses, int studentPasses, int seniorPasses, int weekendPasses, int weeklyPasses) {
-        int[] additions = new int[] {regularPasses, studentPasses, seniorPasses, weekendPasses, weeklyPasses};
+    public void addGymPasses(int regularCount, int studentCount, int seniorCount, int weekendCount, int weeklyCount) {
+        int[] additions = new int[] {regularCount, studentCount, seniorCount, weekendCount, weeklyCount};
         for (int i = 0; i <= (passCounts.length - 1); i++) {
             passCounts[i] += additions[i];
         }
     }
 
-    private int GymPassesTotal(int regularPasses, int studentPasses, int seniorPasses, int weekendPasses, int weeklyPasses) {
+    public int gymPassesTotal() {
         int total = 0;
         for (int i = 0; i <= (passCounts.length - 1); i++) {
             total += (passCounts[i] * passPrices[i]);
         }
         return total;
     } 
-    // FIX THIS BULLSHIT CUZ ITS COOKED RAAAAAAAAAAAAAAAAAAAAAAAAAAAAGH
+
     public String toString() {
-        return "";
+        return "Regular: " + regularCount + "; Student: " + studentCount + 
+                "; Senior: " + seniorCount + "; Weekend: " + weekendCount + "; Weekly: " + weeklyCount; 
     }
-    public boolean equals() {
-        return false;
+
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        else
+            return false;
     }
 
 }
