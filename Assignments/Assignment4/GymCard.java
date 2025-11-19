@@ -1,7 +1,7 @@
 package Assignments.Assignment4;
 
 public class GymCard {
-    private final String basic = "Basic", standard = "Standard", premium = "Premium", premiumPlus = "PremiumPlus";
+    public final String basic = "Basic", standard = "Standard", premium = "Premium", premiumPlus = "PremiumPlus";
     private String type;
     private String name;
     private int expiryDay, expiryMonth;
@@ -66,7 +66,7 @@ public class GymCard {
     }
 
     public String toString() {
-        return "Gym Card Type: " + type + "; Expiry Date: " + (expiryDay < 10 ? ("0" + expiryDay) : expiryDay)+ "/" + 
+        return type + " - " + name + " - " + (expiryDay < 10 ? ("0" + expiryDay) : expiryDay) + "/" + 
                 (expiryMonth < 10 ? ("0" + expiryMonth) : expiryMonth);
     }
 

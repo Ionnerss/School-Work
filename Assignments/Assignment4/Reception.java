@@ -29,7 +29,7 @@ public class Reception {
             return false;
     }
 
-    public int total$Reception() {
+    public double total$Reception() {
         return this.gymPass.gymPassesTotal();
     }
 
@@ -78,5 +78,31 @@ public class Reception {
     public double addPasses(Reception recep, int regularCount, int studentCount, int seniorCount, int weekendCount, int weeklyCount) {
         recep.gymPass.addGymPasses(regularCount, studentCount, seniorCount, weekendCount, weeklyCount);
         return recep.gymPass.gymPassesTotal();
+    }
+
+    public boolean equal(Reception recep, GymPasses other) { 
+        double count = other.getRegularCount() + other.getStudentCount() + other.getSeniorCount() + 
+                        other.getWeekendCount() + other.getWeeklyCount();
+        
+        if (recep.gymPass.gymPassesTotal() == count)
+            return true;
+        else
+            return false;
+    }
+
+    public String toString() {
+        String cards = "";
+        for (int i = 0; i <= this.gymCards.length - 1; i++) {
+            cards += this.gymCards[i].toString() + "\n";
+        }
+
+        if (this.gymCards == null)
+            return this.gymPass.toString() + "\n No membership card \n";
+        else
+            return this.gymPass.toString() + "\n" + cards;
+    }
+
+    public String gmBreakdown() {
+        return this.gymPass.toString();
     }
 }

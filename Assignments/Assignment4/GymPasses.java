@@ -81,7 +81,7 @@ public class GymPasses {
         }
     }
 
-    public int gymPassesTotal() {
+    public double gymPassesTotal() {
         int total = 0;
         for (int i = 0; i <= (passCounts.length - 1); i++) {
             total += (passCounts[i] * passPrices[i]);
@@ -90,8 +90,9 @@ public class GymPasses {
     } 
 
     public String toString() {
-        return "Regular: " + regularCount + "; Student: " + studentCount + 
-                "; Senior: " + seniorCount + "; Weekend: " + weekendCount + "; Weekly: " + weeklyCount; 
+        return regularCount + "X $" + regularPrice + " + " + studentCount + "X $" + studentPrice + " + " +
+                seniorCount + "X $" + seniorPrice + " + " + weekendCount + "X $" + weekendPrice + " + " +
+                weeklyCount + "X $" + weeklyPrice;
     }
 
     public boolean equals(Object obj) {
