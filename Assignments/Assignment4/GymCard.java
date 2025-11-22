@@ -50,7 +50,15 @@ public class GymCard {
     public int getExpiryMonth() {
         return this.expiryMonth;
     }
+//----------------------------------------------------
+    public void setType(String type) {
+        this.type = type;
+    }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+//----------------------------------------------------
     public void setExpiryDay(int expiryDay) {
         if ((expiryDay > 0) && (expiryDay < 32))
             this.expiryDay = expiryDay;

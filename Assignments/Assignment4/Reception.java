@@ -37,36 +37,37 @@ public class Reception {
         return this.gymCards.length;
     }
 
-    //CHECK THE LOGIC FOR THE ARRAY SLOT LATER
-    public int addNewGC(Reception recep, GymCard addCard) {
-        if (recep.gymCards.length == 0) {
-            GymCard[] updatedList = new GymCard[1];
-            updatedList[0] = addCard;
-            recep.gymCards = updatedList;
+
+    public void addNewGC(String type, String name, int expiryDay, int expiryMonth) {
+        GymCard[] newArr = new GymCard[gymCards.length + 1];
+        
+        if (gymCards.length == 0) {
+            newArr[0].setType(type);
+            newArr[0].setName(name);
+            newArr[0].setExpiryDay(expiryDay);
+            newArr[0].setExpiryMonth(expiryMonth);
         }
         else {
-            GymCard[] updatedList = new GymCard[recep.gymCards.length];
-            updatedList[updatedList.length - 1] = addCard; //CHECK IF IT ACCESSES THE CORRECT SLOT IN THE ARRAY
-            recep.gymCards = updatedList;
+            newArr[gymCards.length - 1].setType(type);
+            newArr[gymCards.length - 1].setName(name);
+            newArr[gymCards.length - 1].setExpiryDay(expiryDay);
+            newArr[gymCards.length - 1].setExpiryMonth(expiryMonth);
         }
-        return recep.gymCards.length;
+        this.gymCards = newArr;
     }
 
-    //SHOULD BE FINE; WILL HAVE TO CHECK ONCE I CREATE THE INTERFACE
-    public int removeGC(Reception recep, GymCard delete) {
-        if (recep.gymCards.length != 0) {
-            GymCard[] list = new GymCard[recep.gymCards.length];
+    public boolean removeGC(int whichCard) {
+        if (gymCards.length == 0)
+            return false;
+        else {
+            whichCard -= 1;
             GymCard[] updatedList = new GymCard[0];
-            for (int i = 0; i <= (list.length -1); i++) {
-                if (!list[i].equals(delete))
-                    continue;
-
-                System.arraycopy(list, 0, updatedList, 0, i - 1);
-                System.arraycopy(list, i + 1, updatedList, i + 1, list.length - 1);
-            }
-            recep.gymCards = updatedList;
+            System.arraycopy(gymCards, 0, updatedList, 0, whichCard -1);
+            System.arraycopy(gymCards, whichCard + 1, updatedList, whichCard, gymCards.length);
+            
+            this.gymCards = updatedList;
+            return true;
         }
-        return recep.gymCards.length;
     }
 
     //THIS ONE IS COMPLETE : SHOULD BE FUNCTIONAL
