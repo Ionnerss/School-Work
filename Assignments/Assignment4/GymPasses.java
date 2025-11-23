@@ -79,6 +79,7 @@ public class GymPasses {
         for (int i = 0; i <= (passCounts.length - 1); i++) {
             passCounts[i] += additions[i];
         }
+        gymPassesTotal();
     }
 
     public double gymPassesTotal() {

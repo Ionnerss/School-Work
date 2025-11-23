@@ -71,14 +71,14 @@ public class Reception {
     }
 
     //THIS ONE IS COMPLETE : SHOULD BE FUNCTIONAL
-    public void updateExpirationDate(Reception recep, int card, int expiryDay, int expiryMonth) {
-        recep.gymCards[card].setExpiryDay(expiryDay);
-        recep.gymCards[card].setExpiryMonth(expiryMonth);
+    public void updateExpirationDate(int whichCard, int expiryDay, int expiryMonth) {
+        gymCards[whichCard].setExpiryDay(expiryDay);
+        gymCards[whichCard].setExpiryMonth(expiryMonth);
     }
 
-    public double addPasses(Reception recep, int regularCount, int studentCount, int seniorCount, int weekendCount, int weeklyCount) {
-        recep.gymPass.addGymPasses(regularCount, studentCount, seniorCount, weekendCount, weeklyCount);
-        return recep.gymPass.gymPassesTotal();
+    public double addPasses(int regularCount, int studentCount, int seniorCount, int weekendCount, int weeklyCount) {
+        gymPass.addGymPasses(regularCount, studentCount, seniorCount, weekendCount, weeklyCount);
+        return gymPass.gymPassesTotal();
     }
 
     public boolean equal(Reception recep, GymPasses other) { 
