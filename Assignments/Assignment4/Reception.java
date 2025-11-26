@@ -3,6 +3,8 @@ package Assignments.Assignment4;
 public class Reception {
     private GymPasses gymPass;
     private GymCard[] gymCards;
+    private int counter;
+    private int counterStr;
 
     public Reception() {
         this.gymPass = null;
@@ -37,23 +39,26 @@ public class Reception {
         return this.gymCards.length;
     }
 
-
     public void addNewGC(String type, String name, int expiryDay, int expiryMonth) {
-        GymCard[] newArr = new GymCard[gymCards.length + 1];
-        
-        if (gymCards.length == 0) {
-            newArr[0].setType(type);
-            newArr[0].setName(name);
-            newArr[0].setExpiryDay(expiryDay);
-            newArr[0].setExpiryMonth(expiryMonth);
+        GymCard newElement = new GymCard(); 
+
+        newElement.setType(type);
+        newElement.setName(name);
+        newElement.setExpiryDay(expiryDay);
+        newElement.setExpiryMonth(expiryMonth);
+
+        if (counter == 0) {
+            gymCards[0] = newElement;
+            counter++;
         }
         else {
-            newArr[gymCards.length - 1].setType(type);
-            newArr[gymCards.length - 1].setName(name);
-            newArr[gymCards.length - 1].setExpiryDay(expiryDay);
-            newArr[gymCards.length - 1].setExpiryMonth(expiryMonth);
+            GymCard[] newArr = new GymCard[gymCards.length + 1];
+
+            System.arraycopy(gymCards, 0, newArr, 0, gymCards.length - 1);
+            newArr[gymCards.length] = newElement;
+            this.gymCards = newArr;
+            counter++;
         }
-        this.gymCards = newArr;
     }
 
     public boolean removeGC(int whichCard) {
@@ -76,31 +81,31 @@ public class Reception {
         gymCards[whichCard].setExpiryMonth(expiryMonth);
     }
 
-    public double addPasses(int regularCount, int studentCount, int seniorCount, int weekendCount, int weeklyCount) {
-        gymPass.addGymPasses(regularCount, studentCount, seniorCount, weekendCount, weeklyCount);
-        return gymPass.gymPassesTotal();
+    public void addPasses(int regularCount, int studentCount, int seniorCount, int weekendCount, int weeklyCount) {
+        GymPasses newPasses  = new GymPasses();
+        newPasses.addGymPasses(regularCount, studentCount, seniorCount, weekendCount, weeklyCount);
+        this.gymPass = newPasses;
     }
 
-    public boolean equal(Reception recep, GymPasses other) { 
-        double count = other.getRegularCount() + other.getStudentCount() + other.getSeniorCount() + 
-                        other.getWeekendCount() + other.getWeeklyCount();
-        
-        if (recep.gymPass.gymPassesTotal() == count)
+    public boolean equal(GymPasses other) { 
+        if (gymPass.gymPassesTotal() == other.gymPassesTotal())
             return true;
         else
             return false;
     }
 
     public String toString() {
-        String cards = "";
-        for (int i = 0; i <= this.gymCards.length - 1; i++) {
-            cards += this.gymCards[i].toString() + "\n";
+        if (counterStr == 0) {
+            counterStr++;
+            return this.gymPass.toString() + "\nNo membership card\n";
         }
+        else {
+            String cards = "";
+            for (int i = 0; i <= this.gymCards.length - 1; i++)
+                cards += gymCards[i].toString() + "\n";
 
-        if (this.gymCards == null)
-            return this.gymPass.toString() + "\n No membership card \n";
-        else
             return this.gymPass.toString() + "\n" + cards;
+        }
     }
 
     public String gmBreakdown() {

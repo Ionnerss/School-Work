@@ -12,7 +12,6 @@ public class GymDemo {
     private static Scanner scanner = new Scanner(System.in);
 
     private Reception[] recep;
-
     // private static boolean Compare(int value, int[] arrayComp) {
     //     boolean isTrue = false;
     //     for (int i = 0; i <= arrayComp.length - 1; i++) {
@@ -30,30 +29,69 @@ public class GymDemo {
     // private static int randomInt() {
     //     int randomInt = (int) Math.random() * 6;
 
-    //     boolean isTrue = Compare(randomInt, is_ARecep);
-    //     while (isTrue == true) {
-    //         randomInt = (int) Math.random() * 6;
-    //         isTrue = Compare(randomInt, is_ARecep);
-    //     }
+    //     // boolean isTrue = Compare(randomInt, is_ARecep);
+    //     // while (isTrue == true) {
+    //     //     randomInt = (int) Math.random() * 6;
+    //     //     isTrue = Compare(randomInt, is_ARecep);
+    //     // }
         
-    //     is_ARecep[counter] = randomInt();
-    //     counter += 1;
+    //     // is_ARecep[counter] = randomInt();
+    //     // counter += 1;
+
     //     return randomInt;
     // }
 
     public void main(String[] args) {
+        recep = new Reception[5];
+
+        GymPasses passes0 = new GymPasses();
+        GymCard[] cardArr0 = new GymCard[4];
+        Reception reception0 = new Reception(passes0, cardArr0);
+        recep[0] = reception0;
+
+        GymPasses passes1 = new GymPasses();
+        GymCard[] cardArr1 = new GymCard[4];
+        Reception reception1 = new Reception(passes1, cardArr1);
+        recep[1] = reception1;
+
+        GymPasses passes2 = new GymPasses();
+        GymCard[] cardArr2 = new GymCard[4];
+        Reception reception2 = new Reception(passes2, cardArr2);
+        recep[2] = reception2;
+
+        GymPasses passes3 = new GymPasses();
+        GymCard[] cardArr3 = new GymCard[4];
+        Reception reception3 = new Reception(passes3, cardArr3);
+        recep[3] = reception3;
+
+
+        GymPasses passes4 = new GymPasses();
+        GymCard[] cardArr4 = new GymCard[4];
+        Reception reception4 = new Reception(passes4, cardArr4);
+        recep[4] = reception4;
+
+
+        //we're gonna hard code it first then we make it all random so that it fits rules
+        recep[0].addPasses(10, 4, 1, 1, 1);
+        recep[0].addNewGC("Basic", "Scrump", 25, 12);
+        recep[0].addNewGC("Standard", "Pelekai", 3, 12);
+
+        recep[1].addPasses(10, 4, 1, 1, 1);
+        recep[1].addNewGC("Basic", "Scrump", 07, 12);
+        recep[1].addNewGC("Premium", "Jookiba", 24, 8);
+
+        recep[2].addPasses(5, 13, 0, 4, 0);
+        recep[2].addNewGC("Basic", "Pleakly", 1, 6);
+        recep[2].addNewGC("Standard", "Gantu", 18, 12);
+        recep[2].addNewGC("PremiumPlus", "Stitch", 5, 4);
+
+        recep[3].addPasses(2, 8, 5, 0, 3);
+
+        recep[4].addPasses(2, 8, 5, 0, 3);
+
         System.out.println("+++++++");
         System.out.println("| Welcome to Gym Fit @Concordia University Application.   |");
         System.out.println("+++++++");
-
-        // is_ARecep = new int[5];
-        // recep = new Reception[5];
-
-        // recep[randomInt()] = recep[randomInt()]; //2 receptions will be exactly the same
-            
-
-        
-
 
         do
             mainMenu = MainWindow();
@@ -88,14 +126,13 @@ public class GymDemo {
                 System.out.println("--------------------------------");
                 for (int i = 0; i < recep.length; i++) {
                     System.out.println("Reception #" + i + ":");
-                    System.out.println(recep[i].gmBreakdown());
                     System.out.println(recep[i].toString() + ".");
                     System.out.println();
                 }
                 break;
             case 2:
                 mainMenu = true;
-                System.out.println("Which Reception do you want to see the content of? (Enter number 0 to " + recep.length + "): ");
+                System.out.println("Which Reception do you want to see the content of? (Enter number 0 to " + (recep.length - 1) + "): ");
                 whichRecep = scanner.nextInt();
                 whichRecep = Mistake(whichRecep);
 
@@ -142,7 +179,7 @@ public class GymDemo {
                 break;
             case 6:
                 mainMenu = true;
-                System.out.print("Which Reception do you want to add a membership to? (Enter number 0 to " + recep.length + ")");
+                System.out.print("Which Reception do you want to add a membership to? (Enter number 0 to " + (recep.length - 1) + ")");
                 whichRecep = scanner.nextInt();
                 whichRecep = Mistake(whichRecep);
 
@@ -168,14 +205,14 @@ public class GymDemo {
                 break;
             case 7:
                 mainMenu = true;
-                System.out.print("Which Reception do you want to remove a membership card from? (Enter number 0 to " + recep.length + ") ");
+                System.out.print("Which Reception do you want to remove a membership card from? (Enter number 0 to " + (recep.length - 1) + ") ");
                 whichRecep = scanner.nextInt();
                 whichRecep = Mistake(whichRecep);
 
                 if (whichRecep == timeout)
                     break;
                 else {
-                    System.out.print("(Enter number 0 to " + recep[whichRecep].totalCardsReception() + ") ");
+                    System.out.print("(Enter number 0 to " + (recep[whichRecep].totalCardsReception() - 1) + ") ");
                     whichCard = scanner.nextInt();
                     whichCard = Mistake(whichCard);
 
@@ -201,7 +238,7 @@ public class GymDemo {
                     break;
                 else {
                     System.out.println("Which membership card do you want to update? (Enter number 0 to " + 
-                                        recep[whichRecep].totalCardsReception() + ") ");
+                                        (recep[whichRecep].totalCardsReception() - 1) + ") ");
                     whichCard = scanner.nextInt();
                     whichCard = Mistake(whichCard);
                     
@@ -227,7 +264,7 @@ public class GymDemo {
                 break;
             case 9:
                 mainMenu = true;
-                System.out.println("Which reception do you want to add passes to? (Enter number 0 to " + recep.length + "): ");
+                System.out.println("Which reception do you want to add passes to? (Enter number 0 to " + (recep.length - 1) + "): ");
                 int whichRecep = scanner.nextInt();
                 whichRecep = Mistake(whichRecep);
 
@@ -243,7 +280,8 @@ public class GymDemo {
                     int weekendCount = scanner.nextInt();
                     int weeklyCount = scanner.nextInt();
 
-                    System.out.println(recep[whichRecep].addPasses(regularCount, studentCount, seniorCount, weekendCount, weeklyCount));
+                    recep[whichRecep].addPasses(regularCount, studentCount, seniorCount, weekendCount, weeklyCount);
+                    System.out.println("You now have $" + recep[whichRecep].total$Reception());
                 }
                 break;
             case 0:
@@ -259,11 +297,10 @@ public class GymDemo {
     }
 
     private int Mistake(int value) {
-        value -= 1;
 
         if ((value >= recep.length) && (value < 0)) {
             System.out.println("Sorry but there is no Reception number " + value);
-            System.out.println("--> Try Again: (Enter number 0 to " + recep.length + "): ");
+            System.out.println("--> Try Again: (Enter number 0 to " + (recep.length - 1) + "): ");
             int attempt = scanner.nextInt() - 1;
 
             if ((attempt < recep.length) && (attempt >= 0)) {

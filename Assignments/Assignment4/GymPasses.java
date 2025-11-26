@@ -5,7 +5,7 @@ public class GymPasses {
     public static final int[] passPrices = {regularPrice, studentPrice, seniorPrice, weekendPrice, weeklyPrice};
 
     private int regularCount, studentCount, seniorCount, weekendCount, weeklyCount;
-    private int[] passCounts = {regularCount, studentCount, seniorCount, weekendCount, weeklyCount};
+    private int[] passCounts = {this.regularCount, this.studentCount, this.seniorCount, this.weekendCount, this.weeklyCount};
 
     public GymPasses() {
         this.regularCount = 0;
@@ -75,11 +75,11 @@ public class GymPasses {
 
     //--------------------------------
     public void addGymPasses(int regularCount, int studentCount, int seniorCount, int weekendCount, int weeklyCount) {
-        int[] additions = new int[] {regularCount, studentCount, seniorCount, weekendCount, weeklyCount};
-        for (int i = 0; i <= (passCounts.length - 1); i++) {
-            passCounts[i] += additions[i];
-        }
-        gymPassesTotal();
+        this.regularCount += regularCount;
+        this.studentCount += studentCount;
+        this.seniorCount += seniorCount;
+        this.weekendCount += weekendCount;
+        this.weeklyCount += weeklyCount;
     }
 
     public double gymPassesTotal() {
@@ -91,9 +91,9 @@ public class GymPasses {
     } 
 
     public String toString() {
-        return regularCount + "X $" + regularPrice + " + " + studentCount + "X $" + studentPrice + " + " +
-                seniorCount + "X $" + seniorPrice + " + " + weekendCount + "X $" + weekendPrice + " + " +
-                weeklyCount + "X $" + weeklyPrice;
+        return this.regularCount + " X $" + regularPrice + " + " + this.studentCount + " X $" + studentPrice + " + " +
+                this.seniorCount + " X $" + seniorPrice + " + " + this.weekendCount + " X $" + weekendPrice + " + " +
+                this.weeklyCount + " X $" + weeklyPrice;
     }
 
     public boolean equals(Object obj) {
