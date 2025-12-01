@@ -1,7 +1,7 @@
 package Assignments.Assignment4;
 
 public class GymCard {
-    public final String basic = "Basic", standard = "Standard", premium = "Premium", premiumPlus = "PremiumPlus";
+    private final String[] diffTypes = {"Basic", "Standard", "Premium", "PremiumPlus"};
     private String type;
     private String name;
     private int expiryDay, expiryMonth;
@@ -52,7 +52,9 @@ public class GymCard {
     }
 //----------------------------------------------------
     public void setType(String type) {
-        this.type = type;
+        for (int i = 0; i < diffTypes.length; i++)
+            if (type.equalsIgnoreCase(diffTypes[i]))
+                this.type = diffTypes[i];   
     }
 
     public void setName(String name) {

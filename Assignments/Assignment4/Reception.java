@@ -14,7 +14,6 @@ public class Reception {
         this.gymCards = gymCards;
     }
 
-    //NOT SURE FOR THIS ONE SO CHECK OUT LATER
     public boolean isDiffTotalEqual(Reception other) {
         if (this.gymPasses.gymPassesTotal() == other.gymPasses.gymPassesTotal())
             return true;
@@ -23,7 +22,7 @@ public class Reception {
     }
 
     public boolean isEachTypeEqual(Reception other) {
-        if (this.toString() == other.toString())
+        if (this.gymPasses.equals(other.gymPasses))
             return true;
         else
             return false;
@@ -34,48 +33,69 @@ public class Reception {
     }
 
     public int totalCardsReception() {
-        return this.gymCards.length;
+        int count = this.gymCards.length;
+        for (int i = 0; i < this.gymCards.length; i++)
+            if (this.gymCards[i] == null)
+                count--;
+        return count;
     }
 
-
     public void addNewGC(String type, String name, int expiryDay, int expiryMonth) {
-        GymCard newElement = new GymCard(); 
+        GymCard newElement = new GymCard();
+        boolean isFirst = false;
 
         newElement.setType(type);
         newElement.setName(name);
         newElement.setExpiryDay(expiryDay);
         newElement.setExpiryMonth(expiryMonth);
 
-        if (this.gymCards.length == 0)
-            this.gymCards[0] = newElement;
+        if (this.gymCards.length == 0) {
+            GymCard[] newArr = new GymCard[] {newElement, null};
+            this.gymCards = newArr;
+            isFirst = true;
+        }
         else {
             for (int i = 0; i < gymCards.length; i++) {
                 if (this.gymCards[i] == null) {
                     this.gymCards[i] = newElement;
+                    isFirst = true;
                     break;
                 }
             }
         }
 
-        if ((this.gymCards.length != 0) && (this.gymCards[this.gymCards.length - 1] != null)) {
-            GymCard[] newArr = new GymCard[gymCards.length + 1];
-
-            System.arraycopy(gymCards, 0, newArr, 0, this.gymCards.length);
-            newArr[gymCards.length + 1] = newElement;
-
-            this.gymCards = newArr;
+        if (isFirst == false) {
+            boolean nullElement = false;
+            for (int i = 0; i < this.gymCards.length; i++)
+                if (this.gymCards[i] == null) {
+                    nullElement = true;
+                }
+    
+            if ((this.gymCards.length != 0) && (nullElement == false)) {
+                GymCard[] newArr = new GymCard[gymCards.length + 1];
+    
+                System.arraycopy(gymCards, 0, newArr, 0, this.gymCards.length);
+                newArr[gymCards.length] = newElement;
+    
+                this.gymCards = newArr;
+            }
         }
     }
 
     public boolean removeGC(int whichCard) {
-        if (this.gymCards.length == 0)
+        GymCard[] updatedList = new GymCard[this.gymCards.length - 1];
+
+        if (whichCard == 0) {
+            System.arraycopy(this.gymCards, 1, updatedList, 0, this.gymCards.length - 1);
+        }
+        else {
+            System.arraycopy(this.gymCards, 0, updatedList, 0, whichCard - 1);
+            System.arraycopy(this.gymCards, whichCard, updatedList, whichCard - 1, (this.gymCards.length - (whichCard + 1)));
+        }
+
+        if (updatedList.length >= this.gymCards.length)
             return false;
         else {
-            whichCard -= 1;
-            GymCard[] updatedList = new GymCard[0];
-            System.arraycopy(gymCards, 0, updatedList, 0, whichCard -1);
-            System.arraycopy(gymCards, whichCard + 1, updatedList, whichCard, this.gymCards.length);
-            
             this.gymCards = updatedList;
             return true;
         }
@@ -134,6 +154,6 @@ public class Reception {
     }
 
     public String gmBreakdown() {
-        return this.gymPasses.toString() + "\n";
+        return this.gymPasses.toString();
     }
 }

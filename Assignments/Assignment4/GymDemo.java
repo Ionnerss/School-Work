@@ -17,28 +17,28 @@ public class GymDemo {
         recep = new Reception[5];
 
         GymPasses passes0 = new GymPasses();
-        GymCard[] cardArr0 = new GymCard[4];
+        GymCard[] cardArr0 = new GymCard[0];
         Reception reception0 = new Reception(passes0, cardArr0);
         recep[0] = reception0;
 
         GymPasses passes1 = new GymPasses();
-        GymCard[] cardArr1 = new GymCard[4];
+        GymCard[] cardArr1 = new GymCard[0];
         Reception reception1 = new Reception(passes1, cardArr1);
         recep[1] = reception1;
 
         GymPasses passes2 = new GymPasses();
-        GymCard[] cardArr2 = new GymCard[4];
+        GymCard[] cardArr2 = new GymCard[0];
         Reception reception2 = new Reception(passes2, cardArr2);
         recep[2] = reception2;
 
         GymPasses passes3 = new GymPasses();
-        GymCard[] cardArr3 = new GymCard[4];
+        GymCard[] cardArr3 = new GymCard[0];
         Reception reception3 = new Reception(passes3, cardArr3);
         recep[3] = reception3;
 
 
         GymPasses passes4 = new GymPasses();
-        GymCard[] cardArr4 = new GymCard[4];
+        GymCard[] cardArr4 = new GymCard[0];
         Reception reception4 = new Reception(passes4, cardArr4);
         recep[4] = reception4;
 
@@ -106,12 +106,11 @@ public class GymDemo {
                 mainMenu = true;
                 System.out.print("Which Reception do you want to see the content of? (Enter number 0 to " + (recep.length - 1) + "): ");
                 whichRecep = scanner.nextInt();
-                whichRecep = Mistake(whichRecep);
+                whichRecep = IncorrectValue(whichRecep, "Reception", recep.length);
                 
                 if (whichRecep == timeout)
                     break;
                 else
-                    System.out.println();
                     System.out.println(recep[whichRecep].toString());
 
                 break;
@@ -122,8 +121,8 @@ public class GymDemo {
 
                 for (int i = 0; i < recep.length; i++) {
                     for (int j = i + 1; j < recep.length; j++) {
-                        if (recep[i].isEachTypeEqual(recep[j]))
-                            System.out.println("Receptions " + i + " and " + j + " both have " + recep[i].gmBreakdown());
+                        if (recep[i].isDiffTotalEqual(recep[j]))
+                            System.out.println("Receptions " + i + " and " + j + " both have " + (int) recep[i].total$Reception());
                     }
                 }
                 System.out.println();
@@ -136,9 +135,10 @@ public class GymDemo {
                 for (int i = 0; i < recep.length; i++) {
                     for (int j = i + 1; j < recep.length; j++) {
                         if (recep[i].isEachTypeEqual(recep[j]))
-                            System.out.println("Receptions " + i + " and " + j + " both have " + recep[i].toString());
+                            System.out.println("Receptions " + i + " and " + j + " both have " + recep[i].gmBreakdown());
                     }
                 }
+                System.out.println();
                 break;
             case 5:
                 mainMenu = true;
@@ -146,19 +146,20 @@ public class GymDemo {
                 System.out.println();
 
                 for (int i = 0; i < recep.length; i++) {
-                    for (int j = 0; j <= (recep.length - 1); j++) {
-                        if ((recep[j].total$Reception() == recep[i].total$Reception()) && 
-                            (recep[j].totalCardsReception() == recep[i].totalCardsReception()))
-                            System.out.println("Reception " + recep[i] + " and " + recep[j]);
+                    for (int j = i + 1; j < recep.length; j++) {
+                        if (recep[i].equals(recep[j]))
+                            System.out.println("Reception " + i + " and " + j);
                         continue;
                     }
                 }
+                System.out.println();
                 break;
             case 6:
                 mainMenu = true;
-                System.out.print("Which Reception do you want to add a membership to? (Enter number 0 to " + (recep.length - 1) + ")");
+                System.out.print("Which Reception do you want to add a membership to? (Enter number 0 to " + (recep.length - 1) + "): ");
                 whichRecep = scanner.nextInt();
-                whichRecep = Mistake(whichRecep);
+                whichRecep = IncorrectValue(whichRecep, "Reception", recep.length);
+                scanner.nextLine();
 
                 if (whichRecep == timeout)
                     break;
@@ -167,41 +168,40 @@ public class GymDemo {
     
                     System.out.print(" --> Type of membership (Basic, Standard, Premium, PremiumPlus): ");
                     String type = scanner.nextLine();
-    
+
                     System.out.print(" --> Name of the membership card holder: ");
                     String name = scanner.nextLine();
     
-                    System.out.println("Expiry day number and month (seperate by a space): ");
+                    System.out.print(" --> Expiry day number and month (seperate by a space): ");
                     int expiryDay = scanner.nextInt();
                     int expiryMonth = scanner.nextInt();
     
                     recep[whichRecep].addNewGC(type, name, expiryDay, expiryMonth);
     
-                    System.out.println("You now have " + recep[whichRecep].totalCardsReception() + "GymCard");
+                    System.out.println("You now have " + recep[whichRecep].totalCardsReception() + (recep[whichRecep].totalCardsReception() > 1 ? " GymCards." : " GymCard."));
                 }
                 break;
             case 7:
                 mainMenu = true;
                 System.out.print("Which Reception do you want to remove a membership card from? (Enter number 0 to " + (recep.length - 1) + ") ");
                 whichRecep = scanner.nextInt();
-                whichRecep = Mistake(whichRecep);
+                whichRecep = IncorrectValue(whichRecep, "Reception", recep.length);
 
                 if (whichRecep == timeout)
                     break;
                 else {
-                    System.out.print("(Enter number 0 to " + (recep[whichRecep].totalCardsReception() - 1) + ") ");
-                    whichCard = scanner.nextInt();
-                    whichCard = Mistake(whichCard);
-
-                    if (whichCard == timeout)
-                        break;
+                    if (recep[whichRecep].totalCardsReception() == 0)
+                        System.out.println("Sorry, that Reception has no membership cards.");
                     else {
-                        boolean wasDeleted = recep[whichRecep].removeGC(whichCard);
-        
-                        if (wasDeleted == true)
+                        System.out.print("(Enter number 0 to " + (recep[whichRecep].totalCardsReception() - 1) + ") ");
+                        whichCard = scanner.nextInt();
+                        whichCard = IncorrectValue(whichCard, "Card", recep[whichRecep].totalCardsReception());
+
+                        boolean isDeleted = recep[whichRecep].removeGC(whichCard);
+                        if (isDeleted == true)
                             System.out.println("Membership card was removed succesfully!");
                         else
-                            System.out.println("Sorry, Reception has no membership cards.");
+                            System.out.println("Error encountered, Membership card has not been removed.");
                     }
                 }
                 break;
@@ -209,48 +209,58 @@ public class GymDemo {
                 mainMenu = true;
                 System.out.print("Which Reception do you want to update a membership card from? ");
                 whichRecep = scanner.nextInt();
-                whichRecep = Mistake(whichRecep);
+                whichRecep = IncorrectValue(whichRecep, "Reception", recep.length);
 
                 if (whichRecep == timeout)
                     break;
+                else if (recep[whichRecep].totalCardsReception() == 0) {
+                    System.out.println("Sorry, that Reception has no membership cards.");
+                    break;
+                }
                 else {
-                    System.out.println("Which membership card do you want to update? (Enter number 0 to " + 
-                                        (recep[whichRecep].totalCardsReception() - 1) + ") ");
+                    System.out.println("Which membership card do you want to update? (Enter number 0 to " + (recep[whichRecep].totalCardsReception() - 1) + ") ");
                     whichCard = scanner.nextInt();
-                    whichCard = Mistake(whichCard);
+                    whichCard = IncorrectValue(whichCard, "Card", recep[whichRecep].totalCardsReception());
                     
                     if (whichCard == timeout)
                         break;
                     else {
-                        System.out.println("--> Enter new expiry day number and month (seperated by a space): ");
+                        System.out.print("--> Enter new expiry day number and month (seperated by a space): ");
                         int expiryDay = scanner.nextInt();
                         int expiryMonth = scanner.nextInt();
 
                         if ((expiryDay < 0) || (expiryDay > 31) || (expiryMonth < 0) || (expiryMonth > 31)) {
-                            System.out.println("Wrong values, try again: ");
+                            System.out.print("Wrong values, try again: ");
                             int expiryDayTrial = scanner.nextInt();
                             int expiryMonthTrial = scanner.nextInt();
 
-                            recep[whichRecep].updateExpirationDate(whichCard, expiryDayTrial, expiryMonthTrial);
+                            if ((expiryDayTrial < 0) || (expiryDayTrial > 31) || (expiryMonthTrial < 0) || (expiryMonthTrial > 31))
+                                break;
+                            else {
+                                recep[whichRecep].updateExpirationDate(whichCard, expiryDayTrial, expiryMonthTrial);
+                                System.out.println("Expiry date updated.");
+                            }
                         }
-                        else
+                        else {
+                            recep[whichRecep].updateExpirationDate(whichCard, expiryDay, expiryMonth);
+                            System.out.println("Expiry date updated.");
                             break;
-                        recep[whichRecep].updateExpirationDate(whichCard, expiryDay, expiryMonth);
+                        }
                     }
                 }
                 break;
             case 9:
                 mainMenu = true;
-                System.out.println("Which reception do you want to add passes to? (Enter number 0 to " + (recep.length - 1) + "): ");
+                System.out.print("Which reception do you want to add passes to? (Enter number 0 to " + (recep.length - 1) + "): ");
                 int whichRecep = scanner.nextInt();
-                whichRecep = Mistake(whichRecep);
+                whichRecep = IncorrectValue(whichRecep, "Reception", recep.length);
 
                 if (whichRecep == timeout)
                     break;
                 else {
-                    System.out.println("How many Regular Pass ($7), Student Pass ($5), Senior Pass ($4), Weekend Pass ($12) and Weekly Pass ($42) gym passes" +
-                                        " do you want to add?");
-                    System.out.println("Enter 5 numbers seperated by a space: ");
+                    System.out.println("How many Regular Pass ($7), Student Pass ($5), Senior Pass ($4), Weekend Pass ($12) and Weekly" +
+                                        " Pass ($42) gym passes" + " do you want to add?");
+                    System.out.print("Enter 5 numbers seperated by a space: ");
                     int regularCount = scanner.nextInt();
                     int studentCount = scanner.nextInt();
                     int seniorCount = scanner.nextInt();
@@ -273,14 +283,14 @@ public class GymDemo {
         return mainMenu;
     }
 
-    private int Mistake(int value) {
+    private int IncorrectValue(int value, String type, int bound) {
         System.out.println();
-        if ((value >= recep.length) || (value < 0)) {
-            System.out.println("Sorry but there is no Reception number " + value);
-            System.out.print("--> Try Again: (Enter number 0 to " + (recep.length - 1) + "): ");
+        if ((value >= bound) || (value < 0)) {
+            System.out.println("Sorry but there is no" + type + " number " + value);
+            System.out.print("--> Try Again: (Enter number 0 to " + (bound - 1) + "): ");
             int attempt = scanner.nextInt();
 
-            if ((attempt < recep.length) && (attempt >= 0))
+            if ((attempt < bound) && (attempt >= 0))
                 value = attempt;
             else
                 value = timeout;

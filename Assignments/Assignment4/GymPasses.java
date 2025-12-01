@@ -93,8 +93,9 @@ public class GymPasses {
                 this.weeklyCount + " X $" + weeklyPrice;
     }
 
-    public boolean equals(Object obj) {
-        if (this == obj)
+    public boolean equals(GymPasses other) {
+        if ((this.regularCount == other.regularCount) && (this.studentCount == other.studentCount) && (this.seniorCount == other.seniorCount) &&
+            (this.weekendCount == other.weekendCount) && (this.weeklyCount == other.weeklyCount))
             return true;
         else
             return false;
