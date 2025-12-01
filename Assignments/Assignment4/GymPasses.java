@@ -5,7 +5,6 @@ public class GymPasses {
     public static final int[] passPrices = {regularPrice, studentPrice, seniorPrice, weekendPrice, weeklyPrice};
 
     private int regularCount, studentCount, seniorCount, weekendCount, weeklyCount;
-    private int[] passCounts = {this.regularCount, this.studentCount, this.seniorCount, this.weekendCount, this.weeklyCount};
 
     public GymPasses() {
         this.regularCount = 0;
@@ -83,10 +82,8 @@ public class GymPasses {
     }
 
     public double gymPassesTotal() {
-        int total = 0;
-        for (int i = 0; i <= (passCounts.length - 1); i++) {
-            total += (passCounts[i] * passPrices[i]);
-        }
+        int total = (this.regularCount * regularPrice) + (this.studentCount * studentPrice) + (this.seniorCount * seniorPrice) + (this.weekendCount * weekendPrice) + 
+                (this.weeklyCount * weeklyPrice);
         return total;
     } 
 

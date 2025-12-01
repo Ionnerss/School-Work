@@ -12,34 +12,6 @@ public class GymDemo {
     private static Scanner scanner = new Scanner(System.in);
 
     private Reception[] recep;
-    // private static boolean Compare(int value, int[] arrayComp) {
-    //     boolean isTrue = false;
-    //     for (int i = 0; i <= arrayComp.length - 1; i++) {
-    //         if (value != arrayComp[i]) {
-    //             isTrue = false;
-    //             continue;
-    //         }
-    //         isTrue = true;
-    //         break;
-    //     }
-    //     return isTrue;
-    // }
-
-
-    // private static int randomInt() {
-    //     int randomInt = (int) Math.random() * 6;
-
-    //     // boolean isTrue = Compare(randomInt, is_ARecep);
-    //     // while (isTrue == true) {
-    //     //     randomInt = (int) Math.random() * 6;
-    //     //     isTrue = Compare(randomInt, is_ARecep);
-    //     // }
-        
-    //     // is_ARecep[counter] = randomInt();
-    //     // counter += 1;
-
-    //     return randomInt;
-    // }
 
     public void main(String[] args) {
         recep = new Reception[5];
@@ -77,21 +49,21 @@ public class GymDemo {
         recep[0].addNewGC("Standard", "Pelekai", 3, 12);
 
         recep[1].addPasses(10, 4, 1, 1, 1);
-        recep[1].addNewGC("Basic", "Scrump", 07, 12);
-        recep[1].addNewGC("Premium", "Jookiba", 24, 8);
+        recep[1].addNewGC("Basic", "Jookiba", 24, 8);
+        recep[1].addNewGC("Premium", "Scrump", 7, 12);
 
         recep[2].addPasses(5, 13, 0, 4, 0);
-        recep[2].addNewGC("Basic", "Pleakly", 1, 6);
-        recep[2].addNewGC("Standard", "Gantu", 18, 12);
-        recep[2].addNewGC("PremiumPlus", "Stitch", 5, 4);
+        recep[2].addNewGC("Basic", "Gantu", 18, 12);
+        recep[2].addNewGC("Standard", "Stitch", 5, 4);
+        recep[2].addNewGC("PremiumPlus", "Pleakly", 1, 6);
 
         recep[3].addPasses(2, 8, 5, 0, 3);
 
         recep[4].addPasses(2, 8, 5, 0, 3);
 
-        System.out.println("+++++++");
-        System.out.println("| Welcome to Gym Fit @Concordia University Application.   |");
-        System.out.println("+++++++");
+        System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+        System.out.println("|   Welcome to Gym Fit @Concordia University Application.                                 |");
+        System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
 
         do
             mainMenu = MainWindow();
@@ -101,64 +73,69 @@ public class GymDemo {
     }
 
     private boolean MainWindow() {
-        System.out.println("+++++++");
-        System.out.println("What would you like to do?");
-        System.out.println("|1   >> See the content of all Receptions");
-        System.out.println("|2   >> See the content of one Reception");
-        System.out.println("|3   >> List Receptions with same $ amount of gym passes");
-        System.out.println("|4   >> List Receptions with same number of gym passes types");
-        System.out.println("|5   >> List Receptions with same $ amount of gym passes and same number of memberships");
-        System.out.println("|6   >> Add a membership card to an existing Reception");
-        System.out.println("|7   >> Remove an existing membership card from a Reception");
-        System.out.println("|8   >> Update the expiry date of an existing membership card");
-        System.out.println("|9   >> Add gym passes to a Reception");
-        System.out.println("|0   >> To Quit");
-        System.out.println("+++++++");
+        System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+        System.out.println("| What would you like to do?                                                              |");
+        System.out.println("| 1   >> See the content of all Receptions                                                |");
+        System.out.println("| 2   >> See the content of one Reception                                                 |");
+        System.out.println("| 3   >> List Receptions with same $ amount of gym passes                                 |");
+        System.out.println("| 4   >> List Receptions with same number of gym passes types                             |");
+        System.out.println("| 5   >> List Receptions with same $ amount of gym passes and same number of memberships  |");
+        System.out.println("| 6   >> Add a membership card to an existing Reception                                   |");
+        System.out.println("| 7   >> Remove an existing membership card from a Reception                              |");
+        System.out.println("| 8   >> Update the expiry date of an existing membership card                            |");
+        System.out.println("| 9   >> Add gym passes to a Reception                                                    |");
+        System.out.println("| 0   >> To Quit                                                                          |");
+        System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
 
         System.out.println();
-        System.out.println("Please enter your choice and press <Enter>: ");
+        System.out.print("Please enter your choice and press <Enter>: ");
         int choice = scanner.nextInt();
+        System.out.println();
 
         switch (choice) {
             case 1:
                 mainMenu = true;
                 System.out.println("Content of each reception:");
-                System.out.println("--------------------------------");
+                System.out.println("----------------------------------");
                 for (int i = 0; i < recep.length; i++) {
                     System.out.println("Reception #" + i + ":");
-                    System.out.println(recep[i].toString() + ".");
-                    System.out.println();
+                    System.out.println(recep[i].toString());
                 }
                 break;
             case 2:
                 mainMenu = true;
-                System.out.println("Which Reception do you want to see the content of? (Enter number 0 to " + (recep.length - 1) + "): ");
+                System.out.print("Which Reception do you want to see the content of? (Enter number 0 to " + (recep.length - 1) + "): ");
                 whichRecep = scanner.nextInt();
                 whichRecep = Mistake(whichRecep);
-
+                
                 if (whichRecep == timeout)
                     break;
-                else {
+                else
                     System.out.println();
-                    System.out.println(recep[whichRecep].gmBreakdown());
                     System.out.println(recep[whichRecep].toString());
-                    System.out.println();
-                }
+
                 break;
             case 3:
                 mainMenu = true;
+                System.out.println("List of Receptions with same total $ GymPasses:");
+                System.out.println();
+
                 for (int i = 0; i < recep.length; i++) {
-                    for (int j = ++i; j < recep.length; j++) {
-                        if (recep[i].isTotalEqual(recep[j]))
-                            System.out.println("Receptions " + i + " and " + j + " both have " + recep[i].total$Reception());
+                    for (int j = i + 1; j < recep.length; j++) {
+                        if (recep[i].isEachTypeEqual(recep[j]))
+                            System.out.println("Receptions " + i + " and " + j + " both have " + recep[i].gmBreakdown());
                     }
                 }
+                System.out.println();
                 break;
             case 4:
                 mainMenu = true;
+                System.out.println("List of Receptions with same pass types:");
+                System.out.println();
+
                 for (int i = 0; i < recep.length; i++) {
-                    for (int j = ++i; j < recep.length; j++) {
-                        if (recep[i].toString() == recep[j].toString())
+                    for (int j = i + 1; j < recep.length; j++) {
+                        if (recep[i].isEachTypeEqual(recep[j]))
                             System.out.println("Receptions " + i + " and " + j + " both have " + recep[i].toString());
                     }
                 }
@@ -297,21 +274,17 @@ public class GymDemo {
     }
 
     private int Mistake(int value) {
-
-        if ((value >= recep.length) && (value < 0)) {
-            System.out.println("Sorry but there is no Reception number " + value);
-            System.out.println("--> Try Again: (Enter number 0 to " + (recep.length - 1) + "): ");
-            int attempt = scanner.nextInt() - 1;
-
-            if ((attempt < recep.length) && (attempt >= 0)) {
-                value = attempt;
-            }
-            else {
-                value = timeout;
-            }
-        }
         System.out.println();
+        if ((value >= recep.length) || (value < 0)) {
+            System.out.println("Sorry but there is no Reception number " + value);
+            System.out.print("--> Try Again: (Enter number 0 to " + (recep.length - 1) + "): ");
+            int attempt = scanner.nextInt();
 
+            if ((attempt < recep.length) && (attempt >= 0))
+                value = attempt;
+            else
+                value = timeout;
+        }
         return value;
     }
 }

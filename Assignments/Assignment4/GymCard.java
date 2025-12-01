@@ -74,8 +74,8 @@ public class GymCard {
     }
 
     public String toString() {
-        return type + " - " + name + " - " + (expiryDay < 10 ? ("0" + expiryDay) : expiryDay) + "/" + 
-                (expiryMonth < 10 ? ("0" + expiryMonth) : expiryMonth);
+        return this.type + " - " + this.name + " - " + (this.expiryDay < 10 ? ("0" + this.expiryDay) : this.expiryDay) + "/" + 
+                (this.expiryMonth < 10 ? ("0" + this.expiryMonth) : this.expiryMonth);
     }
 
     public boolean equals(Object obj) {
