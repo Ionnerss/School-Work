@@ -1,4 +1,4 @@
-package Assignments.Assignment4;
+package AssignmentsS1.Assignment4;
 
 public class Reception {
     private GymPasses gymPasses;

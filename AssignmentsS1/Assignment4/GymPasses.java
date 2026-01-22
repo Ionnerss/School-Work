@@ -1,4 +1,4 @@
-package Assignments.Assignment4;
+package AssignmentsS1.Assignment4;
 
 public class GymPasses {
     public static final int regularPrice = 7, studentPrice = 5, seniorPrice = 4 , weekendPrice = 12, weeklyPrice = 42;

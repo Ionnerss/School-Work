@@ -1,4 +1,4 @@
-package Assignments.Assignment1;
+package AssignmentsS1.Assignment1;
 // ------------------------------------------------------- 
 // Assignment 1 - Question #2
 // Written by: Catalin-Ion Besleaga (40347936)

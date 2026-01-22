@@ -1,4 +1,4 @@
-package Assignments.Assignment4;
+package AssignmentsS1.Assignment4;
 
 public class GymCard {
     private final String[] diffTypes = {"Basic", "Standard", "Premium", "PremiumPlus"};
