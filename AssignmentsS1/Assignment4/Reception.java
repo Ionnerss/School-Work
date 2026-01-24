@@ -1,4 +1,4 @@
-package Assignments.Assignment4;
+package AssignmentsS1.Assignment4;
 
 public class Reception {
     private GymPasses gymPasses;
@@ -40,6 +40,7 @@ public class Reception {
         return count;
     }
 
+    //I might be overcomplicating this so check it out later, make it simpler.
     public void addNewGC(String type, String name, int expiryDay, int expiryMonth) {
         GymCard newElement = new GymCard();
         boolean isFirst = false;
