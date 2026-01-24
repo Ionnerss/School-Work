@@ -88,6 +88,9 @@ public class Reception {
         if (whichCard == 0) {
             System.arraycopy(this.gymCards, 1, updatedList, 0, this.gymCards.length - 1);
         }
+        else if (whichCard == 1) {
+            System.arraycopy(this.gymCards, 0, updatedList, 0, whichCard);
+        }
         else {
             System.arraycopy(this.gymCards, 0, updatedList, 0, whichCard - 1);
             System.arraycopy(this.gymCards, whichCard, updatedList, whichCard - 1, (this.gymCards.length - (whichCard + 1)));
@@ -107,9 +110,7 @@ public class Reception {
     }
 
     public void addPasses(int regularCount, int studentCount, int seniorCount, int weekendCount, int weeklyCount) {
-        GymPasses newPasses  = new GymPasses();
-        newPasses.addGymPasses(regularCount, studentCount, seniorCount, weekendCount, weeklyCount);
-        this.gymPasses = newPasses;
+        this.gymPasses.addGymPasses(regularCount, studentCount, seniorCount, weekendCount, weeklyCount);
     }
 
     public boolean equals(Reception other) { 

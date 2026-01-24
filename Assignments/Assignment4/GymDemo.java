@@ -4,8 +4,6 @@ import java.util.Scanner;
 
 public class GymDemo {
     private static boolean mainMenu;
-    // private static int[] is_ARecep;
-    // private static int counter;
     private static int whichRecep;
     private static int whichCard;
     private static final int timeout = -256;
@@ -16,32 +14,12 @@ public class GymDemo {
     public void main(String[] args) {
         recep = new Reception[5];
 
-        GymPasses passes0 = new GymPasses();
-        GymCard[] cardArr0 = new GymCard[0];
-        Reception reception0 = new Reception(passes0, cardArr0);
-        recep[0] = reception0;
-
-        GymPasses passes1 = new GymPasses();
-        GymCard[] cardArr1 = new GymCard[0];
-        Reception reception1 = new Reception(passes1, cardArr1);
-        recep[1] = reception1;
-
-        GymPasses passes2 = new GymPasses();
-        GymCard[] cardArr2 = new GymCard[0];
-        Reception reception2 = new Reception(passes2, cardArr2);
-        recep[2] = reception2;
-
-        GymPasses passes3 = new GymPasses();
-        GymCard[] cardArr3 = new GymCard[0];
-        Reception reception3 = new Reception(passes3, cardArr3);
-        recep[3] = reception3;
-
-
-        GymPasses passes4 = new GymPasses();
-        GymCard[] cardArr4 = new GymCard[0];
-        Reception reception4 = new Reception(passes4, cardArr4);
-        recep[4] = reception4;
-
+        for (int i = 0; i < recep.length; i++) {
+            GymPasses passes0 = new GymPasses();
+            GymCard[] cardArr0 = new GymCard[0];
+            Reception reception0 = new Reception(passes0, cardArr0);
+            recep[i] = reception0;
+        }
 
         //we're gonna hard code it first then we make it all random so that it fits rules
         recep[0].addPasses(10, 4, 1, 1, 1);
@@ -220,7 +198,7 @@ public class GymDemo {
                 else {
                     System.out.println("Which membership card do you want to update? (Enter number 0 to " + (recep[whichRecep].totalCardsReception() - 1) + ") ");
                     whichCard = scanner.nextInt();
-                    whichCard = IncorrectValue(whichCard, "Card", recep[whichRecep].totalCardsReception());
+                    whichCard = IncorrectValue(whichCard, "membership", recep[whichRecep].totalCardsReception());
                     
                     if (whichCard == timeout)
                         break;
@@ -286,7 +264,7 @@ public class GymDemo {
     private int IncorrectValue(int value, String type, int bound) {
         System.out.println();
         if ((value >= bound) || (value < 0)) {
-            System.out.println("Sorry but there is no" + type + " number " + value);
+            System.out.println("Sorry but there is no " + type + " number " + value);
             System.out.print("--> Try Again: (Enter number 0 to " + (bound - 1) + "): ");
             int attempt = scanner.nextInt();
 

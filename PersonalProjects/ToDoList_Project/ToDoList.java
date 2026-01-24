@@ -131,8 +131,6 @@ public class ToDoList {
 					description = "";
 					info = new String[] {name, time, description};
 					
-					// TaskCreator obj = new TaskCreator();
-					// obj.TaskProcessor(info);
 					TaskCreator.TaskProcessor(info);
 				}
 				else if(descChoice.equalsIgnoreCase("yes")) {
@@ -140,8 +138,6 @@ public class ToDoList {
 					description = scanner.next();
 					info = new String[] {name, time, description};
 
-					// TaskCreator obj = new TaskCreator();
-					// obj.TaskProcessor(info);
 					TaskCreator.TaskProcessor(info);
 				}
 				break;
