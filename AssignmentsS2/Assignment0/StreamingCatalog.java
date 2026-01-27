@@ -8,6 +8,7 @@ public class StreamingCatalog {
     private static Show[] catalog;
     private static final String password = "STREAM";
     private boolean backToMain;
+    private boolean noShows;
 
     public void main(String[] args) {
         System.out.println("Welcome to the Streaming Service Catalog Manager!");
@@ -23,6 +24,10 @@ public class StreamingCatalog {
         do
             backToMain = mainMenu();
         while (backToMain == true);
+
+        scanner.close();
+        System.out.println();
+        System.out.println("Thank you for using the Streaming catalog!!!");
     }
 
     public boolean mainMenu() {
@@ -42,15 +47,41 @@ public class StreamingCatalog {
             case 2:
                 break;
             case 3:
+                backToMain = true;
+                System.out.println("Please enter a genre: ");
+                String genreStr = scanner.next();
+
+                for (Show show : catalog) {
+                    if (show.getGenre().equalsIgnoreCase(genreStr)){
+                        noShows = false;
+                        System.out.println(show.getTitle() + " | ");
+                    }
+                }
+                if (noShows == true)
+                    System.out.println("No show with that genre.");
+                
                 break;
             case 4:
+                backToMain = true;
+                System.out.println("Display Shows above rating: ");
+                int rating = scanner.nextInt();
+                
+                for (Show show : catalog) {
+                    if (show.getRating() > rating) {
+                        noShows = false;
+                        System.out.println(show.getTitle() + " | ");
+                    }
+                }
+                if (noShows == true)
+                    System.out.println("No Show has that high a rating.");
+
                 break;
             case 5:
                 backToMain = false;
                 break;
             default:
-                System.out.println("Invalid choice, try again.");
                 backToMain = true;
+                System.out.println("Invalid choice, try again.");
         }
         return backToMain;
     }
