@@ -9,6 +9,8 @@ public class StreamingCatalog {
     private static final String password = "STREAM";
     private boolean backToMain;
     private boolean noShows;
+    private static int counter = 0;
+    private static int currentSesh = 0;
 
     public void main(String[] args) {
         System.out.println("Welcome to the Streaming Service Catalog Manager!");
@@ -43,9 +45,42 @@ public class StreamingCatalog {
         int choice = scanner.nextInt();
         switch(choice) {
             case 1:
+                backToMain = true;
+                System.out.println("Please enter password: ");
+                String attempt = scanner.next();
+                
+                if (password(attempt) != true) {
+                    System.out.println("Too many attempts.");
+                    break;
+                }
+                System.out.println("How many shows would you like to enter? ");
+                int nbShows = scanner.nextInt();
+
+                int space = 0;
+                for (Show show : catalog)
+                    if (show == null)
+                        space++;
+            
+
+                if (nbShows > space) {
+                    System.out.println("Unable to add this many shows (" + nbShows + "). There are " + space + " slots left in the catalog.");
+                    break;
+                }
+                else {
+                    for (int i = 0; i < nbShows; i++) {
+
+                    }
+                }
+
+
                 break;
             case 2:
                 break;
+            
+
+
+
+            //Work on the hyphen thing for multi word genres
             case 3:
                 backToMain = true;
                 System.out.println("Please enter a genre: ");
@@ -59,7 +94,7 @@ public class StreamingCatalog {
                 }
                 if (noShows == true)
                     System.out.println("No show with that genre.");
-                
+
                 break;
             case 4:
                 backToMain = true;
@@ -84,5 +119,30 @@ public class StreamingCatalog {
                 System.out.println("Invalid choice, try again.");
         }
         return backToMain;
+    }
+
+    public static boolean password(String attempt) {
+        counter++;
+        currentSesh = 0;
+        currentSesh++;
+        if (counter > 9) {
+            System.out.println("Program detected suspicious activities and will terminate immediately!");
+            System.exit(0);
+        }
+
+        System.out.println();
+        if (!attempt.equalsIgnoreCase(password)) {
+            if (currentSesh < 2) {
+                System.out.println("Password failed, please try again: ");
+                String diffAttempt = scanner.next();
+    
+                counter++;
+                currentSesh++;
+                password(diffAttempt);
+            }
+            else
+                return false;
+        }
+        return true;
     }
 }
