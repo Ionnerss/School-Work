@@ -7,12 +7,12 @@ public class StreamingCatalog {
     public static Scanner scanner = new Scanner(System.in);
     private static Show[] catalog;
     private static final String password = "STREAM";
-    private boolean backToMain;
-    private boolean noShows;
+    private static boolean backToMain;
+    private static boolean noShows;
     private static int counter = 0;
     private static int currentSesh = 0;
 
-    public void main(String[] args) {
+    public static void main(String[] args) {
         System.out.println("Welcome to the Streaming Service Catalog Manager!");
         System.out.println();
         System.out.print("What is the maximum amount of shows you would like to add? ");
@@ -25,14 +25,14 @@ public class StreamingCatalog {
 
         do
             backToMain = mainMenu();
-        while (backToMain == true);
+        while (backToMain);
 
         scanner.close();
         System.out.println();
         System.out.println("Thank you for using the Streaming catalog!!!");
     }
 
-    public boolean mainMenu() {
+    public static boolean mainMenu() {
         System.out.println("What do you want to do?\n" + //
                         "1. Enter new Shows (password required)\n" + //
                         "2. Change information of a Show (password required)\n" + //
@@ -49,7 +49,7 @@ public class StreamingCatalog {
                 System.out.println("Please enter password: ");
                 String attempt = scanner.next();
                 
-                if (password(attempt) != true) {
+                if (!password(attempt)) {
                     System.out.println("Too many attempts.");
                     break;
                 }
@@ -67,12 +67,28 @@ public class StreamingCatalog {
                     break;
                 }
                 else {
+                    System.out.println("Please enter show details as follows: Title, genre, year, and rating.");
                     for (int i = 0; i < nbShows; i++) {
+                        System.out.print("Title: ");
+                        String title = scanner.next();
 
+                        System.out.print("Genre: ");
+                        String genre = scanner.next();
+
+                        System.out.println("Year: ");
+                        int year = scanner.nextInt();
+
+                        System.out.println("Rating: ");
+                        double rating = scanner.nextDouble();
+
+                        catalog[catalog.length - space + i + 1].setTitle(title);
+                        catalog[catalog.length - space + i + 1].setGenre(genre);
+                        catalog[catalog.length - space + i + 1].setYear(year);
+                        catalog[catalog.length - space + i + 1].setRating(rating);
                     }
+                    System.out.println();
+                    System.out.println("Shows added succesfully");
                 }
-
-
                 break;
             case 2:
                 break;
@@ -92,7 +108,7 @@ public class StreamingCatalog {
                         System.out.println(show.getTitle() + " | ");
                     }
                 }
-                if (noShows == true)
+                if (noShows)
                     System.out.println("No show with that genre.");
 
                 break;
@@ -107,7 +123,7 @@ public class StreamingCatalog {
                         System.out.println(show.getTitle() + " | ");
                     }
                 }
-                if (noShows == true)
+                if (noShows)
                     System.out.println("No Show has that high a rating.");
 
                 break;
