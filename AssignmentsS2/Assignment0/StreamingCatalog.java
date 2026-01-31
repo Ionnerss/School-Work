@@ -7,10 +7,9 @@ public class StreamingCatalog {
     public static Scanner scanner = new Scanner(System.in);
     private static Show[] catalog;
     private static final String password = "STREAM";
-    private static boolean backToMain;
-    private static boolean noShows;
-    private static int counter = 0;
-    private static int currentSesh = 0;
+    private static String attempt;
+    private static boolean backToMain, noShows, consecutive;
+    private static int counter = 0, currentSesh = 0;
 
     public static void main(String[] args) {
         System.out.println("Welcome to the Streaming Service Catalog Manager!");
@@ -47,8 +46,9 @@ public class StreamingCatalog {
             case 1:
                 backToMain = true;
                 System.out.println("Please enter password: ");
-                String attempt = scanner.next();
+                attempt = scanner.next();
                 
+                consecutive = true;
                 if (!password(attempt)) {
                     System.out.println("Too many attempts.");
                     break;
@@ -61,7 +61,6 @@ public class StreamingCatalog {
                     if (show == null)
                         space++;
             
-
                 if (nbShows > space) {
                     System.out.println("Unable to add this many shows (" + nbShows + "). There are " + space + " slots left in the catalog.");
                     break;
@@ -91,10 +90,90 @@ public class StreamingCatalog {
                 }
                 break;
             case 2:
+                backToMain = true;
+                System.out.println("Please enter password: ");
+                attempt = scanner.next();
 
+                consecutive = false;
+                if (!password(attempt)) {
+                    System.out.println("Too many attempts.");
+                    break;
+                }
+                
+                for (Show show : catalog)
+                    show.toString();
+
+                System.out.println();
+                System.out.println("Which show do you wish to update? ");
+                String update = scanner.nextLine();
+
+                boolean exists = false;
+                for (Show show : catalog) {
+                    if (!show.getTitle().equalsIgnoreCase(update))
+                        exists = false;
+                    exists = true; 
+                }
+
+                if (exists == false) {
+                    System.out.println("Please re-enter another Show? ");
+                    String reenter = scanner.nextLine();
+                    
+                    for (Show show : catalog) {
+                        if (!show.getTitle().equalsIgnoreCase(reenter))
+                            exists = false;
+                        exists = true;
+                    }
+
+                    if (exists == false)
+                        break;
+                    else {
+                        for (int i = 0; i < catalog.length; i++) {
+                            if (catalog[i].getTitle().equalsIgnoreCase(reenter)) {
+                                System.out.println(catalog[i].toString());
+                                System.out.println();
+
+                                System.out.println("What information would you like to change?\r\n" + //
+                                                    "1. Genre\r\n" + //
+                                                    "2. Title\r\n" + //
+                                                    "3. Year\r\n" + //
+                                                    "4. Rating\r\n" + //
+                                                    "5. Quit\r\n" + //
+                                                    "Enter your choice >");
+                                
+                                int changeChoice = scanner.nextInt();
+
+                                switch (changeChoice) {
+                                    case 1:
+                                        System.out.println("Please enter new Genre: ");
+                                        String nGenre = scanner.nextLine();
+                                        catalog[i].setGenre(nGenre);
+                                        break;
+                                    case 2:
+                                        System.out.println("Please enter new Title: ");
+                                        String nTitle = scanner.nextLine();
+                                        catalog[i].setGenre(nTitle);
+                                        break;
+                                    case 3:
+                                        System.out.println("Please enter new Year: ");
+                                        String nYear = scanner.nextLine();
+                                        catalog[i].setGenre(nYear);
+                                        break;
+                                    case 4:
+                                        System.out.println("Please enter new Rating: ");
+                                        String nRating = scanner.nextLine();
+                                        catalog[i].setGenre(nRating);
+                                        break;
+                                    case 5:
+                                        break;
+                                    default:
+                                        System.out.println("Incorrect value enterd.");
+                                        break;
+                                }   
+                            }
+                        }
+                    }
+                }
                 break;
-            
-
             //Work on the hyphen thing for multi word genres
             case 3:
                 backToMain = true;
@@ -150,8 +229,9 @@ public class StreamingCatalog {
             if (currentSesh < 2) {
                 System.out.println("Password failed, please try again: ");
                 String diffAttempt = scanner.next();
-    
-                counter++;
+                
+                if (consecutive)
+                    counter++;
                 currentSesh++;
                 return password(diffAttempt);
             }
