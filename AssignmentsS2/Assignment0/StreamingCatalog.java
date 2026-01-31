@@ -70,10 +70,10 @@ public class StreamingCatalog {
                     System.out.println("Please enter show details as follows: Title, genre, year, and rating.");
                     for (int i = 0; i < nbShows; i++) {
                         System.out.print("Title: ");
-                        String title = scanner.next();
+                        String title = scanner.nextLine();
 
                         System.out.print("Genre: ");
-                        String genre = scanner.next();
+                        String genre = scanner.nextLine();
 
                         System.out.println("Year: ");
                         int year = scanner.nextInt();
@@ -87,14 +87,13 @@ public class StreamingCatalog {
                         catalog[catalog.length - space + i + 1].setRating(rating);
                     }
                     System.out.println();
-                    System.out.println("Shows added succesfully");
+                    System.out.println("Shows added successfully");
                 }
                 break;
             case 2:
+
                 break;
             
-
-
 
             //Work on the hyphen thing for multi word genres
             case 3:
@@ -154,7 +153,7 @@ public class StreamingCatalog {
     
                 counter++;
                 currentSesh++;
-                password(diffAttempt);
+                return password(diffAttempt);
             }
             else
                 return false;
