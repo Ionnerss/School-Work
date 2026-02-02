@@ -7,12 +7,14 @@ public class Show {
     private int year;
     private double rating;
     private static int counter = 0;
+    private int index;
 
     public Show() {
         this.title = "";
         this.genre = "";
         this.year = 0;
         this.rating = 0.0;
+        index = counter;
         counter++;
     }
     //----------------------------------
@@ -66,7 +68,7 @@ public class Show {
 
     @Override
     public String toString() {
-        return "Show # " + counter +
+        return "Show # " + index +
                 "\nTitle : " + this.title +
                 "\nGenre : " + this.genre +
                 "\nYear : " + this.year +
