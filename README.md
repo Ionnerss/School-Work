@@ -1,2 +1,0 @@
-# School-Work
-Assignments / Projects
