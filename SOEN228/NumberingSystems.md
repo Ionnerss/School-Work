@@ -46,3 +46,14 @@
     - $3 \div 2 = 1$ remainder $1$
     - $1 \div 2 = 0$ remainder $1$
     - **Result:** $11111_2$
+
+-------------------------------------
+# Binary Arithmetic: Unsigned Numbers
+
+- Arithmetic operations similar to decimal
+- Example:
+    - 1001 + 0011 = 1100
+    - (Example with overflow) 1001 + 0111 = 10000
+    - (substraction) 1001 - 0111 = 0010
+    - (multiplication) 1001 x 0111 = 1001 + 10010 + 100100+ 000000 = 01111111
+    - (division) 1101/10 = 110
