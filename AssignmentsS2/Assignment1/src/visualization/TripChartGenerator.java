@@ -14,7 +14,7 @@ import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartUtils;
 import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.general.DefaultPieDataset;
-import travel.Trip;
+import AssignmentsS2.Assignment1.src.travel.Trip;
 
 import java.io.File;
 import java.io.IOException;

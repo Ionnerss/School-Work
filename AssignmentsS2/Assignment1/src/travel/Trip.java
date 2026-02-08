@@ -33,18 +33,40 @@ public class Trip {
         this.client = other.client;
     }
 
-    public String getTripID() {return tripID;}
-    public void setTripID(String tripID) {this.tripID = tripID;}
+    public String getTripId() {return tripID;}
+    public void setTripId(String tripID) {this.tripID = tripID;}
 
     public String getDestination() {return destination;}
     public void setDestination(String destination) {this.destination = destination;}
 
-    public int getDuration() {return duration;}
-    public void setDuration(int duration) {this.duration = duration;}
+    public int getDurationInDays() {return duration;}
+    public void setDurationInDays(int duration) {this.duration = duration;}
 
     public double getBasePrice() {return basePrice;}
     public void setBasePrice(double basePrice) {this.basePrice = basePrice;}
 
     public Client getClient() {return client;}
     public void setClient(Client client) {this.client = client;}
+
+    public double calculateTotalCost() {
+        return 0.0;
+    }
+
+    @Override
+    public String toString() {return this.tripID + ", " + this.destination + ", " + this.duration + ", " + 
+                                this.basePrice + ", " + this.client;}
+
+    @Override
+    public boolean equals(Object other) {
+        if (other == null || this.getClass() != other.getClass()) 
+            return false;
+        
+        Trip otherTrip = (Trip) other;
+        
+        return this.getTripId() == otherTrip.getTripId()
+            && this.getDestination() == otherTrip.getDestination()
+            && this.getDurationInDays() == otherTrip.getDurationInDays()
+            && this.getBasePrice() == otherTrip.getBasePrice()
+            && this.getClient() == otherTrip.getClient();
+    }
 }
