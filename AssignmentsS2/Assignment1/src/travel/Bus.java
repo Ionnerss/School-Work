@@ -43,4 +43,10 @@ public class Bus extends Transportation {
             && this.busCompany == otherBus.busCompany
             && this.numOfStops == otherBus.numOfStops;
     }
+
+    @Override
+    public double calculateCost(int numOfDays) {
+        double costPerDay = 100;
+        return (double) costPerDay * numOfDays;
+    }
 }

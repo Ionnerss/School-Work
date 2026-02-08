@@ -42,4 +42,10 @@ public class Train extends Transportation {
             && this.trainType == otherTrain.trainType
             && this.seatClass == otherTrain.seatClass;
     }
+
+    @Override
+    public double calculateCost(int numOfDays) {
+        double costPerDay = 100;
+        return (double) costPerDay * numOfDays;
+    }
 }

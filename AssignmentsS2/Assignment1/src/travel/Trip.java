@@ -8,6 +8,8 @@ public class Trip {
     private int duration;
     private double basePrice;
     private Client client;
+    private Transportation transport;
+    private Accomodation accomodation;
 
     public Trip() {
         this.tripID = "T" + nextID++;
@@ -48,14 +50,10 @@ public class Trip {
     public Client getClient() {return client;}
     public void setClient(Client client) {this.client = client;}
 
-    public double calculateTotalCost() {
-        return 0.0;
-    }
-
     @Override
     public String toString() {return this.tripID + ", " + this.destination + ", " + this.duration + ", " + 
-                                this.basePrice + ", " + this.client;}
-
+    this.basePrice + ", " + this.client;}
+    
     @Override
     public boolean equals(Object other) {
         if (other == null || this.getClass() != other.getClass()) 
@@ -64,9 +62,16 @@ public class Trip {
         Trip otherTrip = (Trip) other;
         
         return this.getTripId() == otherTrip.getTripId()
-            && this.getDestination() == otherTrip.getDestination()
-            && this.getDurationInDays() == otherTrip.getDurationInDays()
-            && this.getBasePrice() == otherTrip.getBasePrice()
-            && this.getClient() == otherTrip.getClient();
+        && this.getDestination() == otherTrip.getDestination()
+        && this.getDurationInDays() == otherTrip.getDurationInDays()
+        && this.getBasePrice() == otherTrip.getBasePrice()
+        && this.getClient() == otherTrip.getClient();
+    }
+
+    public double calculateTotalCost() {
+        if (transport == null && accomodation == null)
+            return 0.0;
+
+        return this.basePrice + transport.calculateCost(duration) + accomodation.calculateCost(duration);
     }
 }

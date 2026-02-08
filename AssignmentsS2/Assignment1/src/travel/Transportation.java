@@ -51,4 +51,6 @@ abstract class Transportation {
             && this.getDepartureCity() == otherTr.getDepartureCity()
             && this.getArrivalCity() == otherTr.getArrivalCity();
     }
+
+    public abstract double calculateCost(int numOfDays);
 }

@@ -43,4 +43,10 @@ public class Flight extends Transportation {
             && this.airlineName == otherFlight.airlineName
             && this.luggageAllowance == otherFlight.luggageAllowance;
     }
+
+    @Override
+    public double calculateCost(int numOfDays) {
+        double costPerDay = 100; //trivial number; will have to figure out how to give pricing 
+        return (double) costPerDay * numOfDays;
+    }
 }

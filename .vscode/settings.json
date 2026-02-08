@@ -4,8 +4,10 @@
         "PersonalProjects"
     ],
     "java.project.referencedLibraries": [
-        "lib/json.jar",
-        "lib/jackson-databind-2.15.2.jar",
-        "lib/jackson-core-2.15.2.jar"
+        "AssignmentsS2\\Assignment1\\libraries\\jfreechart-1.5.6.jar",
+        "AssignmentsS2\\Assignment1\\libraries\\jcommon-1.0.24.jar",
+        "c:\\Users\\Catalin\\School-Work\\lib\\jackson-databind-2.15.2.jar",
+        "c:\\Users\\Catalin\\School-Work\\lib\\json.jar",
+        "c:\\Users\\Catalin\\School-Work\\lib\\jackson-core-2.15.2.jar"
     ]
 }
