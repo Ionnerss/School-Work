@@ -61,8 +61,8 @@ public class Trip {
         
         Trip otherTrip = (Trip) other;
         
-        return this.getTripId() == otherTrip.getTripId()
-        && this.getDestination() == otherTrip.getDestination()
+        return this.getTripId().equals(otherTrip.getTripId())
+        && this.getDestination().equals(otherTrip.getDestination())
         && this.getDurationInDays() == otherTrip.getDurationInDays()
         && this.getBasePrice() == otherTrip.getBasePrice()
         && this.getClient() == otherTrip.getClient();

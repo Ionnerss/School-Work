@@ -1,6 +1,6 @@
 package AssignmentsS2.Assignment1.src.travel;
 
-abstract class Accomodation {
+public abstract class Accomodation {
     private static int nextID = 4001;
     private String accomodationID, name, location;
     private double pricePerNight;
@@ -48,8 +48,8 @@ abstract class Accomodation {
 
         Accomodation otherAcc = (Accomodation) other;
 
-        return this.getName() == otherAcc.getName()
-            && this.getLocation() == otherAcc.getLocation()
+        return this.getName().equals(otherAcc.getName())
+            && this.getLocation().equals(otherAcc.getLocation())
             && this.getPricePerNight() == otherAcc.getPricePerNight();
     }
     

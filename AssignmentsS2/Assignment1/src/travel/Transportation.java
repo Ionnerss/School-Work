@@ -1,6 +1,6 @@
 package AssignmentsS2.Assignment1.src.travel;
 
-abstract class Transportation {
+public abstract class Transportation {
     private static int nextID = 3001;
     private String transportID, companyName, departureCity, arrivalCity;
 
@@ -47,9 +47,9 @@ abstract class Transportation {
         
         Transportation otherTr = (Transportation) other;
         
-        return this.getCompanyName() == otherTr.getCompanyName()
-            && this.getDepartureCity() == otherTr.getDepartureCity()
-            && this.getArrivalCity() == otherTr.getArrivalCity();
+        return this.getCompanyName().equals(otherTr.getCompanyName())
+            && this.getDepartureCity().equals(otherTr.getDepartureCity())
+            && this.getArrivalCity().equals(otherTr.getArrivalCity());
     }
 
     public abstract double calculateCost(int numOfDays);

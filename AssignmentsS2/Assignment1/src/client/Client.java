@@ -2,7 +2,8 @@ package AssignmentsS2.Assignment1.src.client;
 
 public class Client {
     private static int nextID = 1001;
-    private String clientID, firstName, lastName, emailAdress;
+    private final String clientID;
+    private String firstName, lastName, emailAdress;
 
     public Client() {
         this.clientID = "C" + nextID++;
@@ -26,7 +27,6 @@ public class Client {
     }
 
     public String getClientID() {return this.clientID;}
-    public void setClientID(String clientID) {this.clientID = clientID;}
 
     public String getFirstName() {return this.firstName;}
     public void setFirstName(String firstName) {this.firstName = firstName;}
@@ -47,8 +47,8 @@ public class Client {
         
         Client otherClient = (Client) other;
         
-        return this.getFirstName() == otherClient.getFirstName()
-            && this.getLastName() == otherClient.getLastName()
-            && this.getEmailAdress() == otherClient.getEmailAdress();
+        return this.getFirstName().equals(otherClient.getFirstName())
+            && this.getLastName().equals(otherClient.getLastName())
+            && this.getEmailAdress().equals(otherClient.getEmailAdress());
     }
 }
