@@ -2,7 +2,7 @@ package AssignmentsS2.Assignment1.src.travel;
 
 public abstract class Transportation {
     private static int nextID = 3001;
-    private String transportID, companyName, departureCity, arrivalCity;
+    protected String transportID, companyName, departureCity, arrivalCity;
 
     public Transportation() {
         this.transportID = "TR" + nextID++;

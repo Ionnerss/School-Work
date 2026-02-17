@@ -3,6 +3,8 @@ package AssignmentsS2.Assignment1.src.travel;
 public class Flight extends Transportation {
     private String airlineName;
     private double luggageAllowance;
+    private Trip trip;
+
 
     public Flight() {
         super();
@@ -46,7 +48,11 @@ public class Flight extends Transportation {
 
     @Override
     public double calculateCost(int numOfDays) {
-        double costPerDay = 100; //trivial number; will have to figure out how to give pricing 
-        return (double) costPerDay * numOfDays;
+        double cost = (double) trip.getBasePrice();
+        if (luggageAllowance > 20) {
+            int overAllowance = (int) luggageAllowance - 20;
+            cost += 10 * overAllowance;
+        }
+        return cost;
     }
 }

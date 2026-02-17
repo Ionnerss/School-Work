@@ -3,6 +3,7 @@ package AssignmentsS2.Assignment1.src.travel;
 public class Bus extends Transportation {
     private String busCompany;
     private int numOfStops;
+    private Trip trip;
 
     public Bus() {
         super();
@@ -46,7 +47,6 @@ public class Bus extends Transportation {
 
     @Override
     public double calculateCost(int numOfDays) {
-        double costPerDay = 100;
-        return (double) costPerDay * numOfDays;
+        return ( (double) trip.getBasePrice() + (5.00 * (double) numOfStops));
     }
 }

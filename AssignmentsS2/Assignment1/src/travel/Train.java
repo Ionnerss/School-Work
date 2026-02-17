@@ -2,6 +2,7 @@ package AssignmentsS2.Assignment1.src.travel;
 
 public class Train extends Transportation {
     private String trainType, seatClass;
+    private Trip trip;
 
     public Train() {
         super();
@@ -45,7 +46,9 @@ public class Train extends Transportation {
 
     @Override
     public double calculateCost(int numOfDays) {
-        double costPerDay = 100;
-        return (double) costPerDay * numOfDays;
+        double cost = trip.getBasePrice();
+        if (seatClass.equalsIgnoreCase("First Class"))
+            cost *= 1.50;
+        return cost;
     }
 }
