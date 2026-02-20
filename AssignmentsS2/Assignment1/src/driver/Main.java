@@ -25,8 +25,21 @@ public class Main {
 
         switch (choice) {
             case 1 -> testing = true;
-            case 2 -> testing = false;
-            default -> testing = false;
+            case 2 -> {
+                testing = false;
+                client = new Client[1];
+                trip = new Trip[1];
+                transportation = new Transportation[1];
+                accomodation = new Accomodation[1];
+            }
+            default -> {
+                testing = false;
+                testing = false;
+                client = new Client[1];
+                trip = new Trip[1];
+                transportation = new Transportation[1];
+                accomodation = new Accomodation[1];
+            }
         }
 
         do{
@@ -66,6 +79,7 @@ public class Main {
         System.out.println("Program Termination Succesfull!");
     }
 
+    private static String clientID;
     private static boolean clientManagment() {
         backToMain = true;
 
@@ -82,7 +96,7 @@ public class Main {
             choice = scanner.nextInt();
     
                 switch (choice) {
-                    case 1:
+                    case 1 -> {
                         backToSubmenu = true;
 
                         System.out.println(">. Please enter client details as follows: first name, last name, email adress:");
@@ -96,110 +110,107 @@ public class Main {
                         String lastName = scanner.nextLine();
                         System.out.println();
         
-                        System.out.print("Email Adress: ");
+                        System.out.print(">. Email Adress: ");
                         String emailAdress = scanner.nextLine();
                         System.out.println();
         
                         index = client.length;
-                        client[index] = new Client();
-                        client[index].setFirstName(firstName);
-                        client[index].setLastName(lastName);
-                        client[index].setEmailAdress(emailAdress);
+                        client[index] = new Client(firstName, lastName, emailAdress);
                         
                         System.out.println();
-                        System.out.println("Client added successfully.");
-                        break;
-                case 2:
+                        System.out.println(">. Client added successfully.");
+                    }
+                case 2 -> {
                     backToSubmenu = true;
 
                     index = 1;
                     for (Client person : client) {
-                        System.out.println(index++ + ". " + person.toString());
+                        System.out.println(person.toString());
                     }
                     System.out.println();
-                    System.out.print(">. Please enter client who's information you would like to update: ");
-                    choice = scanner.nextInt();
+                    System.out.print(">. Please enter client id who's information you would like to update: ");
+                    clientID = scanner.next();
                     
+                    index = -1;
+                    for (int i = 0; i < client.length; i++) {
+                        if (client[i] != null && client[i].getClientID().equalsIgnoreCase(clientID)) {
+                            index = i;
+                            break;
+                        }
+                    }   
+
+                    if (index == -1) {
+                        System.out.println("Client not found.");
+                        break;
+                    }
+
                     System.out.println();
                     System.out.print(">. Updated first name: ");
-                    firstName = scanner.next();
+                    String firstName = scanner.next();
 
                     System.out.println();
                     System.out.print(">. Updated last name: ");
-                    lastName = scanner.next();
+                    String lastName = scanner.next();
                     
                     System.out.println();
                     System.out.print(">. Updated email adress: ");
-                    emailAdress = scanner.next();
+                    String emailAdress = scanner.next();
     
                     Client newClient = new Client(firstName, lastName, emailAdress);
                     addInfo(newClient);
     
-                    System.out.println("Client info updated succesfully.");
+                    System.out.println(">. Client info updated succesfully.");
                     System.out.println();
-                    break;
-                case 3:
+                }
+                case 3 -> {
                     backToSubmenu = true;
-
-
-
-
-
-
-                    // public boolean removeGC(int whichCard) {
-                    //     GymCard[] updatedList = new GymCard[this.gymCards.length - 1];
-
-                    //     if (whichCard == 0) {
-                    //         System.arraycopy(this.gymCards, 1, updatedList, 0, this.gymCards.length - 1);
-                    //     }
-                    //     else if (whichCard == 1) {
-                    //         System.arraycopy(this.gymCards, 0, updatedList, 0, whichCard);
-                    //     }
-                    //     else {
-                    //         System.arraycopy(this.gymCards, 0, updatedList, 0, whichCard - 1);
-                    //         System.arraycopy(this.gymCards, whichCard, updatedList, whichCard - 1, (this.gymCards.length - (whichCard + 1)));
-                    //     }
-
-                    //     if (updatedList.length >= this.gymCards.length)
-                    //         return false;
-                    //     else {
-                    //         this.gymCards = updatedList;
-                    //         return true;
-                    //     }
-                    // }
-
-
-
-
-
-
-
-
-
-
-
-
 
                     index = 1;
                     for (Client person : client) {
-                        System.out.println(index++ + ". " + person.toString());
+                        System.out.println(person.toString());
                     }
 
                     System.out.println();
-                    System.out.print(">. Please enter client who's information you would like to delete: ");
-                    choice = scanner.nextInt();
+                    System.out.print(">. Please enter client ID who's information you would like to delete: ");
+                    clientID = scanner.next();
 
+                    index = -1;
+                    for (int i = 0; i < client.length; i++) {
+                        if (client[i] != null && client[i].getClientID().equalsIgnoreCase(clientID)) {
+                            index = i;
+                            break;
+                        }
+                    }   
 
+                    if (index == -1) {
+                        System.out.println("Client not found.");
+                        break;
+                    }
 
+                    Client[] updatedList = new Client[client.length - 1];
+                    if (index == 0)
+                        System.arraycopy(client, 1, updatedList, 0, client.length);
+                    else {
+                        System.arraycopy(client, 0, updatedList, 0, index - 1);
+                        System.arraycopy(client, index, updatedList, index - 1, client.length);
+                    }
+                    client = updatedList;
+                }
+                case 4 -> {
+                    backToSubmenu = true;
 
-
-                    break;
-                case 4:
-                    break;
-                case 5:
-                    break;
-                default:
-                    break;
+                    index = 1;
+                    for (Client person : client) {
+                        System.out.println(person.toString());
+                    }
+                    System.out.println();
+                }
+                case 5 -> backToSubmenu = false;
+                default -> {
+                    backToSubmenu = true;
+                    System.out.println(">. Please reenter an option.");
+                    System.out.println();
+                }
             }
 
         }
@@ -209,33 +220,109 @@ public class Main {
     }
 
     private static boolean tripManagment() {
-        System.out.println("""
-                What would you like to do?
-                1. Create a trip
-                2. Edit trip information
-                3. Cancel a trip
-                4. List all trips
-                5. List all trips for a specific client
-                6. Generate Visualization
-                5. Exit
-                >. Please enter option: """);
-        
-        choice = scanner.nextInt();
+        do { 
+            backToSubmenu = true;
 
-        switch (choice) {
-            case 1:
-                break;
-            case 2:
-                break;
-            case 3:
-                break;
-            case 4:
-                break;
-            case 5:
-                break;
-            default:
-                break;
-        }
+            System.out.println("""
+                    What would you like to do?
+                    1. Create a trip
+                    2. Edit trip information
+                    3. Cancel a trip
+                    4. List all trips
+                    5. List all trips for a specific client
+                    6. Generate Visualization
+                    5. Exit
+                    >. Please enter option: """);
+            
+            choice = scanner.nextInt();
+    
+            switch (choice) {
+                case 1 -> {
+                    backToSubmenu = true;
+
+                    System.out.println(">. Please enter trip details as follows: destination, duration, base price, and client: ");
+                    scanner.nextLine();
+    
+                    System.out.print(">. Destination: ");
+                    String destination = scanner.nextLine();
+                    System.out.println();
+    
+                    System.out.print(">. Duration: ");
+                    int duration = scanner.nextInt();
+                    System.out.println();
+    
+                    System.out.print(">. Base Price: ");
+                    double basePrice = scanner.nextDouble();
+                    System.out.println();
+
+                    System.out.print(">. Client First Name: ");
+                    String firstName = scanner.nextLine();
+                    System.out.println();
+    
+                    System.out.print(">. Client Last Name: ");
+                    String lastName = scanner.nextLine();
+                    System.out.println();
+    
+                    System.out.print(">. Client Email Adress: ");
+                    String emailAdress = scanner.nextLine();
+                    System.out.println();
+                    
+                    Client tempClient = new Client(firstName, lastName, emailAdress);
+
+                    boolean doesExist = false;
+                    for (Client clientInList : client) {
+                        if (tempClient.equals(clientInList)) {
+                            doesExist = true;
+
+                            index = trip.length;
+                            trip[index] = new Trip(destination, duration, basePrice, tempClient);
+
+                            System.out.println();
+                            System.out.println(">. Client added successfully.");
+                        }
+                    }
+
+                    if (!doesExist) {
+                        System.out.println();
+                        System.out.println(">. Client not found. No operations were performed.");
+                    }
+                }
+
+                case 2 -> {
+                    backToSubmenu = true;
+
+                    index = 1;
+                    for (Trip trips : trip) {
+                        System.out.println(index++ + ". " + trips.toString());
+                    }
+                    System.out.println();
+                    System.out.print(">. Please enter trip id who's information you would like to update: ");
+                    choice = scanner.nextInt();
+
+
+                    
+                    System.out.println();
+                    System.out.print(">. Updated first name: ");
+                    String firstName = scanner.next();
+
+                    System.out.println();
+                    System.out.print(">. Updated last name: ");
+                    String lastName = scanner.next();
+                    
+                    System.out.println();
+                    System.out.print(">. Updated email adress: ");
+                    String emailAdress = scanner.next();
+    
+                    Client newClient = new Client(firstName, lastName, emailAdress);
+                    addInfo(newClient);
+    
+                    System.out.println(">. Client info updated succesfully.");
+                    System.out.println();
+                }
+            }
+        } 
+        while (backToSubmenu);
+
         return backToMain;
     }
 
@@ -412,4 +499,49 @@ public class Main {
             }
         }
     }
+
+    // private static void dataCollection(Object type, boolean update) {
+    //     if (type instanceof Client) {
+    //         System.out.print(">. " + (update ? "Updated" : "") + " First Name: ");
+    //         String firstName = scanner.nextLine();
+    //         System.out.println();
+
+    //         System.out.print(">. " + (update ? "Updated" : "") + " Last Name: ");
+    //         String lastName = scanner.nextLine();
+    //         System.out.println();
+
+    //         System.out.print(">. " + (update ? "Updated" : "") + " Email Adress: ");
+    //         String emailAdress = scanner.nextLine();
+    //         System.out.println();
+    //     }   
+    // }
+
+    // private static <T> T[] addToArray(T[] originalArray, T newElement) {
+    //     if (!testing) {
+    //         if (originalArray[1] == null) {
+    //             originalArray[1] = newElement;
+    //             return originalArray;
+    //         }
+    //         else {
+    //             Object[] arrayCopy = new Object[originalArray.length + 1];
+    //             System.arraycopy(originalArray, 0, arrayCopy, 0, originalArray.length);
+    //             arrayCopy[originalArray.length] = (T) newElement;
+    //             T[] s = (T) arrayCopy;
+    //             return (T[]) arrayCopy;
+    //         } 
+    //     }
+    // }
+
+    // public static int[] addToArray(int[] arr, int value) {
+    // if (arr == null) {
+    //     return new int[] { value };
+    // }
+
+    // int[] out = new int[arr.length + 1];
+
+    // System.arraycopy(arr, 0, out, 0, arr.length);
+
+    // out[out.length - 1] = value;
+    // return out;
+    // }
 }

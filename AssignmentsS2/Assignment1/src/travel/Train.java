@@ -40,8 +40,8 @@ public class Train extends Transportation {
         Train otherTrain = (Train) other;
 
         return super.equals(otherTrain)
-            && this.trainType == otherTrain.trainType
-            && this.seatClass == otherTrain.seatClass;
+            && this.trainType.equals(otherTrain.trainType)
+            && this.seatClass.equals(otherTrain.seatClass);
     }
 
     @Override

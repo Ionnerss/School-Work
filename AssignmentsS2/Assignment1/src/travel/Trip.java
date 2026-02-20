@@ -36,7 +36,6 @@ public class Trip {
     }
 
     public String getTripId() {return tripID;}
-    public void setTripId(String tripID) {this.tripID = tripID;}
 
     public String getDestination() {return destination;}
     public void setDestination(String destination) {this.destination = destination;}

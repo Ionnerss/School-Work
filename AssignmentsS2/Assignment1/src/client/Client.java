@@ -38,7 +38,7 @@ public class Client {
     public void setEmailAdress(String emailAdress) {this.emailAdress = emailAdress;}
 
     @Override
-    public String toString() {return this.clientID + ", " + this.firstName + ", " + this.lastName + ", " + this.emailAdress;}
+    public String toString() {return "| " + this.clientID + ": " + this.firstName + ", " + this.lastName + ", " + this.emailAdress;}
 
     @Override
     public boolean equals(Object other) {
