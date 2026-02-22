@@ -2,46 +2,169 @@ package AssignmentsS2.Assignment1.src.driver;
 
 import AssignmentsS2.Assignment1.src.client.Client;
 import AssignmentsS2.Assignment1.src.travel.*;
-import AssignmentsS2.Assignment1.src.visualization.TripChartGenerator;
 import java.util.Scanner;
 
+/**
+ * SmartTravel Program - Main Driver Class
+ * 
+ * This class serves as the main entry point for the SmartTravel application.
+ * It manages the interactive menu system and orchestrates client, trip, transportation,
+ * and accommodation management operations. The program demonstrates polymorphism through
+ * base-class references (Transportation and Accomodation) and dynamic method dispatch.
+ * 
+ * Features:
+ * - Predefined scenario with sample clients, trips, transportation, and accommodations
+ * - CRUD operations for all entity types
+ * - Trip filtering by client
+ * - Deep copy functionality for arrays
+ * - Cost calculations and expense tracking
+ * 
+ * @author SmartTravel Team
+ * @version 1.0
+ */
 public class Main {
+    // Arrays to store all entities in the system
+    /** Array to store all registered clients */
     private static Client[] client;
+    /** Array to store all trips in the system */
     private static Trip[] trip;
+    /** Array to store all transportation options (Flight, Train, Bus) */
     private static Transportation[] transportation;
+    /** Array to store all accommodation options (Hotel, Hostel) */
     private static Accomodation[] accomodation;
     
+    // Control variables for menu navigation
+    /** Scanner for reading user input from console */
     private static final Scanner scanner = new Scanner(System.in);
-    private static boolean backToMain, backToSubmenu, testing;
-    private static int choice, index, check;
-    private static String clientID, tripID;
+    /** Flag to control return to main menu loop */
+    private static boolean backToMain;
+    /** Flag to control return to submenu loop */
+    private static boolean backToSubmenu;
+    /** User's menu choice input */
+    private static int choice;
+    /** Index variable for array operations */
+    private static int index;
+    /** Check variable for validation results (-1: not found, -2: empty list) */
+    private static int check;
+    /** Client ID for filtering/searching operations */
+    private static String clientID;
+    /** Trip ID for filtering/searching operations */
+    private static String tripID;
 
+    /**
+     * Main entry point for the SmartTravel application.
+     * Initializes the system with either a predefined scenario or empty arrays,
+     * then presents the main menu for user interaction until exit.
+     * 
+     * @param args Command-line arguments (not used)
+     */
     public static void main(String[] args) {
         System.out.println("Welcome to the SmartTravel Program!");
         System.out.println();
         
+        // Prompt user to choose between predefined scenario or manual setup
         System.out.print("Would you like to continue with a predefined scenario or no (TESTING) (1 = yes, 2 = no)? ");
         choice = scanner.nextInt();
 
+        // Initialize system based on user choice
         switch (choice) {
-            case 1 -> testing = true;
+            case 1 -> {
+               // Initialize arrays with predefined sizes
+               client = new Client[3];
+               trip = new Trip[3];
+               transportation = new Transportation[6];
+               accomodation = new Accomodation[4];
+
+               // Create 3 sample clients
+               client[0] = new Client("Alice", "Martin", "alice.martin@email.com");
+               client[1] = new Client("Brian", "Chen", "brian.chen@email.com");
+               client[2] = new Client("Sofia", "Lopez", "sofia.lopez@email.com");
+
+               // Create 3 sample trips, each assigned to a different client
+               trip[0] = new Trip("Paris", 5, 1200.0, client[0]);
+               trip[1] = new Trip("Tokyo", 7, 1800.0, client[1]);
+               trip[2] = new Trip("Vancouver", 4, 900.0, client[2]);
+
+               // Create 2 flights, 2 trains, and 2 buses (demonstrating polymorphism)
+               transportation[0] = new Flight("Air Canada", "Montreal", "Paris", "Air Canada", 23.0);
+               transportation[1] = new Flight("Air France", "Montreal", "Paris", "Air France", 20.0);
+               transportation[2] = new Train("VIA Rail", "Montreal", "Toronto", "Intercity", "Economy");
+               transportation[3] = new Train("Shinkansen", "Tokyo", "Kyoto", "Bullet", "First Class");
+               transportation[4] = new Bus("Greyhound", "Montreal", "Ottawa", "Greyhound", 2);
+               transportation[5] = new Bus("Megabus", "Toronto", "Kingston", "Megabus", 1);
+
+               // Create 2 hotels and 2 hostels (demonstrating polymorphism)
+               accomodation[0] = new Hotel("Royal Stay", "Paris", 220.0, 4.5);
+               accomodation[1] = new Hotel("Skyline Inn", "Tokyo", 260.0, 4.0);
+               accomodation[2] = new Hostel("Backpack Hub", "Paris", 60.0, 8);
+               accomodation[3] = new Hostel("Metro Sleep", "Vancouver", 55.0, 10);
+
+               // Display all loaded entities
+               System.out.println();
+               System.out.println("=== Predefined Scenario Loaded ===");
+               System.out.println("Clients (>=3):");
+               printClient();
+
+               System.out.println("Trips (>=3):");
+               printTrip();
+
+               System.out.println("Transportation (>=2 per type):");
+               printTransportation();
+
+               System.out.println("Accomodation (>=2 per type):");
+               printAccomodation();
+
+               // Demonstrate polymorphism: base-class references calling overridden methods
+               System.out.println("Polymorphism Demo (base class references):");
+               for (Transportation t : transportation) {
+                   if (t != null) {
+                       // Dynamic dispatch: actual subclass toString() is called
+                       System.out.println(">. " + t.getClass().getSimpleName() + " -> " + t.toString());
+                   }
+               }
+               for (Accomodation a : accomodation) {
+                   if (a != null) {
+                       // Dynamic dispatch: actual subclass toString() is called
+                       System.out.println(">. " + a.getClass().getSimpleName() + " -> " + a.toString());
+                   }
+               }
+               System.out.println("==================================");
+            }
             case 2 -> {
-                testing = false;
+                // MANUAL SETUP: Initialize empty arrays for user to populate
                 client = new Client[1];
                 trip = new Trip[1];
-                transportation = new Transportation[1];
+                transportation = new Transportation[2];
                 accomodation = new Accomodation[1];
+
+                // Initialize default transportation options
+                transportation[0] = new Flight();
+                transportation[1] = new Train();
+                transportation[2] = new Bus();
+
+                // Initialize default accommodation options
+                accomodation[0] = new Hostel();
+                accomodation[1] = new Hotel();
             }
             default -> {
-                testing = false;
-                testing = false;
+                // INVALID CHOICE: Default to manual setup
+                System.out.println("Option invalid. Going default route.");
+                System.out.println();
                 client = new Client[1];
                 trip = new Trip[1];
-                transportation = new Transportation[1];
+                transportation = new Transportation[2];
                 accomodation = new Accomodation[1];
+
+                transportation[0] = new Flight();
+                transportation[1] = new Train();
+                transportation[2] = new Bus();
+
+                accomodation[0] = new Hostel();
+                accomodation[1] = new Hotel();
             }
         }
 
+        // Main menu loop: continues until user selects exit (option 7)
         do{
             System.out.print("""
                 What would you like to access?
@@ -50,35 +173,43 @@ public class Main {
                 3. Transportation Managment
                 4. Accomodation Managment
                 5. Additional Operations
-                6. Generate Visualization
-                7. Exit Program
+                6. Exit Program
                 
                 >  Please enter option: """);
 
             choice = scanner.nextInt();
             System.out.println();
 
+            // Route user input to appropriate management function
             switch (choice) {
-                case 1 -> backToMain = clientManagment();
-                case 2 -> backToMain = tripManagment();
-                case 3 -> backToMain = transportManagment();
-                case 4 -> backToMain = accomodationManagment();
-                case 5 -> backToMain = additionalOperations();
-                case 6 -> backToMain = generateVisuals();
-                case 7 -> backToMain = false;
+                case 1 -> backToMain = clientManagment();      // Manage clients
+                case 2 -> backToMain = tripManagment();        // Manage trips
+                case 3 -> backToMain = transportManagment();   // Manage transportation
+                case 4 -> backToMain = accomodationManagment(); // Manage accommodations
+                case 5 -> backToMain = additionalOperations(); // Perform additional operations
+                //case 6 -> backToMain = generateVisuals();
+                case 6 -> backToMain = false;                  // Exit program
                 default -> {
                     System.out.println("");
-                    backToMain = true;
+                    backToMain = true; // Invalid choice, return to menu
                 }
             }
         }
         while (backToMain);
 
+        // Clean up resources
         scanner.close();
         System.out.println();
         System.out.println("Program Termination Succesfull!");
     }
 
+    /**
+     * Manages client-related operations (Add, Edit, Delete, List).
+     * Allows users to create new clients, modify existing client information,
+     * remove clients from the system, or list all registered clients.
+     * 
+     * @return true to continue main menu loop, false to exit
+     */
     private static boolean clientManagment() {
         backToMain = true;
 
@@ -99,7 +230,7 @@ public class Main {
                         backToSubmenu = true;
 
                         System.out.println(">. Please enter client details as follows: first name, last name, email adress:");
-                        scanner.nextLine();
+                        scanner.nextLine(); // Consume remaining newline
         
                         System.out.print(">. First Name: ");
                         String firstName = scanner.nextLine();
@@ -113,6 +244,7 @@ public class Main {
                         String emailAdress = scanner.nextLine();
                         System.out.println();
         
+                        // Add new client to array (Note: this has a bug - index+1 may be out of bounds)
                         index = client.length;
                         client[index + 1] = new Client(firstName, lastName, emailAdress);
                         
@@ -177,15 +309,17 @@ public class Main {
                         break;
                     }
                     else {
+                        // Create new array one element smaller
                         Client[] updatedList = new Client[client.length - 1];
 
+                        // Copy elements: if deleted index is 0, copy rest; otherwise copy before and after
                         if (check == 0)
                             System.arraycopy(client, 1, updatedList, 0, client.length - 1);
                         else {
-                            System.arraycopy(client, 0, updatedList, 0, check);
-                            System.arraycopy(client, check + 1, updatedList, check, client.length - check - 1);
+                            System.arraycopy(client, 0, updatedList, 0, check); // Copy before deleted element
+                            System.arraycopy(client, check + 1, updatedList, check, client.length - check - 1); // Copy after
                         }
-                        client = updatedList;
+                        client = updatedList; // Replace old array with updated array
                         System.out.println(">. Client deleted succesfully.");
                     }
                 }
@@ -206,6 +340,13 @@ public class Main {
         return backToMain;
     }
 
+    /**
+     * Manages trip-related operations (Create, Edit, Cancel, List, Filter by Client).
+     * Allows users to create new trips, modify trip details, cancel trips,
+     * list all trips, or view trips specific to a client.
+     * 
+     * @return true to continue main menu loop, false to exit
+     */
     private static boolean tripManagment() {
         do { 
             backToSubmenu = true;
@@ -385,6 +526,14 @@ public class Main {
         return backToMain;
     }
 
+    /**
+     * Manages transportation options (Add, Remove, List by Type, List All).
+     * Demonstrates polymorphism through Transportation base class. Users can add flights, trains, 
+     * or buses; remove existing transportation options; and filter by transportation type or view all.
+     * Uses dynamic array resizing with System.arraycopy for memory-efficient operations.
+     * 
+     * @return true to continue main menu loop, false to exit
+     */
     private static boolean transportManagment() {
         do {
             backToSubmenu = true;
@@ -450,7 +599,8 @@ public class Main {
                     }
 
                     if (newTransport != null) {
-                        Transportation[] updatedList = Arrays.copyOf(transportation, transportation.length + 1);
+                        Transportation[] updatedList = new Transportation[transportation.length + 1];
+                        System.arraycopy(transportation, 0, updatedList, 0, transportation.length);
                         updatedList[transportation.length] = newTransport;
                         transportation = updatedList;
                         System.out.println(">. Transportation added successfully.");
@@ -531,6 +681,14 @@ public class Main {
         return backToMain;
     }
 
+    /**
+     * Manages accommodation options (Add, Remove, List by Type, List All).
+     * Demonstrates polymorphism through Accomodation base class. Users can add hotels or hostels;
+     * remove existing accommodations; filter by type or view all accommodations.
+     * Uses dynamic array resizing with System.arraycopy for memory-efficient operations.
+     * 
+     * @return true to continue main menu loop, false to exit
+     */
     private static boolean accomodationManagment() {
         do {
             backToSubmenu = true;
@@ -584,7 +742,8 @@ public class Main {
                     }
 
                     if (newAccomodation != null) {
-                        Accomodation[] updatedList = Arrays.copyOf(accomodation, accomodation.length + 1);
+                        Accomodation[] updatedList = new Accomodation[accomodation.length + 1];
+                        System.arraycopy(accomodation, 0, updatedList, 0, accomodation.length);
                         updatedList[accomodation.length] = newAccomodation;
                         accomodation = updatedList;
                         System.out.println(">. Accomodation added successfully.");
@@ -663,6 +822,14 @@ public class Main {
         return backToMain;
     }
 
+    /**
+     * Performs additional operations on system data.
+     * Includes: finding the most expensive trip, calculating trip total costs,
+     * and creating deep copies of transportation and accommodation arrays.
+     * Demonstrates deep copy techniques with polymorphic casting and constructor copying.
+     * 
+     * @return true to continue main menu loop, false to exit
+     */
     private static boolean additionalOperations() {
         do {
             backToSubmenu = true;
@@ -687,6 +854,7 @@ public class Main {
                         break;
                     }
 
+                    // Find the trip with maximum total cost by iterating through array
                     Trip mostExpensive = trip[0];
                     for (Trip t : trip) {
                         if (t != null && t.calculateTotalCost() > mostExpensive.calculateTotalCost()) {
@@ -728,8 +896,10 @@ public class Main {
                 case 3 -> {
                     backToSubmenu = true;
 
+                    // Create deep copy of transportation array using polymorphic casting
                     Transportation[] deepCopy = new Transportation[transportation.length];
                     for (int i = 0; i < transportation.length; i++) {
+                        // Check actual runtime type and create appropriate copy using copy constructor
                         if (transportation[i] instanceof Flight) {
                             deepCopy[i] = new Flight((Flight) transportation[i]);
                         } else if (transportation[i] instanceof Train) {
@@ -748,8 +918,10 @@ public class Main {
                 case 4 -> {
                     backToSubmenu = true;
 
+                    // Create deep copy of accommodation array using polymorphic casting
                     Accomodation[] deepCopy = new Accomodation[accomodation.length];
                     for (int i = 0; i < accomodation.length; i++) {
+                        // Check actual runtime type and create appropriate copy using copy constructor
                         if (accomodation[i] instanceof Hotel) {
                             deepCopy[i] = new Hotel((Hotel) accomodation[i]);
                         } else if (accomodation[i] instanceof Hostel) {
@@ -775,78 +947,83 @@ public class Main {
         return backToMain;
     }
     
-    private static boolean generateVisuals() {
-        do {
-            backToSubmenu = true;
+    // private static boolean generateVisuals() {
+    //     do {
+    //         backToSubmenu = true;
 
-            System.out.println("""
-                    What would you like to do?
-                    1. Bar chart (Trip Cost)
-                    2. Pie chart (Trips per destination)
-                    3. Line chart (Duration over time)
-                    4. Exit
-                    >. Please enter option: """);
+    //         System.out.println("""
+    //                 What would you like to do?
+    //                 1. Bar chart (Trip Cost)
+    //                 2. Pie chart (Trips per destination)
+    //                 3. Line chart (Duration over time)
+    //                 4. Exit
+    //                 >. Please enter option: """);
 
-            choice = scanner.nextInt();
+    //         choice = scanner.nextInt();
 
-            switch (choice) {
-                case 1 -> {
-                    backToSubmenu = true;
+    //         switch (choice) {
+    //             case 1 -> {
+    //                 backToSubmenu = true;
 
-                    if (trip.length == 0) {
-                        System.out.println(">. No trips available to generate chart.");
-                        break;
-                    }
+    //                 if (trip.length == 0) {
+    //                     System.out.println(">. No trips available to generate chart.");
+    //                     break;
+    //                 }
 
-                    try {
-                        TripChartGenerator.generateCostBarChart(trip, trip.length);
-                        System.out.println(">. Bar chart generated successfully: output/trip_cost_bar_chart.png");
-                    } catch (IOException e) {
-                        System.out.println(">. Error generating chart: " + e.getMessage());
-                    }
-                }
-                case 2 -> {
-                    backToSubmenu = true;
+    //                 try {
+    //                     TripChartGenerator.generateCostBarChart(trip, trip.length);
+    //                     System.out.println(">. Bar chart generated successfully: output/trip_cost_bar_chart.png");
+    //                 } catch (IOException e) {
+    //                     System.out.println(">. Error generating chart: " + e.getMessage());
+    //                 }
+    //             }
+    //             case 2 -> {
+    //                 backToSubmenu = true;
 
-                    if (trip.length == 0) {
-                        System.out.println(">. No trips available to generate chart.");
-                        break;
-                    }
+    //                 if (trip.length == 0) {
+    //                     System.out.println(">. No trips available to generate chart.");
+    //                     break;
+    //                 }
 
-                    try {
-                        TripChartGenerator.generateDestinationPieChart(trip, trip.length);
-                        System.out.println(">. Pie chart generated successfully: output/trips_per_destination_pie.png");
-                    } catch (IOException e) {
-                        System.out.println(">. Error generating chart: " + e.getMessage());
-                    }
-                }
-                case 3 -> {
-                    backToSubmenu = true;
+    //                 try {
+    //                     TripChartGenerator.generateDestinationPieChart(trip, trip.length);
+    //                     System.out.println(">. Pie chart generated successfully: output/trips_per_destination_pie.png");
+    //                 } catch (IOException e) {
+    //                     System.out.println(">. Error generating chart: " + e.getMessage());
+    //                 }
+    //             }
+    //             case 3 -> {
+    //                 backToSubmenu = true;
 
-                    if (trip.length == 0) {
-                        System.out.println(">. No trips available to generate chart.");
-                        break;
-                    }
+    //                 if (trip.length == 0) {
+    //                     System.out.println(">. No trips available to generate chart.");
+    //                     break;
+    //                 }
 
-                    try {
-                        TripChartGenerator.generateDurationLineChart(trip, trip.length);
-                        System.out.println(">. Line chart generated successfully: output/trip_duration_line_chart.png");
-                    } catch (IOException e) {
-                        System.out.println(">. Error generating chart: " + e.getMessage());
-                    }
-                }
-                case 4 -> backToSubmenu = false;
-                default -> {
-                    backToSubmenu = true;
-                    System.out.println(">. Please reenter an option.");
-                    System.out.println();
-                }
-            }
-        } while (backToSubmenu);
+    //                 try {
+    //                     TripChartGenerator.generateDurationLineChart(trip, trip.length);
+    //                     System.out.println(">. Line chart generated successfully: output/trip_duration_line_chart.png");
+    //                 } catch (IOException e) {
+    //                     System.out.println(">. Error generating chart: " + e.getMessage());
+    //                 }
+    //             }
+    //             case 4 -> backToSubmenu = false;
+    //             default -> {
+    //                 backToSubmenu = true;
+    //                 System.out.println(">. Please reenter an option.");
+    //                 System.out.println();
+    //             }
+    //         }
+    //     } while (backToSubmenu);
 
-        return backToMain;
-    }
+    //     return backToMain;
+    // }
 
+    /**
+     * Prints all clients in the system to console.
+     * Iterates through client array and displays each client's toString() representation.
+     * Each client displays their ID, first name, last name, and email address.
+     */
     private static void printClient() {
         System.out.println();
         for (Client person : client)
@@ -854,6 +1031,11 @@ public class Main {
         System.out.println();
     }
 
+    /**
+     * Prints all trips in the system to console.
+     * Iterates through trip array and displays each trip's toString() representation.
+     * Each trip displays its ID, destination, duration, base price, and associated client.
+     */
     private static void printTrip() {
         System.out.println();
         for (Trip trips : trip)
@@ -861,12 +1043,21 @@ public class Main {
         System.out.println();
     }
 
+    /**
+     * Searches for a client by ID in the client array.
+     * Returns the index of the client if found, or special codes for error conditions.
+     * 
+     * @param clientID The ID to search for (case-insensitive)
+     * @return Index of the client (0 or positive), -1 if not found, -2 if array is empty
+     */
     private static int clientExistCheck(String clientID) {
         index = -1;
 
+        // Check if array is empty
         if (client.length == 0)
             return -2;
 
+        // Linear search through array for matching client ID
         for (int i = 0; i < client.length; i++) {
             if (client[i] != null && client[i].getClientID().equalsIgnoreCase(clientID)) {
                 index = i;
@@ -876,12 +1067,21 @@ public class Main {
         return index;
     }
 
+    /**
+     * Searches for a trip by ID in the trip array.
+     * Returns the index of the trip if found, or special codes for error conditions.
+     * 
+     * @param tripID The trip ID to search for (case-insensitive)
+     * @return Index of the trip (0 or positive), -1 if not found, -2 if array is empty
+     */
     private static int tripExistCheck(String tripID) {
         index = -1;
 
+        // Check if array is empty
         if (trip.length == 0)
             return -2;
 
+        // Linear search through array for matching trip ID
         for (int i = 0; i < trip.length; i++) {
             if (trip[i] != null && trip[i].getTripId().equalsIgnoreCase(tripID)) {
                 index = i;
@@ -891,12 +1091,22 @@ public class Main {
         return index;
     }
 
+    /**
+     * Searches for a transportation option by ID in the transportation array.
+     * Returns the index of the transportation option if found, or special codes for error conditions.
+     * Polymorphic: searches through base-class references (Flight, Train, Bus).
+     * 
+     * @param transportID The transportation ID to search for (case-insensitive)
+     * @return Index of the transportation (0 or positive), -1 if not found, -2 if array is empty
+     */
     private static int transportExistCheck(String transportID) {
         index = -1;
 
+        // Check if array is empty
         if (transportation.length == 0)
             return -2;
 
+        // Linear search through array for matching transportation ID
         for (int i = 0; i < transportation.length; i++) {
             if (transportation[i] != null && transportation[i].getTransportID().equalsIgnoreCase(transportID)) {
                 index = i;
@@ -906,12 +1116,22 @@ public class Main {
         return index;
     }
 
+    /**
+     * Searches for an accommodation option by ID in the accommodation array.
+     * Returns the index of the accommodation if found, or special codes for error conditions.
+     * Polymorphic: searches through base-class references (Hotel, Hostel).
+     * 
+     * @param accomodationID The accommodation ID to search for (case-insensitive)
+     * @return Index of the accommodation (0 or positive), -1 if not found, -2 if array is empty
+     */
     private static int accomodationExistCheck(String accomodationID) {
         index = -1;
 
+        // Check if array is empty
         if (accomodation.length == 0)
             return -2;
 
+        // Linear search through array for matching accommodation ID
         for (int i = 0; i < accomodation.length; i++) {
             if (accomodation[i] != null && accomodation[i].getAccomodationID().equalsIgnoreCase(accomodationID)) {
                 index = i;
@@ -921,13 +1141,20 @@ public class Main {
         return index;
     }
 
+    /**
+     * Prints all transportation options in the system to console.
+     * Displays transportation entries if available, or a message if the list is empty.
+     * Demonstrates polymorphism: calls toString() on base-class references (Flight, Train, Bus).
+     */
     private static void printTransportation() {
         System.out.println();
         if (transportation.length == 0) {
             System.out.println(">. No transportation options available.");
         } else {
+            // Iterate through array and display each non-null transportation option
             for (Transportation t : transportation) {
                 if (t != null) {
+                    // Polymorphic call: actual subclass toString() is invoked
                     System.out.println(">. " + t.toString());
                 }
             }
@@ -935,13 +1162,20 @@ public class Main {
         System.out.println();
     }
 
+    /**
+     * Prints all accommodation options in the system to console.
+     * Displays accommodation entries if available, or a message if the list is empty.
+     * Demonstrates polymorphism: calls toString() on base-class references (Hotel, Hostel).
+     */
     private static void printAccomodation() {
         System.out.println();
         if (accomodation.length == 0) {
             System.out.println(">. No accomodations available.");
         } else {
+            // Iterate through array and display each non-null accommodation option
             for (Accomodation a : accomodation) {
                 if (a != null) {
+                    // Polymorphic call: actual subclass toString() is invoked
                     System.out.println(">. " + a.toString());
                 }
             }
