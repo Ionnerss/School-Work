@@ -1,4 +1,9 @@
 package AssignmentsS2.Assignment1.src.travel;
+// -------------------------------------------------------- 
+// Assignment 1 - Bus Class
+// Written by: Catalin-Ion Besleaga (40347936)
+// For COMP 248 Section S – Fall 2025
+// --------------------------------------------------------
 
 public class Bus extends Transportation {
     private String busCompany;

@@ -1,4 +1,9 @@
 package AssignmentsS2.Assignment1.src.driver;
+// -------------------------------------------------------- 
+// Assignment 1 - Main driver
+// Written by: Catalin-Ion Besleaga (40347936)
+// For COMP 248 Section S – Fall 2025
+// --------------------------------------------------------
 
 import AssignmentsS2.Assignment1.src.client.Client;
 import AssignmentsS2.Assignment1.src.travel.*;
