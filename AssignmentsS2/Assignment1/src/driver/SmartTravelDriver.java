@@ -27,7 +27,7 @@ import java.util.Scanner;
  * @author SmartTravel Team
  * @version 1.0
  */
-public class Main {
+public class SmartTravelDriver {
     // Arrays to store all entities in the system
     /** Array to store all registered clients */
     private static Client[] client;
