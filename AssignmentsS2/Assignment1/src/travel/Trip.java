@@ -6,6 +6,7 @@ package AssignmentsS2.Assignment1.src.travel;
 // --------------------------------------------------------
 
 import AssignmentsS2.Assignment1.src.client.Client;
+import AssignmentsS2.Assignment1.src.exceptions.InvalidTripDataException;
 
 public class Trip {
     private static int nextID = 2001;
@@ -24,12 +25,12 @@ public class Trip {
         this.client = null;
     }
 
-    public Trip(String destination, int duration, double basePrice, Client client) {
+    public Trip(String destination, int duration, double basePrice, Client client) throws InvalidTripDataException {
         this.tripID = "T" + nextID++;
-        this.destination = destination;
-        this.duration = duration;
-        this.basePrice = basePrice;
-        this.client = client;
+        setDestination(destination);
+        setDurationInDays(duration);
+        setBasePrice(basePrice);
+        setClient(client);
     }
 
     public Trip(Trip other) {
@@ -41,18 +42,39 @@ public class Trip {
     }
 
     public String getTripId() {return tripID;}
-
     public String getDestination() {return destination;}
-    public void setDestination(String destination) {this.destination = destination;}
-
     public int getDurationInDays() {return duration;}
-    public void setDurationInDays(int duration) {this.duration = duration;}
-
     public double getBasePrice() {return basePrice;}
-    public void setBasePrice(double basePrice) {this.basePrice = basePrice;}
-
     public Client getClient() {return client;}
-    public void setClient(Client client) {this.client = client;}
+
+    public void setDestination(String destination) throws InvalidTripDataException {
+        if (destination == null)
+            throw new InvalidTripDataException("Destination cannot be null.");
+
+        String trimmed = destination.trim();
+        if (trimmed.isEmpty())
+            throw new InvalidTripDataException("Destination cannot be null.");
+        this.destination = trimmed;
+    }
+
+    public void setDurationInDays(int duration) throws InvalidTripDataException {
+        if (duration < 1 || duration > 20)
+            throw new InvalidTripDataException("Invalid trip duration, must be between 1 and 20 days (inclusive).");
+        this.duration = duration;
+    }
+
+    public void setBasePrice(double basePrice) throws InvalidTripDataException {
+        if (basePrice < 100)
+            throw new InvalidTripDataException("Invalid trip base price, must be greater or equal to $100.");
+        this.basePrice = basePrice;
+    }
+
+    public void setClient(Client client) throws InvalidTripDataException {
+        if (client.getClientID() == null) throw new InvalidTripDataException("Client ID is null.");
+
+        this.client = client;
+    }
+
 
     @Override
     public String toString() {return this.tripID + ", " + this.destination + ", " + this.duration + ", " + 
