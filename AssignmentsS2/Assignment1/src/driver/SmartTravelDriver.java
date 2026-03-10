@@ -6,6 +6,7 @@ package AssignmentsS2.Assignment1.src.driver;
 // --------------------------------------------------------
 
 import AssignmentsS2.Assignment1.src.client.Client;
+import AssignmentsS2.Assignment1.src.exceptions.*;
 import AssignmentsS2.Assignment1.src.travel.*;
 import java.util.Scanner;
 
@@ -27,7 +28,7 @@ import java.util.Scanner;
  * @author SmartTravel Team
  * @version 1.0
  */
-public class Main {
+public class SmartTravelDriver {
     // Arrays to store all entities in the system
     /** Array to store all registered clients */
     private static Client[] client;
@@ -63,7 +64,7 @@ public class Main {
      * 
      * @param args Command-line arguments (not used)
      */
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InvalidClientDataException, InvalidTripDataException {
         System.out.println("Welcome to the SmartTravel Program!");
         System.out.println();
         
@@ -215,7 +216,7 @@ public class Main {
      * 
      * @return true to continue main menu loop, false to exit
      */
-    private static boolean clientManagment() {
+    private static boolean clientManagment() throws InvalidClientDataException {
         backToMain = true;
 
         do {
@@ -352,7 +353,7 @@ public class Main {
      * 
      * @return true to continue main menu loop, false to exit
      */
-    private static boolean tripManagment() {
+    private static boolean tripManagment() throws InvalidTripDataException {
         do { 
             backToSubmenu = true;
 
