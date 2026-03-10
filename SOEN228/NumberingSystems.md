@@ -57,3 +57,7 @@
     - (substraction) 1001 - 0111 = 0010
     - (multiplication) 1001 x 0111 = 1001 + 10010 + 100100+ 000000 = 01111111
     - (division) 1101/10 = 110
+
+
+# Booth's Algorithm
+*****VERY IMPORTANT: Used only for multiplying two's compliment numbers**
