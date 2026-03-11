@@ -8,6 +8,7 @@ package AssignmentsS2.Assignment1.src.driver;
 import AssignmentsS2.Assignment1.src.client.Client;
 import AssignmentsS2.Assignment1.src.exceptions.*;
 import AssignmentsS2.Assignment1.src.travel.*;
+import AssignmentsS2.Assignment1.src.service.SmartTravelService;
 import java.util.Scanner;
 
 /**
@@ -249,13 +250,20 @@ public class SmartTravelDriver {
                         System.out.print(">. Email Adress: ");
                         String emailAdress = scanner.nextLine();
                         System.out.println();
+
+                        //ADDED NEW METHOD IN HERE SO CAREFUL
         
                         // Add new client to array (Note: this has a bug - index+1 may be out of bounds)
-                        index = client.length;
-                        client[index + 1] = new Client(firstName, lastName, emailAdress);
+                        // index = client.length;
+                        // client[index + 1] = new Client(firstName, lastName, emailAdress);
                         
+                        // System.out.println();
+                        // System.out.println(">. Client added successfully.");
+
+                        SmartTravelService.addClient(firstName, lastName, emailAdress);
                         System.out.println();
                         System.out.println(">. Client added successfully.");
+
                     }
                 case 2 -> {
                     backToSubmenu = true;
