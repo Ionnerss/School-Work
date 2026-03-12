@@ -140,13 +140,11 @@ public class SmartTravelService {
     private static <T> T[] appendToArray(T[] source, T element, T[] expanded) {
         int oldLength = (source == null) ? 0 : source.length;
 
-        if (expanded == null || expanded.length != oldLength + 1) {
+        if (expanded == null || expanded.length != oldLength + 1)
             throw new IllegalArgumentException("Expanded array must have length oldLength + 1.");
-        }
 
-        for (int i = 0; i < oldLength; i++) {
+        for (int i = 0; i < oldLength; i++)
             expanded[i] = source[i];
-        }
 
         expanded[oldLength] = element;
         return expanded;
@@ -174,9 +172,8 @@ public class SmartTravelService {
     private static <T> String buildArrayString(T[] array, String type) {
         String itemString = "";
 
-        if (array == null || array.length == 0) {
+        if (array == null || array.length == 0)
             return type + " is empty.";
-        }
 
 
         if (array.getClass().isInstance(Client.class) || array.getClass().isInstance(Trip.class)) {
@@ -230,6 +227,7 @@ public class SmartTravelService {
                 String currentID = extractID(item);
                 if (currentID != null && currentID.equalsIgnoreCase(searchID.trim()))
                     return index;
+                
                 index++;
             }
         } catch (NullPointerException e) {
