@@ -5,6 +5,8 @@ package AssignmentsS2.Assignment1.src.travel;
 // For COMP 248 Section S – Fall 2025
 // --------------------------------------------------------
 
+import AssignmentsS2.Assignment1.src.exceptions.InvalidTransportDataException;
+
 public class Flight extends Transportation {
     private String airlineName;
     private double luggageAllowance;
@@ -17,10 +19,10 @@ public class Flight extends Transportation {
         this.luggageAllowance = 0.0;
     }
 
-    public Flight(String companyName, String departureCity, String arrivalCity, String airlineName, double luggageAllowance) {
+    public Flight(String companyName, String departureCity, String arrivalCity, String airlineName, double luggageAllowance) throws InvalidTransportDataException {
         super(companyName, departureCity, arrivalCity);
-        this.airlineName = airlineName;
-        this.luggageAllowance = luggageAllowance;
+        setAirlineName(airlineName);
+        setLuggageAllowance(luggageAllowance);
     }
 
     public Flight(Flight other) {
@@ -30,10 +32,25 @@ public class Flight extends Transportation {
     }
 
     public String getAirlineName() {return this.airlineName;}
-    public void setAirlineName(String airlineName) {this.airlineName = airlineName;}
-
     public double getLuggageAllowance() {return this.luggageAllowance;}
-    public void setLuggageAllowance(double luggageAllowance) {this.luggageAllowance = luggageAllowance;}
+    
+    public void setAirlineName(String airlineName) throws InvalidTransportDataException {
+        if (airlineName == null)
+            throw new InvalidTransportDataException("Airline name cannot be null.");
+
+        String trimmed = airlineName.trim();
+        if (trimmed.isEmpty())
+            throw new InvalidTransportDataException("Airline name cannot be null.");
+
+        this.airlineName = airlineName;
+    }
+
+    public void setLuggageAllowance(double luggageAllowance) throws InvalidTransportDataException {
+        if (luggageAllowance < 0)
+            throw new InvalidTransportDataException("Luggage allowance cannot be less than 0.");
+
+        this.luggageAllowance = luggageAllowance;
+    }
 
     @Override
     public String toString() {return super.toString() + ", " + this.airlineName + ", " + this.luggageAllowance;}

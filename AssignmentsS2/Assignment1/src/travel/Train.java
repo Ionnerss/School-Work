@@ -5,6 +5,8 @@ package AssignmentsS2.Assignment1.src.travel;
 // For COMP 248 Section S – Fall 2025
 // --------------------------------------------------------
 
+import AssignmentsS2.Assignment1.src.exceptions.InvalidTransportDataException;
+
 public class Train extends Transportation {
     private String trainType, seatClass;
     private Trip trip;
@@ -15,7 +17,7 @@ public class Train extends Transportation {
         this.seatClass = "";
     }
 
-    public Train(String companyName, String departureCity, String arrivalCity, String trainType, String seatClass) {
+    public Train(String companyName, String departureCity, String arrivalCity, String trainType, String seatClass) throws InvalidTransportDataException {
         super(companyName, departureCity, arrivalCity);
         this.trainType = trainType;
         this.seatClass = seatClass;
@@ -28,11 +30,30 @@ public class Train extends Transportation {
     }
 
     public String getTrainType() {return this.trainType;}
-    public void setTrainType(String trainType) {this.trainType = trainType;}
-
     public String getSeatClass() {return this.seatClass;}
-    public void setSeatClass(String seatClass) {this.seatClass = seatClass;}
+    
+    public void setTrainType(String trainType) throws InvalidTransportDataException {
+        if (trainType == null)
+            throw new InvalidTransportDataException("Train type cannot be null.");
 
+        String trimmed = trainType.trim();
+        if (trimmed.isEmpty())
+            throw new InvalidTransportDataException("Train type cannot be null.");
+
+        this.trainType = trainType;
+    }
+    
+    public void setSeatClass(String seatClass) throws InvalidTransportDataException {
+        if (seatClass == null)
+            throw new InvalidTransportDataException("Seat class cannot be null.");
+
+        String trimmed = seatClass.trim();
+        if (trimmed.isEmpty())
+            throw new InvalidTransportDataException("Seat class cannot be null.");
+
+        this.seatClass = seatClass;
+    }
+    
     @Override
     public String toString() {return super.toString() + ", " + this.trainType + ", " + this.seatClass;}
 

@@ -9,6 +9,7 @@ import AssignmentsS2.Assignment1.src.client.Client;
 import AssignmentsS2.Assignment1.src.exceptions.*;
 import AssignmentsS2.Assignment1.src.travel.*;
 import AssignmentsS2.Assignment1.src.service.SmartTravelService;
+import AssignmentsS2.Assignment1.src.service.SmartTravelService.ArrayType;
 import java.util.Scanner;
 
 /**
@@ -26,11 +27,11 @@ import java.util.Scanner;
  * - Deep copy functionality for arrays
  * - Cost calculations and expense tracking
  * 
- * @author SmartTravel Team
+ * @author Catalin-Ion Besleaga
  * @version 1.0
  */
 public class SmartTravelDriver {
-    // Arrays to store all entities in the system
+    // Arrays to store all entities in the system  WILL FIX ALL OF THIS SO THAT ALL ARRAYS REMAIN IN SmartTravelService.java
     /** Array to store all registered clients */
     private static Client[] client;
     /** Array to store all trips in the system */
@@ -43,20 +44,14 @@ public class SmartTravelDriver {
     // Control variables for menu navigation
     /** Scanner for reading user input from console */
     private static final Scanner scanner = new Scanner(System.in);
-    /** Flag to control return to main menu loop */
-    private static boolean backToMain;
-    /** Flag to control return to submenu loop */
-    private static boolean backToSubmenu;
+    /** Flag to control return to main menu loop | Flag to control return to submenu loop | Check variable for validation results*/
+    private static boolean backToMain, backToSubmenu;
+
+    private static int check;
     /** User's menu choice input */
     private static int choice;
-    /** Index variable for array operations */
-    private static int index;
-    /** Check variable for validation results (-1: not found, -2: empty list) */
-    private static int check;
-    /** Client ID for filtering/searching operations */
-    private static String clientID;
-    /** Trip ID for filtering/searching operations */
-    private static String tripID;
+    /** Client ID for filtering/searching operations | Trip ID for filtering/searching operations */
+    private static String clientID, tripID;
 
     /**
      * Main entry point for the SmartTravel application.
@@ -64,8 +59,12 @@ public class SmartTravelDriver {
      * then presents the main menu for user interaction until exit.
      * 
      * @param args Command-line arguments (not used)
+     * @throws InvalidAccommodationDataException 
+     * @throws InvalidTransportDataException 
      */
-    public static void main(String[] args) throws InvalidClientDataException, InvalidTripDataException {
+    public static void main(String[] args) throws InvalidClientDataException, InvalidTripDataException, 
+        InvalidTransportDataException, InvalidAccommodationDataException {
+
         System.out.println("Welcome to the SmartTravel Program!");
         System.out.println();
         
@@ -76,98 +75,36 @@ public class SmartTravelDriver {
         // Initialize system based on user choice
         switch (choice) {
             case 1 -> {
-               // Initialize arrays with predefined sizes
-               client = new Client[3];
-               trip = new Trip[3];
-               transportation = new Transportation[6];
-               accomodation = new Accomodation[4];
+                SmartTravelService.testingScenario(true);
+                // Display all loaded entities
+                System.out.println();
+                System.out.println("=== Predefined Scenario Loaded ===");
+                System.out.println("Clients (>=3):");
+                System.out.println(SmartTravelService.printArray(ArrayType.CLIENTS));
 
-               // Create 3 sample clients
-               client[0] = new Client("Alice", "Martin", "alice.martin@email.com");
-               client[1] = new Client("Brian", "Chen", "brian.chen@email.com");
-               client[2] = new Client("Sofia", "Lopez", "sofia.lopez@email.com");
+                System.out.println("Trips (>=3):");
+                System.out.println(SmartTravelService.printArray(ArrayType.TRIPS));
 
-               // Create 3 sample trips, each assigned to a different client
-               trip[0] = new Trip("Paris", 5, 1200.0, client[0]);
-               trip[1] = new Trip("Tokyo", 7, 1800.0, client[1]);
-               trip[2] = new Trip("Vancouver", 4, 900.0, client[2]);
+                System.out.println("Transportation (>=2 per type):");
+                System.out.println(SmartTravelService.printArray(ArrayType.TRANSPORTATIONS));
 
-               // Create 2 flights, 2 trains, and 2 buses (demonstrating polymorphism)
-               transportation[0] = new Flight("Air Canada", "Montreal", "Paris", "Air Canada", 23.0);
-               transportation[1] = new Flight("Air France", "Montreal", "Paris", "Air France", 20.0);
-               transportation[2] = new Train("VIA Rail", "Montreal", "Toronto", "Intercity", "Economy");
-               transportation[3] = new Train("Shinkansen", "Tokyo", "Kyoto", "Bullet", "First Class");
-               transportation[4] = new Bus("Greyhound", "Montreal", "Ottawa", "Greyhound", 2);
-               transportation[5] = new Bus("Megabus", "Toronto", "Kingston", "Megabus", 1);
+                System.out.println("Accomodation (>=2 per type):");
+                System.out.println(SmartTravelService.printArray(ArrayType.ACCOMODATIONS));
 
-               // Create 2 hotels and 2 hostels (demonstrating polymorphism)
-               accomodation[0] = new Hotel("Royal Stay", "Paris", 220.0, 4.5);
-               accomodation[1] = new Hotel("Skyline Inn", "Tokyo", 260.0, 4.0);
-               accomodation[2] = new Hostel("Backpack Hub", "Paris", 60.0, 8);
-               accomodation[3] = new Hostel("Metro Sleep", "Vancouver", 55.0, 10);
-
-               // Display all loaded entities
-               System.out.println();
-               System.out.println("=== Predefined Scenario Loaded ===");
-               System.out.println("Clients (>=3):");
-               printClient();
-
-               System.out.println("Trips (>=3):");
-               printTrip();
-
-               System.out.println("Transportation (>=2 per type):");
-               printTransportation();
-
-               System.out.println("Accomodation (>=2 per type):");
-               printAccomodation();
-
-               // Demonstrate polymorphism: base-class references calling overridden methods
-               System.out.println("Polymorphism Demo (base class references):");
-               for (Transportation t : transportation) {
-                   if (t != null) {
-                       // Dynamic dispatch: actual subclass toString() is called
-                       System.out.println(">. " + t.getClass().getSimpleName() + " -> " + t.toString());
-                   }
-               }
-               for (Accomodation a : accomodation) {
-                   if (a != null) {
-                       // Dynamic dispatch: actual subclass toString() is called
-                       System.out.println(">. " + a.getClass().getSimpleName() + " -> " + a.toString());
-                   }
-               }
-               System.out.println("==================================");
+                // Demonstrate polymorphism: base-class references calling overridden methods
+                System.out.println("Polymorphism Demo (base class references):");
+                System.out.println(SmartTravelService.printArray(ArrayType.TRANSPORTATIONS));
+                System.out.println(SmartTravelService.printArray(ArrayType.ACCOMODATIONS));
+                System.out.println("==================================");
             }
             case 2 -> {
                 // MANUAL SETUP: Initialize empty arrays for user to populate
-                client = new Client[1];
-                trip = new Trip[1];
-                transportation = new Transportation[2];
-                accomodation = new Accomodation[1];
-
-                // Initialize default transportation options
-                transportation[0] = new Flight();
-                transportation[1] = new Train();
-                transportation[2] = new Bus();
-
-                // Initialize default accommodation options
-                accomodation[0] = new Hostel();
-                accomodation[1] = new Hotel();
+                SmartTravelService.testingScenario(false);
             }
             default -> {
                 // INVALID CHOICE: Default to manual setup
                 System.out.println("Option invalid. Going default route.");
-                System.out.println();
-                client = new Client[1];
-                trip = new Trip[1];
-                transportation = new Transportation[2];
-                accomodation = new Accomodation[1];
-
-                transportation[0] = new Flight();
-                transportation[1] = new Train();
-                transportation[2] = new Bus();
-
-                accomodation[0] = new Hostel();
-                accomodation[1] = new Hotel();
+                SmartTravelService.testingScenario(false);
             }
         }
 
@@ -251,15 +188,6 @@ public class SmartTravelDriver {
                         String emailAdress = scanner.nextLine();
                         System.out.println();
 
-                        //ADDED NEW METHOD IN HERE SO CAREFUL
-        
-                        // Add new client to array (Note: this has a bug - index+1 may be out of bounds)
-                        // index = client.length;
-                        // client[index + 1] = new Client(firstName, lastName, emailAdress);
-                        
-                        // System.out.println();
-                        // System.out.println(">. Client added successfully.");
-
                         SmartTravelService.addClient(firstName, lastName, emailAdress);
                         System.out.println();
                         System.out.println(">. Client added successfully.");
@@ -268,19 +196,15 @@ public class SmartTravelDriver {
                 case 2 -> {
                     backToSubmenu = true;
 
-                    printClient();
+                    System.out.println(SmartTravelService.printArray(ArrayType.CLIENTS));
                     System.out.println();
                     System.out.print(">. Please enter client id who's information you would like to update: ");
                     clientID = scanner.next();
 
-                    check = clientExistCheck(clientID);
+                    boolean exist = SmartTravelService.clientExists(clientID);
                     
-                    if (check == -1) {
+                    if (!exist) {
                         System.out.println(">. Client not found.");
-                        break;
-                    }
-                    else if (check == -2) {
-                        System.out.println(">. No clients in list.");
                         break;
                     }
                     else {
@@ -295,7 +219,8 @@ public class SmartTravelDriver {
                         System.out.println();
                         System.out.print(">. Updated email adress: ");
                         String emailAdress = scanner.next();
-        
+                        
+                        //WTF DOES CHECK DO HERE???????????
                         client[check].setFirstName(firstName);
                         client[check].setLastName(lastName);
                         client[check].setEmailAdress(emailAdress);
@@ -307,19 +232,15 @@ public class SmartTravelDriver {
                 case 3 -> {
                     backToSubmenu = true;
 
-                    printClient();
+                    System.out.println(SmartTravelService.printArray(ArrayType.CLIENTS));
                     System.out.println();
                     System.out.print(">. Please enter client ID who's information you would like to delete: ");
                     clientID = scanner.next();
 
-                    check = clientExistCheck(clientID);
+                    check = SmartTravelService.itemExistCheck(ArrayType.CLIENTS, clientID);
 
-                    if (check == -1) {
+                    if (check == SmartTravelService.nullIndex) {
                         System.out.println(">. Client not found.");
-                        break;
-                    }
-                    else if (check == -2) {
-                        System.out.println(">. No clients in list.");
                         break;
                     }
                     else {
@@ -339,7 +260,7 @@ public class SmartTravelDriver {
                 }
                 case 4 -> {
                     backToSubmenu = true;
-                    printClient();
+                    System.out.println(SmartTravelService.printArray(ArrayType.CLIENTS));
                 }
                 case 5 -> backToSubmenu = false;
                 default -> {
@@ -396,24 +317,19 @@ public class SmartTravelDriver {
                     double basePrice = scanner.nextDouble();
                     System.out.println();
 
-                    printClient();
+                    System.out.println(SmartTravelService.printArray(ArrayType.CLIENTS));
 
                     System.out.println();
                     System.out.print(">. Please enter client id whom you'd like to link the trip to: ");
                     clientID = scanner.next();
 
-                    check = clientExistCheck(clientID);
+                    check = SmartTravelService.itemExistCheck(ArrayType.CLIENTS, clientID);
                     
-                    if (check == -1) {
+                    if (check == SmartTravelService.nullIndex) {
                         System.out.println(">. Client not found.");
                         break;
                     }
-                    else if (check == -2) {
-                        System.out.println(">. No clients in list.");
-                        break;
-                    }
                     else {
-                        index = trip.length;
                         trip[trip.length + 1] = new Trip(destination, duration, basePrice, client[check]);
                         System.out.println();
                         System.out.println(">. Trip added successfully.");
@@ -422,18 +338,14 @@ public class SmartTravelDriver {
                 case 2 -> {
                     backToSubmenu = true;
 
-                    printTrip();
+                    System.out.println(SmartTravelService.printArray(ArrayType.TRIPS));
                     System.out.print(">. Please enter trip id of trip you would like to update: ");
                     tripID = scanner.next();
 
-                    check = tripExistCheck(tripID);
+                    check = SmartTravelService.itemExistCheck(ArrayType.TRIPS, tripID);
 
-                    if (check == -1) {
+                    if (check == SmartTravelService.nullIndex) {
                         System.out.println(">. Trip not found.");
-                        break;
-                    }
-                    else if (check == -2) {
-                        System.out.println(">. No trips in list.");
                         break;
                     }
                     else {
@@ -461,19 +373,15 @@ public class SmartTravelDriver {
                 case 3 -> {
                     backToSubmenu = true;
 
-                    printTrip();
+                    System.out.println(SmartTravelService.printArray(ArrayType.TRIPS));
                     System.out.println();
                     System.out.print(">. Please enter trip ID you would like to cancel: ");
                     tripID = scanner.next();
 
-                    check = tripExistCheck(tripID);
+                    check = SmartTravelService.itemExistCheck(ArrayType.TRIPS, tripID);
 
-                    if (check == -1) {
+                    if (check == SmartTravelService.nullIndex) {
                         System.out.println(">. Trip not found.");
-                        break;
-                    }
-                    else if (check == -2) {
-                        System.out.println(">. No trips in list.");
                         break;
                     }
                     else {
@@ -491,17 +399,17 @@ public class SmartTravelDriver {
                 }
                 case 4 -> {
                     backToSubmenu = true;
-                    printTrip();
+                    System.out.println(SmartTravelService.printArray(ArrayType.TRIPS));
                 }
                 case 5 -> {
                     backToSubmenu = true;
 
-                    printClient();
+                    System.out.println(SmartTravelService.printArray(ArrayType.CLIENTS));
                     System.out.println();
                     System.out.print(">. Please enter client ID to view their trips: ");
                     clientID = scanner.next();
 
-                    check = clientExistCheck(clientID);
+                    check = SmartTravelService.itemExistCheck(ArrayType.CLIENTS, clientID);
                     
                     if (check == -1) {
                         System.out.println(">. Client not found.");
@@ -548,7 +456,7 @@ public class SmartTravelDriver {
      * 
      * @return true to continue main menu loop, false to exit
      */
-    private static boolean transportManagment() {
+    private static boolean transportManagment() throws InvalidTransportDataException {
         do {
             backToSubmenu = true;
 
@@ -623,19 +531,15 @@ public class SmartTravelDriver {
                 case 2 -> {
                     backToSubmenu = true;
 
-                    printTransportation();
+                    System.out.println(SmartTravelService.printArray(ArrayType.TRANSPORTATIONS));
                     System.out.println();
                     System.out.print(">. Please enter transportation ID to remove: ");
                     String transportID = scanner.next();
 
-                    check = transportExistCheck(transportID);
+                    check = SmartTravelService.itemExistCheck(ArrayType.TRANSPORTATIONS, transportID);
 
-                    if (check == -1) {
+                    if (check == SmartTravelService.nullIndex) {
                         System.out.println(">. Transportation not found.");
-                        break;
-                    }
-                    else if (check == -2) {
-                        System.out.println(">. No transportation in list.");
                         break;
                     }
                     else {
@@ -681,7 +585,7 @@ public class SmartTravelDriver {
                 }
                 case 4 -> {
                     backToSubmenu = true;
-                    printTransportation();
+                    System.out.println(SmartTravelService.printArray(ArrayType.TRANSPORTATIONS));
                 }
                 case 5 -> backToSubmenu = false;
                 default -> {
@@ -703,7 +607,7 @@ public class SmartTravelDriver {
      * 
      * @return true to continue main menu loop, false to exit
      */
-    private static boolean accomodationManagment() {
+    private static boolean accomodationManagment() throws InvalidAccommodationDataException {
         do {
             backToSubmenu = true;
 
@@ -766,12 +670,12 @@ public class SmartTravelDriver {
                 case 2 -> {
                     backToSubmenu = true;
 
-                    printAccomodation();
+                    System.out.println(SmartTravelService.printArray(ArrayType.ACCOMODATIONS));
                     System.out.println();
                     System.out.print(">. Please enter accomodation ID to remove: ");
                     String accomID = scanner.next();
 
-                    check = accomodationExistCheck(accomID);
+                    check = SmartTravelService.itemExistCheck(ArrayType.ACCOMODATIONS, accomID);
 
                     if (check == -1) {
                         System.out.println(">. Accomodation not found.");
@@ -822,7 +726,7 @@ public class SmartTravelDriver {
                 }
                 case 4 -> {
                     backToSubmenu = true;
-                    printAccomodation();
+                    System.out.println(SmartTravelService.printArray(ArrayType.ACCOMODATIONS));
                 }
                 case 5 -> backToSubmenu = false;
                 default -> {
@@ -885,12 +789,12 @@ public class SmartTravelDriver {
                 case 2 -> {
                     backToSubmenu = true;
 
-                    printTrip();
+                    System.out.println(SmartTravelService.printArray(ArrayType.TRIPS));
                     System.out.println();
                     System.out.print(">. Please enter trip ID to calculate total cost: ");
                     tripID = scanner.next();
 
-                    check = tripExistCheck(tripID);
+                    check = SmartTravelService.itemExistCheck(ArrayType.TRIPS, tripID);
 
                     if (check == -1) {
                         System.out.println(">. Trip not found.");
@@ -1033,167 +937,5 @@ public class SmartTravelDriver {
     //     return backToMain;
     // }
 
-    /**
-     * Prints all clients in the system to console.
-     * Iterates through client array and displays each client's toString() representation.
-     * Each client displays their ID, first name, last name, and email address.
-     */
-    private static void printClient() {
-        System.out.println();
-        for (Client person : client)
-            System.out.println(">. " + person.toString());
-        System.out.println();
-    }
-
-    /**
-     * Prints all trips in the system to console.
-     * Iterates through trip array and displays each trip's toString() representation.
-     * Each trip displays its ID, destination, duration, base price, and associated client.
-     */
-    private static void printTrip() {
-        System.out.println();
-        for (Trip trips : trip)
-            System.out.println(">. " + trips.toString());
-        System.out.println();
-    }
-
-    /**
-     * Searches for a client by ID in the client array.
-     * Returns the index of the client if found, or special codes for error conditions.
-     * 
-     * @param clientID The ID to search for (case-insensitive)
-     * @return Index of the client (0 or positive), -1 if not found, -2 if array is empty
-     */
-    private static int clientExistCheck(String clientID) {
-        index = -1;
-
-        // Check if array is empty
-        if (client.length == 0)
-            return -2;
-
-        // Linear search through array for matching client ID
-        for (int i = 0; i < client.length; i++) {
-            if (client[i] != null && client[i].getClientID().equalsIgnoreCase(clientID)) {
-                index = i;
-                return index;
-            }
-        }   
-        return index;
-    }
-
-    /**
-     * Searches for a trip by ID in the trip array.
-     * Returns the index of the trip if found, or special codes for error conditions.
-     * 
-     * @param tripID The trip ID to search for (case-insensitive)
-     * @return Index of the trip (0 or positive), -1 if not found, -2 if array is empty
-     */
-    private static int tripExistCheck(String tripID) {
-        index = -1;
-
-        // Check if array is empty
-        if (trip.length == 0)
-            return -2;
-
-        // Linear search through array for matching trip ID
-        for (int i = 0; i < trip.length; i++) {
-            if (trip[i] != null && trip[i].getTripId().equalsIgnoreCase(tripID)) {
-                index = i;
-                return index;
-            }
-        }   
-        return index;
-    }
-
-    /**
-     * Searches for a transportation option by ID in the transportation array.
-     * Returns the index of the transportation option if found, or special codes for error conditions.
-     * Polymorphic: searches through base-class references (Flight, Train, Bus).
-     * 
-     * @param transportID The transportation ID to search for (case-insensitive)
-     * @return Index of the transportation (0 or positive), -1 if not found, -2 if array is empty
-     */
-    private static int transportExistCheck(String transportID) {
-        index = -1;
-
-        // Check if array is empty
-        if (transportation.length == 0)
-            return -2;
-
-        // Linear search through array for matching transportation ID
-        for (int i = 0; i < transportation.length; i++) {
-            if (transportation[i] != null && transportation[i].getTransportID().equalsIgnoreCase(transportID)) {
-                index = i;
-                return index;
-            }
-        }   
-        return index;
-    }
-
-    /**
-     * Searches for an accommodation option by ID in the accommodation array.
-     * Returns the index of the accommodation if found, or special codes for error conditions.
-     * Polymorphic: searches through base-class references (Hotel, Hostel).
-     * 
-     * @param accomodationID The accommodation ID to search for (case-insensitive)
-     * @return Index of the accommodation (0 or positive), -1 if not found, -2 if array is empty
-     */
-    private static int accomodationExistCheck(String accomodationID) {
-        index = -1;
-
-        // Check if array is empty
-        if (accomodation.length == 0)
-            return -2;
-
-        // Linear search through array for matching accommodation ID
-        for (int i = 0; i < accomodation.length; i++) {
-            if (accomodation[i] != null && accomodation[i].getAccomodationID().equalsIgnoreCase(accomodationID)) {
-                index = i;
-                return index;
-            }
-        }   
-        return index;
-    }
-
-    /**
-     * Prints all transportation options in the system to console.
-     * Displays transportation entries if available, or a message if the list is empty.
-     * Demonstrates polymorphism: calls toString() on base-class references (Flight, Train, Bus).
-     */
-    private static void printTransportation() {
-        System.out.println();
-        if (transportation.length == 0) {
-            System.out.println(">. No transportation options available.");
-        } else {
-            // Iterate through array and display each non-null transportation option
-            for (Transportation t : transportation) {
-                if (t != null) {
-                    // Polymorphic call: actual subclass toString() is invoked
-                    System.out.println(">. " + t.toString());
-                }
-            }
-        }
-        System.out.println();
-    }
-
-    /**
-     * Prints all accommodation options in the system to console.
-     * Displays accommodation entries if available, or a message if the list is empty.
-     * Demonstrates polymorphism: calls toString() on base-class references (Hotel, Hostel).
-     */
-    private static void printAccomodation() {
-        System.out.println();
-        if (accomodation.length == 0) {
-            System.out.println(">. No accomodations available.");
-        } else {
-            // Iterate through array and display each non-null accommodation option
-            for (Accomodation a : accomodation) {
-                if (a != null) {
-                    // Polymorphic call: actual subclass toString() is invoked
-                    System.out.println(">. " + a.toString());
-                }
-            }
-        }
-        System.out.println();
-    }
+    
 }

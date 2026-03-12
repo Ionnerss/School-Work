@@ -5,6 +5,8 @@ package AssignmentsS2.Assignment1.src.travel;
 // For COMP 248 Section S – Fall 2025
 // --------------------------------------------------------
 
+import AssignmentsS2.Assignment1.src.exceptions.InvalidAccommodationDataException;
+
 public abstract class Accomodation {
     private static int nextID = 4001;
     private String accomodationID, name, location;
@@ -17,11 +19,11 @@ public abstract class Accomodation {
         this.pricePerNight = 0.0;
     }
 
-    public Accomodation(String name, String location, double pricePerNight) {
+    public Accomodation(String name, String location, double pricePerNight) throws InvalidAccommodationDataException {
         this.accomodationID = "A" + nextID++;
-        this.name = name;
-        this.location = location;
-        this.pricePerNight = pricePerNight;
+        setName(name);
+        setLocation(location);
+        setPricePerNight(pricePerNight);
     }
 
     public Accomodation(Accomodation other) {
@@ -32,16 +34,38 @@ public abstract class Accomodation {
     }
 
     public String getAccomodationID() {return this.accomodationID;}
-    public void setAccomodationID(String accomodationID) {this.accomodationID = accomodationID;}
-
     public String getName() {return this.name;}
-    public void setName(String name) {this.name = name;}
-
     public String getLocation() {return this.location;}
-    public void setLocation(String location) {this.location = location;}
-
     public double getPricePerNight() {return this.pricePerNight;}
-    public void setPricePerNight(double pricePerNight) {this.pricePerNight = pricePerNight;}
+
+     public void setName(String name) throws InvalidAccommodationDataException {
+        if (name == null)
+            throw new InvalidAccommodationDataException("Name cannot be null.");
+
+        String trimmed = name.trim();
+        if (trimmed.isEmpty())
+            throw new InvalidAccommodationDataException("Name cannot be null.");
+
+        this.name = name;
+    }
+
+    public void setLocation(String location) throws InvalidAccommodationDataException {
+        if (location == null)
+            throw new InvalidAccommodationDataException("Location cannot be null.");
+
+        String trimmed = location.trim();
+        if (trimmed.isEmpty())
+            throw new InvalidAccommodationDataException("Location city cannot be null.");
+
+        this.location = location;
+    }
+
+    public void setPricePerNight(double pricePerNight) throws InvalidAccommodationDataException {
+        if (pricePerNight == 0.0)
+            throw new InvalidAccommodationDataException("Price per night cannot be 0.");
+
+        this.pricePerNight = pricePerNight;
+    }
 
     @Override
     public String toString() {return this.accomodationID + ", " + this.name + ", " + this.location + ", " + this.pricePerNight;}

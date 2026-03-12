@@ -29,12 +29,12 @@ public class Client {
     }
 
     //specifically for loading csv file
-    public Client(String clientID, String firstName, String lastName, String email) throws InvalidClientDataException {
-        this.clientID = validateClientID(clientID);
-        this.firstName = validateName(firstName, "First Name");
-        this.lastName = validateName(lastName, "Last Name");
-        this.emailAdress = validateEmail(email);
-    }
+    // public Client(String clientID, String firstName, String lastName, String email) throws InvalidClientDataException {
+    //     this.clientID = validateClientID(clientID);
+    //     this.firstName = validateName(firstName, "First Name");
+    //     this.lastName = validateName(lastName, "Last Name");
+    //     this.emailAdress = validateEmail(email);
+    // }
 
     public String getClientID() {return this.clientID;}
     public String getFirstName() {return this.firstName;}
@@ -83,19 +83,19 @@ public class Client {
         return trimmed;
     }
 
-    private static String validateClientID(String clientID) {
-        if (clientID == null || clientID.trim().isEmpty()) {
-            throw new IllegalArgumentException("Client ID cannot be empty.");
-        }
+    // private static String validateClientID(String clientID) {
+    //     if (clientID == null || clientID.trim().isEmpty()) {
+    //         throw new IllegalArgumentException("Client ID cannot be empty.");
+    //     }
 
-        String trimmed = clientID.trim();
+    //     String trimmed = clientID.trim();
 
-        if (!trimmed.matches("C\\d+")) {
-            throw new IllegalArgumentException("Invalid Client ID format: " + clientID);
-        }
+    //     if (!trimmed.matches("C\\d+")) {
+    //         throw new IllegalArgumentException("Invalid Client ID format: " + clientID);
+    //     }
 
-        return trimmed;
-    }
+    //     return trimmed;
+    // }
 
     @Override
     public String toString() {return "| " + this.clientID + ": " + this.firstName + ", " + this.lastName + ", " + this.emailAdress;}

@@ -5,29 +5,37 @@ package AssignmentsS2.Assignment1.src.travel;
 // For COMP 248 Section S – Fall 2025
 // --------------------------------------------------------
 
+import AssignmentsS2.Assignment1.src.exceptions.InvalidAccommodationDataException;
+
 public class Hotel extends Accomodation {
-    private double startRating;
+    private double starRating;
     
     public Hotel() {
         super();
-        this.startRating = 0.0;
+        this.starRating = 0.0;
     }
 
-    public Hotel(String name, String location, double pricePerNight, double startRating) {
+    public Hotel(String name, String location, double pricePerNight, double starRating) throws InvalidAccommodationDataException {
         super(name, location, pricePerNight);
-        this.startRating = startRating;
+        this.starRating = starRating;
     }
 
     public Hotel(Hotel other) {
         super(other);
-        this.startRating = other.startRating;
+        this.starRating = other.starRating;
     }
 
-    public double getStartRating() {return this.startRating;}
-    public void setStartRating(double startRating) {this.startRating = startRating;}
+    public double getStartRating() {return this.starRating;}
+
+    public void setStartRating(double starRating) throws InvalidAccommodationDataException {
+        if (starRating < 0)
+            throw new InvalidAccommodationDataException("Start rating cannot be less than 0.");
+
+        this.starRating = starRating;
+    }
 
     @Override
-    public String toString() {return super.toString() + ", " + this.startRating;}
+    public String toString() {return super.toString() + ", " + this.starRating;}
 
     @Override
     public boolean equals(Object other) {
@@ -38,7 +46,7 @@ public class Hotel extends Accomodation {
         Hotel otherHotel = (Hotel) other;
 
         return super.equals(otherHotel)
-            && this.startRating == otherHotel.startRating;
+            && this.starRating == otherHotel.starRating;
     }
 
     @Override

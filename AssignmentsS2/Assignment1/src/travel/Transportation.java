@@ -5,6 +5,8 @@ package AssignmentsS2.Assignment1.src.travel;
 // For COMP 248 Section S – Fall 2025
 // --------------------------------------------------------
 
+import AssignmentsS2.Assignment1.src.exceptions.InvalidTransportDataException;
+
 public abstract class Transportation {
     private static int nextID = 3001;
     protected String transportID, companyName, departureCity, arrivalCity;
@@ -16,11 +18,11 @@ public abstract class Transportation {
         this.arrivalCity = "";
     }
 
-    public Transportation(String companyName, String departureCity, String arrivalCity) {
+    public Transportation(String companyName, String departureCity, String arrivalCity) throws InvalidTransportDataException {
         this.transportID = "TR" + nextID++;
-        this.companyName = companyName;
-        this.departureCity = departureCity;
-        this.arrivalCity = arrivalCity;
+        setCompanyName(companyName);
+        setDepartureCity(departureCity);
+        setArrivalCity(arrivalCity);
     }
 
     public Transportation(Transportation other) {
@@ -31,16 +33,42 @@ public abstract class Transportation {
     }
 
     public String getTransportID() {return this.transportID;}
-    public void setTransportID(String transportID) {this.transportID = transportID;}
-
     public String getCompanyName() {return this.companyName;}
-    public void setCompanyName(String companyName) {this.companyName = companyName;}
-
     public String getDepartureCity() {return this.departureCity;}
-    public void setDepartureCity(String departureCity) {this.departureCity = departureCity;}
-
     public String getArrivalCity() {return this.arrivalCity;}
-    public void setArrivalCity(String arrivalCity) {this.arrivalCity = arrivalCity;}
+
+    public void setCompanyName(String companyName) throws InvalidTransportDataException {
+        if (companyName == null)
+            throw new InvalidTransportDataException("Company name cannot be null.");
+
+        String trimmed = companyName.trim();
+        if (trimmed.isEmpty())
+            throw new InvalidTransportDataException("Company name cannot be null.");
+
+        this.companyName = companyName;
+    }
+
+    public void setDepartureCity(String departureCity) throws InvalidTransportDataException {
+        if (departureCity == null)
+            throw new InvalidTransportDataException("Departure city cannot be null.");
+
+        String trimmed = departureCity.trim();
+        if (trimmed.isEmpty())
+            throw new InvalidTransportDataException("Departure city cannot be null.");
+
+        this.departureCity = departureCity;
+    }
+
+    public void setArrivalCity(String arrivalCity) throws InvalidTransportDataException {
+        if (arrivalCity == null)
+            throw new InvalidTransportDataException("Arrival city cannot be null.");
+
+        String trimmed = arrivalCity.trim();
+        if (trimmed.isEmpty())
+            throw new InvalidTransportDataException("Arrival city cannot be null.");
+
+        this.arrivalCity = arrivalCity;
+    }
 
     @Override
     public String toString() {return this.transportID + ", " + this.companyName + ", " + this.departureCity + ", " + this.arrivalCity;}

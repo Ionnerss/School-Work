@@ -5,6 +5,8 @@ package AssignmentsS2.Assignment1.src.travel;
 // For COMP 248 Section S – Fall 2025
 // --------------------------------------------------------
 
+import AssignmentsS2.Assignment1.src.exceptions.InvalidAccommodationDataException;
+
 public class Hostel extends Accomodation {
     private int numOfSharedBeds;
 
@@ -13,7 +15,7 @@ public class Hostel extends Accomodation {
         this.numOfSharedBeds = 0;
     }
 
-    public Hostel(String name, String location, double pricePerNight, int numOfSharedBeds) {
+    public Hostel(String name, String location, double pricePerNight, int numOfSharedBeds) throws InvalidAccommodationDataException {
         super(name, location, pricePerNight);
         this.numOfSharedBeds = numOfSharedBeds;
     }
@@ -24,7 +26,13 @@ public class Hostel extends Accomodation {
     }
 
     public int getNumOfSharedBeds() {return this.numOfSharedBeds;}
-    public void setNumOfSharedBeds(int numOfSharedBeds) {this.numOfSharedBeds = numOfSharedBeds;}
+
+    public void setNumOfSharedBeds(int numOfSharedBeds) throws InvalidAccommodationDataException {
+        if (numOfSharedBeds < 0)
+            throw new InvalidAccommodationDataException("Number of shared beds cannot be less than 0.");
+
+        this.numOfSharedBeds = numOfSharedBeds;
+    }
 
     @Override
     public String toString() {return super.toString() + ", " + this.numOfSharedBeds;}
