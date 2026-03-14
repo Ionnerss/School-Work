@@ -3,6 +3,7 @@ package AssignmentsS2.Assignment1.src.persistence;
 import java.io.*;
 import java.util.Scanner;
 import AssignmentsS2.Assignment1.src.client.Client;
+import AssignmentsS2.Assignment1.src.service.SmartTravelService;
 import AssignmentsS2.Assignment1.src.exceptions.InvalidClientDataException;
 
 public class ClientFileManager {
@@ -88,7 +89,7 @@ public class ClientFileManager {
 
         // Resync Client static next-id so new clients don’t collide with loaded IDs
         if (maxIdNumSeen >= 0) {
-            Client.syncNextId(maxIdNumSeen + 1);
+            SmartTravelService.syncNextID(Client.class, maxIdNumSeen + 1);
         }
         return count;
     }

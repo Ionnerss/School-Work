@@ -26,6 +26,23 @@ public abstract class Accomodation {
         setPricePerNight(pricePerNight);
     }
 
+    public Accomodation(String accomodationID, String name, String location, double pricePerNight) throws InvalidAccommodationDataException {
+        if (accomodationID == null || accomodationID.trim().isEmpty()) {
+            throw new IllegalArgumentException("Accomodation ID cannot be empty.");
+        }
+
+        String trimmed = accomodationID.trim();
+
+        if (!trimmed.matches("C\\d+")) {
+            throw new IllegalArgumentException("Invalid Accomodation ID format: " + accomodationID);
+        }
+
+        this.accomodationID = trimmed;
+        setName(name);
+        setLocation(location);
+        setPricePerNight(pricePerNight);
+    }
+
     public Accomodation(Accomodation other) {
         this.accomodationID = "A" + nextID++;
         this.name = other.name;
@@ -37,6 +54,11 @@ public abstract class Accomodation {
     public String getName() {return this.name;}
     public String getLocation() {return this.location;}
     public double getPricePerNight() {return this.pricePerNight;}
+
+    public static void syncNextId(int nextNumericId) {
+        if (nextNumericId > nextID)
+            nextID = nextNumericId;
+    }
 
      public void setName(String name) throws InvalidAccommodationDataException {
         if (name == null)

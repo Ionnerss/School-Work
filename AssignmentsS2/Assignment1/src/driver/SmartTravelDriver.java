@@ -220,7 +220,7 @@ public class SmartTravelDriver {
                         System.out.print(">. Updated email adress: ");
                         String emailAdress = scanner.next();
                         
-                        //WTF DOES CHECK DO HERE???????????
+                        //WTF DOES CHECK DO HERE??????????? Have to modify somewhere else 
                         client[check].setFirstName(firstName);
                         client[check].setLastName(lastName);
                         client[check].setEmailAdress(emailAdress);

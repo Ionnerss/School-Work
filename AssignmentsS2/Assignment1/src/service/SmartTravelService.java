@@ -176,7 +176,7 @@ public class SmartTravelService {
             return type + " is empty.";
 
 
-        if (array.getClass().isInstance(Client.class) || array.getClass().isInstance(Trip.class)) {
+        if (array instanceof Client[] || array instanceof Trip[]) {
             for (T item : array) {
                 if (item != null) {
                     itemString += ">. " + item.toString() + "\n";
@@ -238,5 +238,24 @@ public class SmartTravelService {
             return nullIndex;
         }
         return nullIndex;
+    }
+
+    // A way to resync the static generator after loading
+    public static void syncNextID(Class<?> classType, int nextNumericId) {
+        //PURPOSE:     Client.nextID = Math.max(Client.nextID, nextNumericId);
+        if (nextNumericId < 0)
+            throw new IllegalArgumentException("nextNumericId cannot be negative.");
+
+        if (classType == Client.class) {
+            Client.syncNextId(nextNumericId);
+        } else if (classType == Trip.class) {
+            Trip.syncNextId(nextNumericId);
+        } else if (classType == Transportation.class) {
+            Transportation.syncNextId(nextNumericId);
+        } else if (classType == Accomodation.class) {
+            Accomodation.syncNextId(nextNumericId);
+        } else {
+            throw new IllegalArgumentException("Unsupported class type for ID sync: " + classType);
+        }
     }
 }

@@ -4,8 +4,7 @@ import AssignmentsS2.Assignment1.src.exceptions.InvalidClientDataException;
 
 public class Client {
     private static int nextID = 1001;
-    private final String clientID;
-    private String firstName, lastName, emailAdress;
+    private String clientID, firstName, lastName, emailAdress;
 
     public Client() {
         this.clientID = "C" + nextID++;
@@ -14,8 +13,26 @@ public class Client {
         this.emailAdress = "";
     }
 
+    
     public Client(String firstName, String lastName, String emailAdress) throws InvalidClientDataException {
         this.clientID = "C" + nextID++;
+        setFirstName(firstName);
+        setLastName(lastName);
+        setEmailAdress(emailAdress);
+    }
+    
+    public Client (String clientID, String firstName, String lastName, String emailAdress) throws InvalidClientDataException {
+        if (clientID == null || clientID.trim().isEmpty()) {
+            throw new IllegalArgumentException("Client ID cannot be empty.");
+        }
+
+        String trimmed = clientID.trim();
+
+        if (!trimmed.matches("C\\d+")) {
+            throw new IllegalArgumentException("Invalid Client ID format: " + clientID);
+        }
+
+        this.clientID = trimmed;
         setFirstName(firstName);
         setLastName(lastName);
         setEmailAdress(emailAdress);
@@ -28,18 +45,15 @@ public class Client {
         this.emailAdress = other.emailAdress;
     }
 
-    //specifically for loading csv file
-    // public Client(String clientID, String firstName, String lastName, String email) throws InvalidClientDataException {
-    //     this.clientID = validateClientID(clientID);
-    //     this.firstName = validateName(firstName, "First Name");
-    //     this.lastName = validateName(lastName, "Last Name");
-    //     this.emailAdress = validateEmail(email);
-    // }
-
     public String getClientID() {return this.clientID;}
     public String getFirstName() {return this.firstName;}
     public String getLastName() {return this.lastName;}
     public String getEmailAdress() {return this.emailAdress;}
+
+    public static void syncNextId(int nextNumericId) {
+        if (nextNumericId > nextID)
+            nextID = nextNumericId;
+    }
 
     public void setFirstName(String firstName) throws InvalidClientDataException {
         this.firstName = validateName(firstName, "First name");
@@ -83,22 +97,8 @@ public class Client {
         return trimmed;
     }
 
-    // private static String validateClientID(String clientID) {
-    //     if (clientID == null || clientID.trim().isEmpty()) {
-    //         throw new IllegalArgumentException("Client ID cannot be empty.");
-    //     }
-
-    //     String trimmed = clientID.trim();
-
-    //     if (!trimmed.matches("C\\d+")) {
-    //         throw new IllegalArgumentException("Invalid Client ID format: " + clientID);
-    //     }
-
-    //     return trimmed;
-    // }
-
     @Override
-    public String toString() {return "| " + this.clientID + ": " + this.firstName + ", " + this.lastName + ", " + this.emailAdress;}
+    public String toString() {return this.clientID + ": " + this.firstName + ", " + this.lastName + ", " + this.emailAdress;}
 
     @Override
     public boolean equals(Object other) {
@@ -110,10 +110,5 @@ public class Client {
         return this.getFirstName().equals(otherClient.getFirstName())
             && this.getLastName().equals(otherClient.getLastName())
             && this.getEmailAdress().equals(otherClient.getEmailAdress());
-    }
-
-    // A way to resync the static generator after loading
-    public static void syncNextId(int nextNumericId) {
-        Client.nextID = Math.max(Client.nextID, nextNumericId);
     }
 }

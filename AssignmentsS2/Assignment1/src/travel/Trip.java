@@ -47,6 +47,11 @@ public class Trip {
     public double getBasePrice() {return basePrice;}
     public Client getClient() {return client;}
 
+    public static void syncNextId(int nextNumericId) {
+        if (nextNumericId > nextID)
+            nextID = nextNumericId;
+    }
+
     public void setDestination(String destination) throws InvalidTripDataException {
         if (destination == null)
             throw new InvalidTripDataException("Destination cannot be null.");
