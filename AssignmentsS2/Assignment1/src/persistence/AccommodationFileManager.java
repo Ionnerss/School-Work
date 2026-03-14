@@ -73,10 +73,11 @@ public class AccommodationFileManager {
                     String location = parts[2].trim();
                     double pricePerNight = Double.parseDouble(parts[3].trim());
 
-                    // If you want to distinguish Hostel/Hotel, add a type field to the CSV and check it here.
-                    // For now, just create a generic Accomodation object.
-                    Accomodation a = new Accomodation(id, name, location, pricePerNight);
-                    accomodations[count++] = a;
+                    if (parts[lineNo].getClass() instanceof Hostel)
+                    
+                    
+                    // Accomodation a = new Accomodation(id, name, location, pricePerNight);
+                    // accomodations[count++] = a;
 
                     // Track max numeric part of ID for static resync
                     int n = extractClientNumber(id);
