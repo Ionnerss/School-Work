@@ -20,6 +20,11 @@ public class Hostel extends Accomodation {
         this.numOfSharedBeds = numOfSharedBeds;
     }
 
+    public Hostel(String id, String name, String location, double pricePerNight, int numOfSharedBeds) throws InvalidAccommodationDataException {
+        super(id, name, location, pricePerNight);
+        this.numOfSharedBeds = numOfSharedBeds;
+    }
+
     public Hostel(Hostel other) {
         super(other);
         this.numOfSharedBeds = other.numOfSharedBeds;

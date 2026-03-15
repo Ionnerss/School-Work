@@ -12,6 +12,7 @@ import AssignmentsS2.Assignment1.src.travel.Hostel;
 import AssignmentsS2.Assignment1.src.travel.Hotel;
 import AssignmentsS2.Assignment1.src.exceptions.InvalidAccommodationDataException;
 import AssignmentsS2.Assignment1.src.service.SmartTravelService;
+import AssignmentsS2.Assignment1.src.service.SmartTravelService.ArrayType;
 
 public class AccommodationFileManager {
     public static void saveAccomodations(Accomodation[] accomodations, int accCount, String filePath) throws IOException {
@@ -27,8 +28,7 @@ public class AccommodationFileManager {
                 continue;
             }
 
-            outputStream.println(accomodations[i].getAccomodationID() + ";" + accomodations[i].getName() + ";" + 
-                accomodations[i].getLocation() + ";" + accomodations[i].getPricePerNight());
+            outputStream.println(SmartTravelService.printArray(ArrayType.ACCOMODATIONS));
         }
 
         if (outputStream != null)
@@ -56,7 +56,7 @@ public class AccommodationFileManager {
                 }
                 try {
                     String[] parts = line.split(";", -1);
-                    if (parts.length != 4) {
+                    if (parts.length != 5) {
                         ErrorLogger.log("accomodations.csv","Accomodation data is incomplete, missing info.", lineNo, line);
                         continue;
                     }
@@ -72,33 +72,38 @@ public class AccommodationFileManager {
                     String name = parts[1].trim();
                     String location = parts[2].trim();
                     double pricePerNight = Double.parseDouble(parts[3].trim());
+                    int starOrBeds = Integer.parseInt(parts[4].trim());
 
-                    if (parts[lineNo].getClass() instanceof Hostel)
-                    
-                    
-                    // Accomodation a = new Accomodation(id, name, location, pricePerNight);
-                    // accomodations[count++] = a;
+                    Object tempObject = parts[lineNo].getClass();
+                    if (tempObject instanceof Hotel) {
+                        Accomodation a = new Hotel(id, name, location, pricePerNight, starOrBeds);
+                        accomodations[count++] = a;
+                    }
+                    else if (tempObject instanceof Hostel) {
+                        Accomodation a = new Hostel(id, name, location, pricePerNight, starOrBeds);
+                        accomodations[count++] = a;
+                    }
 
                     // Track max numeric part of ID for static resync
-                    int n = extractClientNumber(id);
+                    int n = extractAccomodationNumber(id);
                     if (n > maxIdNumSeen) maxIdNumSeen = n;
 
                 } catch(InvalidAccommodationDataException | RuntimeException e) {
-                    ErrorLogger.log("clients.csv", e.getMessage(), lineNo, line);
+                    ErrorLogger.log("accomodations.csv", e.getMessage(), lineNo, line);
                 }
             } 
         } catch (Exception e) {
-            ErrorLogger.log("clients.csv", e.getMessage(), lineNo, line);
+            ErrorLogger.log("accomodations.csv", e.getMessage(), lineNo, line);
         }
 
-        // Resync Client static next-id so new clients don’t collide with loaded IDs
+        // Resync Accomodation static next-id so new accomodations don’t collide with loaded IDs
         if (maxIdNumSeen >= 0) {
             SmartTravelService.syncNextID(Accomodation.class, maxIdNumSeen + 1);
         }
         return count;
     }
 
-    private static int extractClientNumber(String id) {
+    private static int extractAccomodationNumber(String id) {
         if (id == null) return -1;
         id = id.trim();
         if (id.length() < 5 || id.charAt(0) != 'C') return -1;

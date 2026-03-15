@@ -8,15 +8,20 @@ package AssignmentsS2.Assignment1.src.travel;
 import AssignmentsS2.Assignment1.src.exceptions.InvalidAccommodationDataException;
 
 public class Hotel extends Accomodation {
-    private double starRating;
+    private int starRating;
     
     public Hotel() {
         super();
-        this.starRating = 0.0;
+        this.starRating = 0;
     }
 
-    public Hotel(String name, String location, double pricePerNight, double starRating) throws InvalidAccommodationDataException {
+    public Hotel(String name, String location, double pricePerNight, int starRating) throws InvalidAccommodationDataException {
         super(name, location, pricePerNight);
+        this.starRating = starRating;
+    }
+
+    public Hotel(String id, String name, String location, double pricePerNight, int starRating) throws InvalidAccommodationDataException {
+        super(id, name, location, pricePerNight);
         this.starRating = starRating;
     }
 
@@ -27,7 +32,7 @@ public class Hotel extends Accomodation {
 
     public double getStartRating() {return this.starRating;}
 
-    public void setStartRating(double starRating) throws InvalidAccommodationDataException {
+    public void setStartRating(int starRating) throws InvalidAccommodationDataException {
         if (starRating < 0)
             throw new InvalidAccommodationDataException("Start rating cannot be less than 0.");
 

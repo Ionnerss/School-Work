@@ -25,6 +25,23 @@ public abstract class Transportation {
         setArrivalCity(arrivalCity);
     }
 
+    public Transportation(String transportationID, String companyName, String departureCity, String arrivalCity) throws InvalidTransportDataException {
+        if (transportationID == null || transportationID.trim().isEmpty()) {
+            throw new IllegalArgumentException("Transportation ID cannot be empty.");
+        }
+
+        String trimmed = transportationID.trim();
+
+        if (!trimmed.matches("C\\d+")) {
+            throw new IllegalArgumentException("Invalid Transportation ID format: " + transportationID);
+        }
+
+        this.transportID = trimmed;
+        setCompanyName(companyName);
+        setDepartureCity(departureCity);
+        setArrivalCity(arrivalCity);
+    }
+
     public Transportation(Transportation other) {
         this.transportID = "TR" + nextID++;
         this.companyName = other.companyName;

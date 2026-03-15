@@ -8,40 +8,30 @@ package AssignmentsS2.Assignment1.src.travel;
 import AssignmentsS2.Assignment1.src.exceptions.InvalidTransportDataException;
 
 public class Train extends Transportation {
-    private String trainType, seatClass;
+    private String seatClass;
     private Trip trip;
 
     public Train() {
         super();
-        this.trainType = "";
         this.seatClass = "";
     }
 
-    public Train(String companyName, String departureCity, String arrivalCity, String trainType, String seatClass) throws InvalidTransportDataException {
+    public Train(String companyName, String departureCity, String arrivalCity, String seatClass) throws InvalidTransportDataException {
         super(companyName, departureCity, arrivalCity);
-        this.trainType = trainType;
+        this.seatClass = seatClass;
+    }
+
+    public Train(String id, String companyName, String departureCity, String arrivalCity, String seatClass) throws InvalidTransportDataException {
+        super(id, companyName, departureCity, arrivalCity);
         this.seatClass = seatClass;
     }
 
     public Train(Train other) {
         super(other);
-        this.trainType = other.trainType;
         this.seatClass = other.seatClass;
     }
 
-    public String getTrainType() {return this.trainType;}
     public String getSeatClass() {return this.seatClass;}
-    
-    public void setTrainType(String trainType) throws InvalidTransportDataException {
-        if (trainType == null)
-            throw new InvalidTransportDataException("Train type cannot be null.");
-
-        String trimmed = trainType.trim();
-        if (trimmed.isEmpty())
-            throw new InvalidTransportDataException("Train type cannot be null.");
-
-        this.trainType = trainType;
-    }
     
     public void setSeatClass(String seatClass) throws InvalidTransportDataException {
         if (seatClass == null)
@@ -55,7 +45,7 @@ public class Train extends Transportation {
     }
     
     @Override
-    public String toString() {return super.toString() + ", " + this.trainType + ", " + this.seatClass;}
+    public String toString() {return super.toString() + ", " + this.seatClass;}
 
     @Override
     public boolean equals(Object other) {
@@ -65,9 +55,7 @@ public class Train extends Transportation {
 
         Train otherTrain = (Train) other;
 
-        return super.equals(otherTrain)
-            && this.trainType.equals(otherTrain.trainType)
-            && this.seatClass.equals(otherTrain.seatClass);
+        return super.equals(otherTrain) && this.seatClass.equals(otherTrain.seatClass);
     }
 
     @Override

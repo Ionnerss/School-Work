@@ -8,42 +8,31 @@ package AssignmentsS2.Assignment1.src.travel;
 import AssignmentsS2.Assignment1.src.exceptions.InvalidTransportDataException;
 
 public class Flight extends Transportation {
-    private String airlineName;
     private double luggageAllowance;
     private Trip trip;
 
 
     public Flight() {
         super();
-        this.airlineName = "";
         this.luggageAllowance = 0.0;
     }
 
-    public Flight(String companyName, String departureCity, String arrivalCity, String airlineName, double luggageAllowance) throws InvalidTransportDataException {
+    public Flight(String companyName, String departureCity, String arrivalCity, double luggageAllowance) throws InvalidTransportDataException {
         super(companyName, departureCity, arrivalCity);
-        setAirlineName(airlineName);
+        setLuggageAllowance(luggageAllowance);
+    }
+
+    public Flight(String id, String companyName, String departureCity, String arrivalCity, double luggageAllowance) throws InvalidTransportDataException {
+        super(id, companyName, departureCity, arrivalCity);
         setLuggageAllowance(luggageAllowance);
     }
 
     public Flight(Flight other) {
         super(other);
-        this.airlineName = other.airlineName;
         this.luggageAllowance = other.luggageAllowance;
     }
 
-    public String getAirlineName() {return this.airlineName;}
     public double getLuggageAllowance() {return this.luggageAllowance;}
-    
-    public void setAirlineName(String airlineName) throws InvalidTransportDataException {
-        if (airlineName == null)
-            throw new InvalidTransportDataException("Airline name cannot be null.");
-
-        String trimmed = airlineName.trim();
-        if (trimmed.isEmpty())
-            throw new InvalidTransportDataException("Airline name cannot be null.");
-
-        this.airlineName = airlineName;
-    }
 
     public void setLuggageAllowance(double luggageAllowance) throws InvalidTransportDataException {
         if (luggageAllowance < 0)
@@ -53,7 +42,7 @@ public class Flight extends Transportation {
     }
 
     @Override
-    public String toString() {return super.toString() + ", " + this.airlineName + ", " + this.luggageAllowance;}
+    public String toString() {return super.toString() + ", " + this.luggageAllowance;}
 
     @Override
     public boolean equals(Object other) {
@@ -63,9 +52,7 @@ public class Flight extends Transportation {
 
         Flight otherFlight = (Flight) other;
 
-        return super.equals(otherFlight)
-            && this.airlineName == otherFlight.airlineName
-            && this.luggageAllowance == otherFlight.luggageAllowance;
+        return super.equals(otherFlight) && this.luggageAllowance == otherFlight.luggageAllowance;
     }
 
     @Override
