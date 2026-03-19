@@ -56,7 +56,7 @@ public class Flight extends Transportation {
     }
 
     @Override
-    public double calculateCost(int numOfDays) {
+    protected double calculateCost(int numOfDays) {
         double cost = (double) trip.getBasePrice();
         if (luggageAllowance > 20) {
             int overAllowance = (int) luggageAllowance - 20;

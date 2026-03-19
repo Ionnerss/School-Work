@@ -6,6 +6,10 @@ package AssignmentsS2.Assignment2.src.driver;
 // --------------------------------------------------------
 
 import AssignmentsS2.Assignment2.src.client.Client;
+import AssignmentsS2.Assignment2.src.exceptions.InvalidAccommodationDataException;
+import AssignmentsS2.Assignment2.src.exceptions.InvalidClientDataException;
+import AssignmentsS2.Assignment2.src.exceptions.InvalidTransportDataException;
+import AssignmentsS2.Assignment2.src.exceptions.InvalidTripDataException;
 import AssignmentsS2.Assignment2.src.service.SmartTravelService;
 import AssignmentsS2.Assignment2.src.travel.*;
 import java.util.Scanner;
@@ -28,7 +32,7 @@ import java.util.Scanner;
  * @author SmartTravel Team
  * @version 1.0
  */
-public class Main {
+public class SmartTravelDriver {
     // Arrays to store all entities in the system
     /** Array to store all registered clients */
     private static Client[] client;
@@ -63,8 +67,14 @@ public class Main {
      * then presents the main menu for user interaction until exit.
      * 
      * @param args Command-line arguments (not used)
+     * @throws InvalidAccommodationDataException 
+     * @throws InvalidTransportDataException 
+     * @throws InvalidTripDataException 
+     * @throws InvalidClientDataException 
      */
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InvalidClientDataException, InvalidTripDataException, InvalidTransportDataException, 
+        InvalidAccommodationDataException {
+            
         System.out.println("Welcome to the SmartTravel Program!");
         System.out.println();
         
@@ -75,98 +85,36 @@ public class Main {
         // Initialize system based on user choice
         switch (choice) {
             case 1 -> {
-               // Initialize arrays with predefined sizes
-               client = new Client[3];
-               trip = new Trip[3];
-               transportation = new Transportation[6];
-               accomodation = new Accomodation[4];
+                SmartTravelService.testingScenario(true);
+                // Display all loaded entities
+                System.out.println();
+                System.out.println("=== Predefined Scenario Loaded ===");
+                System.out.println("Clients (>=3):");
+                System.out.println(SmartTravelService.printClient());
 
-               // Create 3 sample clients
-               client[0] = new Client("Alice", "Martin", "alice.martin@email.com");
-               client[1] = new Client("Brian", "Chen", "brian.chen@email.com");
-               client[2] = new Client("Sofia", "Lopez", "sofia.lopez@email.com");
+                System.out.println("Trips (>=3):");
+                System.out.println(SmartTravelService.printTrip());
 
-               // Create 3 sample trips, each assigned to a different client
-               trip[0] = new Trip("Paris", 5, 1200.0, client[0]);
-               trip[1] = new Trip("Tokyo", 7, 1800.0, client[1]);
-               trip[2] = new Trip("Vancouver", 4, 900.0, client[2]);
+                System.out.println("Transportation (>=2 per type):");
+                System.out.println(SmartTravelService.printTransportation());
 
-               // Create 2 flights, 2 trains, and 2 buses (demonstrating polymorphism)
-               transportation[0] = new Flight("Air Canada", "Montreal", "Paris", "Air Canada", 23.0);
-               transportation[1] = new Flight("Air France", "Montreal", "Paris", "Air France", 20.0);
-               transportation[2] = new Train("VIA Rail", "Montreal", "Toronto", "Intercity", "Economy");
-               transportation[3] = new Train("Shinkansen", "Tokyo", "Kyoto", "Bullet", "First Class");
-               transportation[4] = new Bus("Greyhound", "Montreal", "Ottawa", "Greyhound", 2);
-               transportation[5] = new Bus("Megabus", "Toronto", "Kingston", "Megabus", 1);
+                System.out.println("Accomodation (>=2 per type):");
+                System.out.println(SmartTravelService.printAccomodation());
 
-               // Create 2 hotels and 2 hostels (demonstrating polymorphism)
-               accomodation[0] = new Hotel("Royal Stay", "Paris", 220.0, 4.5);
-               accomodation[1] = new Hotel("Skyline Inn", "Tokyo", 260.0, 4.0);
-               accomodation[2] = new Hostel("Backpack Hub", "Paris", 60.0, 8);
-               accomodation[3] = new Hostel("Metro Sleep", "Vancouver", 55.0, 10);
-
-               // Display all loaded entities
-               System.out.println();
-               System.out.println("=== Predefined Scenario Loaded ===");
-               System.out.println("Clients (>=3):");
-               SmartTravelService.printClient();
-
-               System.out.println("Trips (>=3):");
-               SmartTravelService.printTrip();
-
-               System.out.println("Transportation (>=2 per type):");
-               SmartTravelService.printTransportation();
-
-               System.out.println("Accomodation (>=2 per type):");
-               SmartTravelService.printAccomodation();
-
-               // Demonstrate polymorphism: base-class references calling overridden methods
-               System.out.println("Polymorphism Demo (base class references):");
-               for (Transportation t : transportation) {
-                   if (t != null) {
-                       // Dynamic dispatch: actual subclass toString() is called
-                       System.out.println(">. " + t.getClass().getSimpleName() + " -> " + t.toString());
-                   }
-               }
-               for (Accomodation a : accomodation) {
-                   if (a != null) {
-                       // Dynamic dispatch: actual subclass toString() is called
-                       System.out.println(">. " + a.getClass().getSimpleName() + " -> " + a.toString());
-                   }
-               }
-               System.out.println("==================================");
+                // Demonstrate polymorphism: base-class references calling overridden methods
+                System.out.println("Polymorphism Demo (base class references):");
+                System.out.println(SmartTravelService.printTransportation());
+                System.out.println(SmartTravelService.printAccomodation());
+                System.out.println("==================================");
             }
             case 2 -> {
                 // MANUAL SETUP: Initialize empty arrays for user to populate
-                client = new Client[1];
-                trip = new Trip[1];
-                transportation = new Transportation[2];
-                accomodation = new Accomodation[1];
-
-                // Initialize default transportation options
-                transportation[0] = new Flight();
-                transportation[1] = new Train();
-                transportation[2] = new Bus();
-
-                // Initialize default accommodation options
-                accomodation[0] = new Hostel();
-                accomodation[1] = new Hotel();
+                SmartTravelService.testingScenario(false);
             }
             default -> {
                 // INVALID CHOICE: Default to manual setup
                 System.out.println("Option invalid. Going default route.");
-                System.out.println();
-                client = new Client[1];
-                trip = new Trip[1];
-                transportation = new Transportation[2];
-                accomodation = new Accomodation[1];
-
-                transportation[0] = new Flight();
-                transportation[1] = new Train();
-                transportation[2] = new Bus();
-
-                accomodation[0] = new Hostel();
-                accomodation[1] = new Hotel();
+                SmartTravelService.testingScenario(false);
             }
         }
 

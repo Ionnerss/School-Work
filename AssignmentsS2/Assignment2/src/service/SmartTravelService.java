@@ -218,7 +218,7 @@ public class SmartTravelService {
     public static void saveAllData(String folderPath) throws IOException{
         ClientFileManager.saveClients(clients, clientCount, folderPath);
         AccommodationFileManager.saveAccomodations(accomodations, accommodationCount, folderPath);
-        TransportFileManager.saveTransportations(transportations, accommodationCount, folderPath);
+        TransportFileManager.saveTransportations(transportations, transportationCount, folderPath);
         TripFileManager.saveClients(trips, tripCount, folderPath);
     }
 

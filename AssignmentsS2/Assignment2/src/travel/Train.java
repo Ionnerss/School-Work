@@ -59,7 +59,7 @@ public class Train extends Transportation {
     }
 
     @Override
-    public double calculateCost(int numOfDays) {
+    protected double calculateCost(int numOfDays) {
         double cost = trip.getBasePrice();
         if (seatClass.equalsIgnoreCase("First Class"))
             cost *= 1.50;

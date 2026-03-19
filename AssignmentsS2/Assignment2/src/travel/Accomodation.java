@@ -104,5 +104,5 @@ public abstract class Accomodation {
             && this.getPricePerNight() == otherAcc.getPricePerNight();
     }
     
-    public abstract double calculateCost(int numOfDays);
+    protected abstract double calculateCost(int numOfDays);
 }

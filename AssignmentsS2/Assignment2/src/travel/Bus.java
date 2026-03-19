@@ -55,7 +55,7 @@ public class Bus extends Transportation {
     }
 
     @Override
-    public double calculateCost(int numOfDays) {
+    protected double calculateCost(int numOfDays) {
         return ( (double) trip.getBasePrice() + (5.00 * (double) numOfStops));
     }
 }

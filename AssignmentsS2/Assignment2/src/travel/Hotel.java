@@ -55,7 +55,7 @@ public class Hotel extends Accomodation {
     }
 
     @Override
-    public double calculateCost(int numOfDays) {
+    protected double calculateCost(int numOfDays) {
         double costPerNight = this.getPricePerNight();
         return (costPerNight * numOfDays);
     }

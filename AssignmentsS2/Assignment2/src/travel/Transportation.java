@@ -107,5 +107,5 @@ public abstract class Transportation {
             && this.getArrivalCity().equals(otherTr.getArrivalCity());
     }
 
-    public abstract double calculateCost(int numOfDays);
+    protected abstract double calculateCost(int numOfDays);
 }
