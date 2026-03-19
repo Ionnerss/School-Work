@@ -1,4 +1,4 @@
-package visualization;
+package AssignmentsS2.Assignment2.src.visualization;
 
 /**
  * DashboardGenerator - Generates a professional HTML Dashboard for SmartTravel Pro (COMP249 A2)
@@ -18,9 +18,9 @@ package visualization;
  * @version Winter 2026 - A2
  */
 
-import service.SmartTravelService;
-import client.Client;
-import travel.Trip;
+import AssignmentsS2.Assignment2.src.service.SmartTravelService;
+import AssignmentsS2.Assignment2.src.client.Client;
+import AssignmentsS2.Assignment2.src.travel.Trip;
 
 import java.io.File;
 import java.io.PrintWriter;

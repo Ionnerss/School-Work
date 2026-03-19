@@ -6,6 +6,7 @@ package AssignmentsS2.Assignment2.src.driver;
 // --------------------------------------------------------
 
 import AssignmentsS2.Assignment2.src.client.Client;
+import AssignmentsS2.Assignment2.src.service.SmartTravelService;
 import AssignmentsS2.Assignment2.src.travel.*;
 import java.util.Scanner;
 
@@ -108,16 +109,16 @@ public class Main {
                System.out.println();
                System.out.println("=== Predefined Scenario Loaded ===");
                System.out.println("Clients (>=3):");
-               printClient();
+               SmartTravelService.printClient();
 
                System.out.println("Trips (>=3):");
-               printTrip();
+               SmartTravelService.printTrip();
 
                System.out.println("Transportation (>=2 per type):");
-               printTransportation();
+               SmartTravelService.printTransportation();
 
                System.out.println("Accomodation (>=2 per type):");
-               printAccomodation();
+               SmartTravelService.printAccomodation();
 
                // Demonstrate polymorphism: base-class references calling overridden methods
                System.out.println("Polymorphism Demo (base class references):");
@@ -259,7 +260,7 @@ public class Main {
                 case 2 -> {
                     backToSubmenu = true;
 
-                    printClient();
+                    SmartTravelService.printClient();
                     System.out.println();
                     System.out.print(">. Please enter client id who's information you would like to update: ");
                     clientID = scanner.next();
@@ -298,7 +299,7 @@ public class Main {
                 case 3 -> {
                     backToSubmenu = true;
 
-                    printClient();
+                    SmartTravelService.printClient();
                     System.out.println();
                     System.out.print(">. Please enter client ID who's information you would like to delete: ");
                     clientID = scanner.next();
@@ -330,7 +331,7 @@ public class Main {
                 }
                 case 4 -> {
                     backToSubmenu = true;
-                    printClient();
+                    SmartTravelService.printClient();
                 }
                 case 5 -> backToSubmenu = false;
                 default -> {
@@ -387,7 +388,7 @@ public class Main {
                     double basePrice = scanner.nextDouble();
                     System.out.println();
 
-                    printClient();
+                    SmartTravelService.printClient();
 
                     System.out.println();
                     System.out.print(">. Please enter client id whom you'd like to link the trip to: ");
@@ -413,7 +414,7 @@ public class Main {
                 case 2 -> {
                     backToSubmenu = true;
 
-                    printTrip();
+                    SmartTravelService.printTrip();
                     System.out.print(">. Please enter trip id of trip you would like to update: ");
                     tripID = scanner.next();
 
@@ -452,7 +453,7 @@ public class Main {
                 case 3 -> {
                     backToSubmenu = true;
 
-                    printTrip();
+                    SmartTravelService.printTrip();
                     System.out.println();
                     System.out.print(">. Please enter trip ID you would like to cancel: ");
                     tripID = scanner.next();
@@ -482,12 +483,12 @@ public class Main {
                 }
                 case 4 -> {
                     backToSubmenu = true;
-                    printTrip();
+                    SmartTravelService.printTrip();
                 }
                 case 5 -> {
                     backToSubmenu = true;
 
-                    printClient();
+                    SmartTravelService.printClient();
                     System.out.println();
                     System.out.print(">. Please enter client ID to view their trips: ");
                     clientID = scanner.next();
@@ -614,7 +615,7 @@ public class Main {
                 case 2 -> {
                     backToSubmenu = true;
 
-                    printTransportation();
+                    SmartTravelService.printTransportation();
                     System.out.println();
                     System.out.print(">. Please enter transportation ID to remove: ");
                     String transportID = scanner.next();
@@ -672,7 +673,7 @@ public class Main {
                 }
                 case 4 -> {
                     backToSubmenu = true;
-                    printTransportation();
+                    SmartTravelService.printTransportation();
                 }
                 case 5 -> backToSubmenu = false;
                 default -> {
@@ -757,7 +758,7 @@ public class Main {
                 case 2 -> {
                     backToSubmenu = true;
 
-                    printAccomodation();
+                    SmartTravelService.printAccomodation();
                     System.out.println();
                     System.out.print(">. Please enter accomodation ID to remove: ");
                     String accomID = scanner.next();
@@ -813,7 +814,7 @@ public class Main {
                 }
                 case 4 -> {
                     backToSubmenu = true;
-                    printAccomodation();
+                    SmartTravelService.printAccomodation();
                 }
                 case 5 -> backToSubmenu = false;
                 default -> {
@@ -876,7 +877,7 @@ public class Main {
                 case 2 -> {
                     backToSubmenu = true;
 
-                    printTrip();
+                    SmartTravelService.printTrip();
                     System.out.println();
                     System.out.print(">. Please enter trip ID to calculate total cost: ");
                     tripID = scanner.next();
@@ -1025,30 +1026,6 @@ public class Main {
     // }
 
     /**
-     * Prints all clients in the system to console.
-     * Iterates through client array and displays each client's toString() representation.
-     * Each client displays their ID, first name, last name, and email address.
-     */
-    private static void printClient() {
-        System.out.println();
-        for (Client person : client)
-            System.out.println(">. " + person.toString());
-        System.out.println();
-    }
-
-    /**
-     * Prints all trips in the system to console.
-     * Iterates through trip array and displays each trip's toString() representation.
-     * Each trip displays its ID, destination, duration, base price, and associated client.
-     */
-    private static void printTrip() {
-        System.out.println();
-        for (Trip trips : trip)
-            System.out.println(">. " + trips.toString());
-        System.out.println();
-    }
-
-    /**
      * Searches for a client by ID in the client array.
      * Returns the index of the client if found, or special codes for error conditions.
      * 
@@ -1144,47 +1121,5 @@ public class Main {
             }
         }   
         return index;
-    }
-
-    /**
-     * Prints all transportation options in the system to console.
-     * Displays transportation entries if available, or a message if the list is empty.
-     * Demonstrates polymorphism: calls toString() on base-class references (Flight, Train, Bus).
-     */
-    private static void printTransportation() {
-        System.out.println();
-        if (transportation.length == 0) {
-            System.out.println(">. No transportation options available.");
-        } else {
-            // Iterate through array and display each non-null transportation option
-            for (Transportation t : transportation) {
-                if (t != null) {
-                    // Polymorphic call: actual subclass toString() is invoked
-                    System.out.println(">. " + t.toString());
-                }
-            }
-        }
-        System.out.println();
-    }
-
-    /**
-     * Prints all accommodation options in the system to console.
-     * Displays accommodation entries if available, or a message if the list is empty.
-     * Demonstrates polymorphism: calls toString() on base-class references (Hotel, Hostel).
-     */
-    private static void printAccomodation() {
-        System.out.println();
-        if (accomodation.length == 0) {
-            System.out.println(">. No accomodations available.");
-        } else {
-            // Iterate through array and display each non-null accommodation option
-            for (Accomodation a : accomodation) {
-                if (a != null) {
-                    // Polymorphic call: actual subclass toString() is invoked
-                    System.out.println(">. " + a.toString());
-                }
-            }
-        }
-        System.out.println();
     }
 }

@@ -1,4 +1,4 @@
-package visualization;
+package AssignmentsS2.Assignment2.src.visualization;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -15,8 +15,8 @@ import org.jfree.chart.ChartUtils;
 import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.general.DefaultPieDataset;
 
-import service.SmartTravelService;
-import travel.Trip;
+import AssignmentsS2.Assignment2.src.service.SmartTravelService;
+import AssignmentsS2.Assignment2.src.travel.Trip;
 
 import java.io.File;
 import java.io.IOException;
