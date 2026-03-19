@@ -33,16 +33,6 @@ import java.util.Scanner;
  * @version 1.0
  */
 public class SmartTravelDriver {
-    // Arrays to store all entities in the system
-    /** Array to store all registered clients */
-    private static Client[] client;
-    /** Array to store all trips in the system */
-    private static Trip[] trip;
-    /** Array to store all transportation options (Flight, Train, Bus) */
-    private static Transportation[] transportation;
-    /** Array to store all accommodation options (Hotel, Hostel) */
-    private static Accomodation[] accomodation;
-    
     // Control variables for menu navigation
     /** Scanner for reading user input from console */
     private static final Scanner scanner = new Scanner(System.in);
@@ -74,7 +64,7 @@ public class SmartTravelDriver {
      */
     public static void main(String[] args) throws InvalidClientDataException, InvalidTripDataException, InvalidTransportDataException, 
         InvalidAccommodationDataException {
-            
+
         System.out.println("Welcome to the SmartTravel Program!");
         System.out.println();
         
