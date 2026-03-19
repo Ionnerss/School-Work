@@ -82,11 +82,6 @@ public class Trip {
     public Transportation geTransportation() {return transport;}
     public Accomodation geAccomodation() {return accomodation;}
 
-    public static void syncNextId(int nextNumericId) {
-        if (nextNumericId > nextID)
-            nextID = nextNumericId;
-    }
-
     public void setDestination(String destination) throws InvalidTripDataException {
         if (destination == null)
             throw new InvalidTripDataException("Destination cannot be null.");
@@ -138,6 +133,11 @@ public class Trip {
             throw new InvalidTripDataException("Accomodation ID is null.");
 
         this.accomodation = accomodation;
+    }
+
+    public static void syncNextId(int nextNumericId) {
+        if (nextNumericId > nextID)
+            nextID = nextNumericId;
     }
 
     @Override

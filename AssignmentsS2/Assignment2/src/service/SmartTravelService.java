@@ -1,7 +1,13 @@
 package AssignmentsS2.Assignment2.src.service;
 
+import java.io.IOException;
+
 import AssignmentsS2.Assignment2.src.client.Client;
 import AssignmentsS2.Assignment2.src.exceptions.*;
+import AssignmentsS2.Assignment2.src.persistance.AccommodationFileManager;
+import AssignmentsS2.Assignment2.src.persistance.ClientFileManager;
+import AssignmentsS2.Assignment2.src.persistance.TransportFileManager;
+import AssignmentsS2.Assignment2.src.persistance.TripFileManager;
 import AssignmentsS2.Assignment2.src.travel.*;
 
 public class SmartTravelService {
@@ -66,7 +72,7 @@ public class SmartTravelService {
             throw new InvalidTripDataException("Client ID is mandatory.");
         }
 
-        Client client = findClientById(normalizedClientId);
+        Client client = findClientByIdObj(normalizedClientId);
         Trip newTrip = new Trip(normalizedDestination, durationDays, basePrice, client);
         storeTrip(newTrip);
         return newTrip;
@@ -90,7 +96,7 @@ public class SmartTravelService {
             );
         }
 
-        Client client = findClientById(normalizedClientId);
+        Client client = findClientByIdObj(normalizedClientId);
 
         Accomodation accommodation = null;
         if (normalizedAccommodationId != null) {
@@ -134,6 +140,54 @@ public class SmartTravelService {
         throw new InvalidTransportDataException("Transportation ID not found: " + transportationId);
     }
 
+    public static Client findClientByIdObj(String clientId) throws InvalidClientDataException {
+        if (clients != null) {
+            for (Client client : clients) {
+                if (client != null && client.getClientID().equals(clientId))
+                    return client;
+            }
+        }
+
+        throw new InvalidClientDataException("Client ID not found: " + clientId);
+    }
+
+    public static boolean findClientbyIdBool(String clientId) {
+        if (clientId == null || clientId.trim().isEmpty()) {
+            throw new IllegalArgumentException("Client ID cannot be empty.");
+        }
+
+        String trimmed = clientId.trim();
+
+        if (!trimmed.matches("C\\d+")) {
+            throw new IllegalArgumentException("Invalid Client ID format: " + clientId);
+        }
+
+        for (Client specifiClient : clients)
+            if (trimmed == specifiClient.getClientID())
+                return true;
+
+        return false;
+    }
+
+    public static boolean clientExists(String clientID) throws InvalidClientDataException {
+        if (clientID == null || clientID.trim().isEmpty()) {
+            throw new InvalidClientDataException("Client ID cannot be empty.");
+        }
+
+        String trimmed = clientID.trim();
+
+        if (!trimmed.matches("C\\d+")) {
+            throw new InvalidClientDataException("Invalid Client ID format: " + clientID);
+        }
+
+        for (Client specifiClient : clients)
+            if (trimmed == specifiClient.getClientID())
+                return true;
+
+        return false;
+    }
+
+
     private static String normalize(String s) {
         if (s == null) return null;
         s = s.trim();
@@ -154,63 +208,22 @@ public class SmartTravelService {
         trips[tripCount++] = newTrip;
     }
 
-    public static Client findClientById(String clientId) throws InvalidClientDataException {
-        if (clients != null) {
-            for (Client client : clients) {
-                if (client != null && client.getClientID().equals(clientId))
-                    return client;
-            }
-        }
-
-        throw new InvalidClientDataException("Client ID not found: " + clientId);
+    public static void loadAllData(String folderPath) throws IOException {
+        ClientFileManager.loadClients(clients, folderPath);
+        AccommodationFileManager.loadAccomodations(accomodations, folderPath);
+        TransportFileManager.loadTransportations(transportations, folderPath);
+        TripFileManager.loadClients(trips, folderPath);
     }
 
-    public static boolean clientExists(String clientID) {
-        if (clientID == null || clientID.trim().isEmpty()) {
-            throw new IllegalArgumentException("Client ID cannot be empty.");
-        }
-
-        String trimmed = clientID.trim();
-
-        if (!trimmed.matches("C\\d+")) {
-            throw new IllegalArgumentException("Invalid Client ID format: " + clientID);
-        }
-
-        for (Client specifiClient : clients)
-            if (trimmed == specifiClient.getClientID())
-                return true;
-
-        return false;
+    public static void saveAllData(String folderPath) throws IOException{
+        ClientFileManager.saveClients(clients, clientCount, folderPath);
+        AccommodationFileManager.saveAccomodations(accomodations, accommodationCount, folderPath);
+        TransportFileManager.saveTransportations(transportations, accommodationCount, folderPath);
+        TripFileManager.saveClients(trips, tripCount, folderPath);
     }
 
-    public static boolean findClientbyId(String clientID) {
-        if (clientID == null || clientID.trim().isEmpty()) {
-            throw new IllegalArgumentException("Client ID cannot be empty.");
-        }
-
-        String trimmed = clientID.trim();
-
-        if (!trimmed.matches("C\\d+")) {
-            throw new IllegalArgumentException("Invalid Client ID format: " + clientID);
-        }
-
-        for (Client specifiClient : clients)
-            if (trimmed == specifiClient.getClientID())
-                return true;
-
-        return false;
-    }
-
-    public static void loadAllData(String folderPath) {
-
-    }
-
-    public static void saveAllData(String folderPath) {
-
-    }
-
-    public static void calculateTripTotal(int index) {
-
+    public static double calculateTripTotal(int index) {
+        return trips[index].calculateTotalCost();
     }
 
     public static void testingScenario(boolean choice) throws InvalidClientDataException, InvalidTripDataException,
@@ -271,10 +284,10 @@ public class SmartTravelService {
             trips[9] = new Trip("LA", 10, 400.00, clients[6]);
             trips[10] = new Trip("Tokyo", 8, 225.00, clients[2]);
 
-            clientCount = 10;
-            tripCount = 11;
-            transportationCount = 10;
-            accommodationCount = 10;
+            clientCount = clients.length;
+            tripCount = trips.length;
+            transportationCount = transportations.length;
+            accommodationCount = accomodations.length;
         }
         else {
             clients = new Client[1];
@@ -313,5 +326,73 @@ public class SmartTravelService {
 
         expanded[oldLength] = element;
         return expanded;
+    }
+
+    /**
+     * Prints all clients in the system to console.
+     * Iterates through client array and displays each client's toString() representation.
+     * Each client displays their ID, first name, last name, and email address.
+     */
+    public static String printClient() {
+        String printString = "\n";
+        for (Client person : clients)
+            printString += ">. " + person.toString();
+
+        return (printString + "\n");
+    }
+
+    /**
+     * Prints all trips in the system to console.
+     * Iterates through trip array and displays each trip's toString() representation.
+     * Each trip displays its ID, destination, duration, base price, and associated client.
+     */
+    public static String printTrip() {
+        String printString = "\n";
+        for (Trip trip : trips)
+            printString += ">. " + trip.toString();
+
+        return (printString + "\n");
+    }
+
+    /**
+     * Prints all transportation options in the system to console.
+     * Displays transportation entries if available, or a message if the list is empty.
+     * Demonstrates polymorphism: calls toString() on base-class references (Flight, Train, Bus).
+     */
+    public static String printTransportation() {
+        String printString = "\n";
+        if (transportations.length == 0)
+            printString += ">. No transportation options available.";
+        else {
+            // Iterate through array and display each non-null transportation option
+            for (Transportation t : transportations) {
+                if (t != null) {
+                    // Polymorphic call: actual subclass toString() is invoked
+                    printString += (">. " + t.toString());
+                }
+            }
+        }
+        return (printString + "\n");
+    }
+
+    /**
+     * Prints all accommodation options in the system to console.
+     * Displays accommodation entries if available, or a message if the list is empty.
+     * Demonstrates polymorphism: calls toString() on base-class references (Hotel, Hostel).
+     */
+    public static String printAccomodation() {
+        String printString = "\n";
+        if (accomodations.length == 0) {
+            printString = ">. No accomodations available.";
+        } else {
+            // Iterate through array and display each non-null accommodation option
+            for (Accomodation a : accomodations) {
+                if (a != null) {
+                    // Polymorphic call: actual subclass toString() is invoked
+                    printString = (">. " + a.toString());
+                }
+            }
+        }
+        return (printString + "\n");
     }
 }

@@ -57,6 +57,6 @@ public class Hostel extends Accomodation {
     @Override
     public double calculateCost(int numOfDays) {
         double costPerDay = 100;
-        return (double) costPerDay * numOfDays;
+        return ((double) costPerDay * numOfDays);
     }
 }

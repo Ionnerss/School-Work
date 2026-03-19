@@ -55,11 +55,6 @@ public abstract class Accomodation {
     public String getLocation() {return this.location;}
     public double getPricePerNight() {return this.pricePerNight;}
 
-    public static void syncNextId(int nextNumericId) {
-        if (nextNumericId > nextID)
-            nextID = nextNumericId;
-    }
-
      public void setName(String name) throws InvalidAccommodationDataException {
         if (name == null)
             throw new InvalidAccommodationDataException("Name cannot be null.");
@@ -87,6 +82,11 @@ public abstract class Accomodation {
             throw new InvalidAccommodationDataException("Price per night cannot be 0.");
 
         this.pricePerNight = pricePerNight;
+    }
+
+    public static void syncNextId(int nextNumericId) {
+        if (nextNumericId > nextID)
+            nextID = nextNumericId;
     }
 
     @Override

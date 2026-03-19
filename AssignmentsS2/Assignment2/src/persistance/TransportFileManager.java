@@ -1,4 +1,4 @@
-package AssignmentsS2.Assignment2.src.persistence;
+package AssignmentsS2.Assignment2.src.persistance;
 
 import java.io.BufferedWriter;
 import java.io.FileInputStream;
@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Scanner;
 
+import AssignmentsS2.Assignment2.src.service.SmartTravelService;
 import AssignmentsS2.Assignment2.src.exceptions.InvalidTransportDataException;
 import AssignmentsS2.Assignment2.src.travel.Bus;
 import AssignmentsS2.Assignment2.src.travel.Flight;
@@ -29,7 +30,7 @@ public class TransportFileManager {
                 continue;
             }
 
-            outputStream.println(SmartTravelService.printArray(ArrayType.TRANSPORTATIONS));
+            outputStream.println(SmartTravelService.printTransportation());
         }
 
         if (outputStream != null)
@@ -106,7 +107,7 @@ public class TransportFileManager {
 
         // Resync Transportation static next-id so new transportations don’t collide with loaded IDs
         if (maxIdNumSeen >= 0) {
-            SmartTravelService.syncNextID(Transportation.class, maxIdNumSeen + 1);
+            Transportation.syncNextId(maxIdNumSeen + 1);
         }
         return count;
     }

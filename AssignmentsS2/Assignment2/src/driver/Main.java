@@ -1,4 +1,3 @@
-@ -1,1191 +1,1191 @@
 package AssignmentsS2.Assignment2.src.driver;
 // -------------------------------------------------------- 
 // Assignment 1 - Main driver
@@ -29,7 +28,6 @@ import java.util.Scanner;
  * @version 1.0
  */
 public class Main {
-public class SmartTravelDriver {
     // Arrays to store all entities in the system
     /** Array to store all registered clients */
     private static Client[] client;

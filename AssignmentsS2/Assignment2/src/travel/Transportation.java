@@ -54,11 +54,6 @@ public abstract class Transportation {
     public String getDepartureCity() {return this.departureCity;}
     public String getArrivalCity() {return this.arrivalCity;}
 
-    public static void syncNextId(int nextNumericId) {
-        if (nextNumericId > nextID)
-            nextID = nextNumericId;
-    }
-
     public void setCompanyName(String companyName) throws InvalidTransportDataException {
         if (companyName == null)
             throw new InvalidTransportDataException("Company name cannot be null.");
@@ -90,6 +85,11 @@ public abstract class Transportation {
             throw new InvalidTransportDataException("Arrival city cannot be null.");
 
         this.arrivalCity = arrivalCity;
+    }
+
+    public static void syncNextId(int nextNumericId) {
+        if (nextNumericId > nextID)
+            nextID = nextNumericId;
     }
 
     @Override

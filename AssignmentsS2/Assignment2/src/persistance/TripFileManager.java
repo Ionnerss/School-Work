@@ -1,4 +1,4 @@
-package AssignmentsS2.Assignment2Remastered.src.persistence;
+package AssignmentsS2.Assignment2.src.persistance;
 
 import java.io.BufferedWriter;
 import java.io.FileInputStream;
@@ -7,10 +7,9 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Scanner;
 
-import AssignmentsS2.Assignment2Remastered.src.client.Client;
-import AssignmentsS2.Assignment2Remastered.src.exceptions.InvalidClientDataException;
-import AssignmentsS2.Assignment2Remastered.src.service.SmartTravelService;
-import AssignmentsS2.Assignment2Remastered.src.travel.Trip;
+import AssignmentsS2.Assignment2.src.exceptions.InvalidTripDataException;
+import AssignmentsS2.Assignment2.src.service.SmartTravelService;
+import AssignmentsS2.Assignment2.src.travel.Trip;
 
 public class TripFileManager {
     public static void saveClients(Trip[] trips, int tripCount, String filePath) throws IOException {
@@ -56,22 +55,23 @@ public class TripFileManager {
                 }
                 try {
                     String[] parts = line.split(";", -1);
-                    if (parts.length != 4) {
+                    if (parts.length != 7) {
                         ErrorLogger.log("trips.csv","Trip data is incomplete, missing info.", lineNo, line);
                         continue;
                     }
-    
-                    for(String str : parts) {
-                        if (str.equalsIgnoreCase("") || str == null || str.isEmpty()) {
-                            ErrorLogger.log("trips.csv", "Trip data is incomplete, missing info.", lineNo, line);
-                            continue;
+
+                    boolean hasMissingField = false;
+                    for (String str : parts) {
+                        if (str == null || str.trim().isEmpty()) {
+                            hasMissingField = true;
+                            break;
                         }
                     }
-    
-                    if (!parts[3].contains("@")) {
-                        ErrorLogger.log("clients.csv", "Email adress is incorrect.", lineNo, line);
+
+                    if (hasMissingField) {
+                        ErrorLogger.log("trips.csv", "Trip data is incomplete, missing info.", lineNo, line);
                         continue;
-                    } 
+                    }
     
                     String tripId = parts[0].trim();
                     String clientId = parts[1].trim();
@@ -82,20 +82,20 @@ public class TripFileManager {
                     double price = Double.parseDouble(parts[6].trim());
 
                     //find client, accomodation, and transport by id then assign them to the new trip object t
-            
-                    // Trip t = new Trip(tripId, clientId, accomodationId, transportId, destination, amountOfDays, price);
-                    // clients[count++] = c;
+                    Trip t = new Trip(tripId, SmartTravelService.findClientByIdObj(clientId), SmartTravelService.findAccommodationById(accomodationId), 
+                            SmartTravelService.findTransportationById(transportId), destination, amountOfDays, price);
+                    trips[count++] = t;
 
                     // Track max numeric part of ID for static resync
                     int n = extractTripNumber(tripId);
                     if (n > maxIdNumSeen) maxIdNumSeen = n;
 
                 } catch(InvalidTripDataException | RuntimeException e) {
-                    ErrorLogger.log("clients.csv", e.getMessage(), lineNo, line);
+                    ErrorLogger.log("trips.csv", e.getMessage(), lineNo, line);
                 }
             } 
         } catch (Exception e) {
-            ErrorLogger.log("clients.csv", e.getMessage(), lineNo, line);
+            ErrorLogger.log("trips.csv", e.getMessage(), lineNo, line);
         }
 
         // Resync Trip static next-id so new trips don’t collide with loaded IDs
@@ -108,7 +108,7 @@ public class TripFileManager {
     private static int extractTripNumber(String id) {
         if (id == null) return -1;
         id = id.trim();
-        if (id.length() < 5 || id.charAt(0) != 'C') return -1;
+        if (id.length() < 2 || id.charAt(0) != 'T') return -1;
 
         try {
             return Integer.parseInt(id.substring(1));

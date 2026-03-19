@@ -1,4 +1,4 @@
-package AssignmentsS2.Assignment2.src.persistence;
+package AssignmentsS2.Assignment2.src.persistance;
 
 import java.io.BufferedWriter;
 import java.io.FileInputStream;
@@ -27,7 +27,7 @@ public class AccommodationFileManager {
                 continue;
             }
 
-            outputStream.println(SmartTravelService.printArray(ArrayType.ACCOMODATIONS));
+            outputStream.println(SmartTravelService.printAccomodation());
         }
 
         if (outputStream != null)
@@ -97,7 +97,7 @@ public class AccommodationFileManager {
 
         // Resync Accomodation static next-id so new accomodations don’t collide with loaded IDs
         if (maxIdNumSeen >= 0) {
-            SmartTravelService.syncNextID(Accomodation.class, maxIdNumSeen + 1);
+            Accomodation.syncNextId(maxIdNumSeen + 1);
         }
         return count;
     }

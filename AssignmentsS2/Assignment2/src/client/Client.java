@@ -50,11 +50,6 @@ public class Client {
     public String getLastName() {return this.lastName;}
     public String getEmailAdress() {return this.emailAdress;}
 
-    public static void syncNextId(int nextNumericId) {
-        if (nextNumericId > nextID)
-            nextID = nextNumericId;
-    }
-
     public void setFirstName(String firstName) throws InvalidClientDataException {
         this.firstName = validateName(firstName, "First name");
     }
@@ -95,6 +90,11 @@ public class Client {
             throw new InvalidClientDataException("Invalid email, does not contain \".\".");
 
         return trimmed;
+    }
+
+    public static void syncNextId(int nextNumericId) {
+        if (nextNumericId > nextID)
+            nextID = nextNumericId;
     }
 
     @Override
