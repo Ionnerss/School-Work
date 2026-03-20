@@ -7,42 +7,39 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Scanner;
 
-import AssignmentsS2.Assignment2.src.exceptions.InvalidTripDataException;
-import AssignmentsS2.Assignment2.src.service.SmartTravelService;
+import AssignmentsS2.Assignment2.src.exceptions.*;
 import AssignmentsS2.Assignment2.src.travel.Trip;
 
 public class TripFileManager {
-    public static void saveClients(Trip[] trips, int tripCount, String filePath) throws IOException {
+    public static void saveTrips(Trip[] trips, int tripCount, String filePath) throws IOException {
         if (trips == null) throw new IllegalArgumentException("Trips array is null.");
         if (tripCount < 0 || tripCount > trips.length)
             throw new IllegalArgumentException("Trip count is out of range.");
 
-        PrintWriter outputStream = new PrintWriter(new BufferedWriter(new FileWriter(filePath)));
+        try (PrintWriter outputStream = new PrintWriter(new BufferedWriter(new FileWriter(filePath)))) {
+            for (int i = 0; i < tripCount; i++) {
+                if (trips[i] == null) {
+                    ErrorLogger.log("trips.csv", "Specific trip data is empty.", i + 1, "null");
+                    continue;
+                }
 
-        for (int i = 0; i < tripCount; i++) {
-            if (trips[i] == null) {
-                ErrorLogger.log("trips.csv", "Specific trip data is empty.", i, "null");
-                continue;
+                String accomodationId = (trips[i].geAccomodation() == null) ? "" : trips[i].geAccomodation();
+                String transportId = (trips[i].geTransportation() == null) ? "" : trips[i].geTransportation();
+
+                outputStream.println(trips[i].getTripId() + ";" + trips[i].getClient() + ";"
+                        + accomodationId + ";" + transportId + ";"
+                        + trips[i].getDestination() + ";" + trips[i].getDurationInDays() + ";" + trips[i].getBasePrice());
             }
-
-            outputStream.println(trips[i].getTripId() + ";" + trips[i].getClient().getClientID() + ";" + 
-                trips[i].geAccomodation().getAccomodationID() + ";" + trips[i].geTransportation().getTransportID() + ";" +
-                trips[i].getDestination() + ";" + trips[i].getDurationInDays() + ";" + trips[i].getBasePrice());
         }
-
-        if (outputStream != null)
-            outputStream.close();
     }
 
-    public static int loadClients(Trip[] trips, String filePath) throws IOException {
-        Scanner inputStream = null;
+    public static int loadTrips(Trip[] trips, String filePath) throws IOException {
         int count = 0;
         int lineNo = 0;
         String line = "null";
         int maxIdNumSeen = -1; // to resync static ID generator after load
 
-        try {
-            inputStream = new Scanner(new FileInputStream(filePath));
+        try (Scanner inputStream = new Scanner(new FileInputStream(filePath))) {
 
             while (inputStream.hasNextLine()) {
                 lineNo++;
@@ -60,16 +57,11 @@ public class TripFileManager {
                         continue;
                     }
 
-                    boolean hasMissingField = false;
-                    for (String str : parts) {
-                        if (str == null || str.trim().isEmpty()) {
-                            hasMissingField = true;
-                            break;
-                        }
-                    }
-
-                    if (hasMissingField) {
-                        ErrorLogger.log("trips.csv", "Trip data is incomplete, missing info.", lineNo, line);
+                    // Required columns: tripId, clientId, destination, duration, basePrice
+                    if (parts[0].trim().isEmpty() || parts[1].trim().isEmpty()
+                            || parts[4].trim().isEmpty() || parts[5].trim().isEmpty()
+                            || parts[6].trim().isEmpty()) {
+                        ErrorLogger.log("trips.csv", "Trip required data is incomplete.", lineNo, line);
                         continue;
                     }
     
@@ -81,16 +73,20 @@ public class TripFileManager {
                     int amountOfDays = Integer.parseInt(parts[5].trim());
                     double price = Double.parseDouble(parts[6].trim());
 
-                    //find client, accomodation, and transport by id then assign them to the new trip object t
-                    Trip t = new Trip(tripId, SmartTravelService.findClientByIdObj(clientId), SmartTravelService.findAccommodationById(accomodationId), 
-                            SmartTravelService.findTransportationById(transportId), destination, amountOfDays, price);
+                    if (count >= trips.length) {
+                        ErrorLogger.log("trips.csv", "Trips array capacity exceeded.", lineNo, line);
+                        break;
+                    }
+
+                    Trip t = new Trip(tripId, clientId, accomodationId, transportId, destination, amountOfDays, price);
                     trips[count++] = t;
 
                     // Track max numeric part of ID for static resync
                     int n = extractTripNumber(tripId);
                     if (n > maxIdNumSeen) maxIdNumSeen = n;
 
-                } catch(InvalidTripDataException | RuntimeException e) {
+                } catch (InvalidTripDataException | InvalidClientDataException | InvalidAccommodationDataException |
+                        InvalidTransportDataException | EntityNotFoundException | RuntimeException e) {
                     ErrorLogger.log("trips.csv", e.getMessage(), lineNo, line);
                 }
             } 

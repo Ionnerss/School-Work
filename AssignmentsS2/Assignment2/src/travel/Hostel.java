@@ -17,12 +17,12 @@ public class Hostel extends Accomodation {
 
     public Hostel(String name, String location, double pricePerNight, int numOfSharedBeds) throws InvalidAccommodationDataException {
         super(name, location, pricePerNight);
-        this.numOfSharedBeds = numOfSharedBeds;
+        setNumOfSharedBeds(numOfSharedBeds);
     }
 
     public Hostel(String id, String name, String location, double pricePerNight, int numOfSharedBeds) throws InvalidAccommodationDataException {
         super(id, name, location, pricePerNight);
-        this.numOfSharedBeds = numOfSharedBeds;
+        setNumOfSharedBeds(numOfSharedBeds);
     }
 
     public Hostel(Hostel other) {
@@ -40,7 +40,7 @@ public class Hostel extends Accomodation {
     }
 
     @Override
-    public String toString() {return super.toString() + ", " + this.numOfSharedBeds;}
+    public String toString() {return super.toString() + ";" + this.numOfSharedBeds;}
 
     @Override
     public boolean equals(Object other) {

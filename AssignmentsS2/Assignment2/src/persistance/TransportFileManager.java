@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Scanner;
 
-import AssignmentsS2.Assignment2.src.service.SmartTravelService;
 import AssignmentsS2.Assignment2.src.exceptions.InvalidTransportDataException;
 import AssignmentsS2.Assignment2.src.travel.Bus;
 import AssignmentsS2.Assignment2.src.travel.Flight;
@@ -22,30 +21,36 @@ public class TransportFileManager {
         if (transCount < 0 || transCount > transportations.length)
             throw new IllegalArgumentException("Transportation count is out of range.");
 
-        PrintWriter outputStream = new PrintWriter(new BufferedWriter(new FileWriter(filePath)));
+        try (PrintWriter outputStream = new PrintWriter(new BufferedWriter(new FileWriter(filePath)))) {
+            for (int i = 0; i < transCount; i++) {
+                if (transportations[i] == null) {
+                    ErrorLogger.log("transportations.csv", "Specific transportation data is empty.", i + 1, "null");
+                    continue;
+                }
 
-        for (int i = 0; i < transCount; i++) {
-            if (transportations[i] == null) {
-                ErrorLogger.log("transportations.csv", "Specific transportation data is empty.", i, "null");
-                continue;
+                if (transportations[i] instanceof Flight) {
+                    outputStream.println("FLIGHT;" + transportations[i]);
+                }
+                else if (transportations[i] instanceof Train) {
+                    outputStream.println("TRAIN;" + transportations[i]);
+                }
+                else if (transportations[i] instanceof Bus) {
+                    outputStream.println("BUS;" + transportations[i]);
+                }
+                else {
+                    ErrorLogger.log("transportations.csv", "Unknown transportation subtype.", i + 1, transportations[i].toString());
+                }
             }
-
-            outputStream.println(SmartTravelService.printTransportation());
         }
-
-        if (outputStream != null)
-            outputStream.close();
     }
 
     public static int loadTransportations(Transportation[] transportations, String filePath) throws IOException {
-        Scanner inputStream = null;
         int count = 0;
         int lineNo = 0;
         String line = "null";
         int maxIdNumSeen = -1; // to resync static ID generator after load
 
-        try {
-            inputStream = new Scanner(new FileInputStream(filePath));
+        try (Scanner inputStream = new Scanner(new FileInputStream(filePath))) {
 
             while (inputStream.hasNextLine()) {
                 lineNo++;
@@ -58,40 +63,54 @@ public class TransportFileManager {
                 }
                 try {
                     String[] parts = line.split(";", -1);
-                    if (parts.length != 5) {
+                    if (parts.length < 6 || parts.length > 7) {
                         ErrorLogger.log("transportations.csv","Transportation data is incomplete, missing info.", lineNo, line);
                         continue;
                     }
-    
-                    for(String str : parts) {
-                        if (str.equalsIgnoreCase("") || str == null || str.isEmpty()) {
+
+                    for (String str : parts) {
+                        if (str == null || str.trim().isEmpty()) {
                             ErrorLogger.log("transportations.csv", "Transportation data is incomplete, missing info.", lineNo, line);
                             continue;
                         }
                     }
-    
-                    String id = parts[0].trim();
-                    String companyName = parts[1].trim();
-                    String departureCity = parts[2].trim();
-                    String arrivalCity = parts[3].trim();
-                    // Double cost = Double.parseDouble(parts[4].trim());
 
-                    Object tempObject = parts[lineNo].getClass();
-                    if (tempObject instanceof Train) {
-                        String seatClass = parts[5].trim();
-                        Transportation t = new Train(id, companyName, departureCity, arrivalCity, seatClass);
-                        transportations[count++] = t;
+                    String type;
+                    int base;
+                    if (parts.length == 7) {
+                        type = parts[0].trim().toUpperCase();
+                        base = 1;
                     }
-                    else if (tempObject instanceof Bus) {
-                        int numOfStops = Integer.parseInt(parts[5].trim());
-                        Transportation t = new Bus(id, companyName, departureCity, arrivalCity, numOfStops);
-                        transportations[count++] = t;
+                    else {
+                        // Legacy format without type token. Infer based on last field content.
+                        type = inferTypeFromTail(parts[5].trim());
+                        base = 0;
                     }
-                    else if (tempObject instanceof Flight) {
-                        double luggageAllowance = Double.parseDouble(parts[5].trim());
-                        Transportation t = new Flight(id, companyName, departureCity, arrivalCity, luggageAllowance);
-                        transportations[count++] = t;
+
+                    String id = parts[base].trim();
+                    String companyName = parts[base + 1].trim();
+                    String departureCity = parts[base + 2].trim();
+                    String arrivalCity = parts[base + 3].trim();
+                    double baseFare = Double.parseDouble(parts[base + 4].trim());
+                    String tail = parts[base + 5].trim();
+
+                    Transportation t;
+                    switch (type) {
+                        case "TRAIN" -> t = new Train(id, companyName, departureCity, arrivalCity, baseFare, tail);
+                        case "BUS" -> t = new Bus(id, companyName, departureCity, arrivalCity, baseFare, Integer.parseInt(tail));
+                        case "FLIGHT" -> t = new Flight(id, companyName, departureCity, arrivalCity, baseFare, Double.parseDouble(tail));
+                        default -> {
+                            ErrorLogger.log("transportations.csv", "Unsupported transportation type: " + type, lineNo, line);
+                            continue;
+                        }
                     }
+
+                    if (count >= transportations.length) {
+                        ErrorLogger.log("transportations.csv", "Transportation array capacity exceeded.", lineNo, line);
+                        break;
+                    }
+
+                    transportations[count++] = t;
 
                     // Track max numeric part of ID for static resync
                     int n = extractTransportationNumber(id);
@@ -112,13 +131,31 @@ public class TransportFileManager {
         return count;
     }
 
+    private static String inferTypeFromTail(String tail) {
+        try {
+            Integer.parseInt(tail);
+            return "BUS";
+        } catch (NumberFormatException ignored) {
+            // not bus
+        }
+
+        try {
+            Double.parseDouble(tail);
+            return "FLIGHT";
+        } catch (NumberFormatException ignored) {
+            // not flight
+        }
+
+        return "TRAIN";
+    }
+
     private static int extractTransportationNumber(String id) {
         if (id == null) return -1;
         id = id.trim();
-        if (id.length() < 5 || id.charAt(0) != 'C') return -1;
+        if (!id.startsWith("TR") || id.length() < 3) return -1;
 
         try {
-            return Integer.parseInt(id.substring(1));
+            return Integer.parseInt(id.substring(2));
         } catch (NumberFormatException e) {
             return -1;
         }

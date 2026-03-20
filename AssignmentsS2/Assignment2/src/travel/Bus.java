@@ -9,29 +9,34 @@ import AssignmentsS2.Assignment2.src.exceptions.InvalidTransportDataException;
 
 public class Bus extends Transportation {
     private int numOfStops;
-    private Trip trip;
+    private double baseFare;
 
     public Bus() {
         super();
         this.numOfStops = 0;
+        this.baseFare = 0.00;
     }
 
-    public Bus(String companyName, String departureCity, String arrivalCity, int numOfStops) throws InvalidTransportDataException {
+    public Bus(String companyName, String departureCity, String arrivalCity, double baseFare, int numOfStops) throws InvalidTransportDataException {
         super(companyName, departureCity, arrivalCity);
         setNumOfStops(numOfStops);
+        setBaseFare(baseFare);
     }
 
-    public Bus(String id, String companyName, String departureCity, String arrivalCity, int numOfStops) throws InvalidTransportDataException {
+    public Bus(String id, String companyName, String departureCity, String arrivalCity, double baseFare, int numOfStops) throws InvalidTransportDataException {
         super(id, companyName, departureCity, arrivalCity);
         setNumOfStops(numOfStops);
+        setBaseFare(baseFare);
     }
 
     public Bus(Bus other) {
         super(other);
         this.numOfStops = other.numOfStops;
+        this.baseFare = other.baseFare;
     }
 
     public int getNumOfStops() {return this.numOfStops;}
+    public double getBaseFare() {return this.baseFare;}
 
     public void setNumOfStops(int numOfStops) throws InvalidTransportDataException {
         if (numOfStops < 1)
@@ -40,8 +45,15 @@ public class Bus extends Transportation {
         this.numOfStops = numOfStops;
     }
 
+    public void setBaseFare(double baseFare) throws InvalidTransportDataException {
+        if (baseFare < 0)
+            throw new InvalidTransportDataException("Base fare cannot be less than 0.");
+
+        this.baseFare = baseFare;
+    }
+
     @Override
-    public String toString() {return super.toString() + ", " + this.numOfStops;}
+    public String toString() {return super.toString() + ";" + this.baseFare + ";" + this.numOfStops;}
 
     @Override
     public boolean equals(Object other) {
@@ -56,6 +68,6 @@ public class Bus extends Transportation {
 
     @Override
     protected double calculateCost(int numOfDays) {
-        return ( (double) trip.getBasePrice() + (5.00 * (double) numOfStops));
+        return ( (double) getBaseFare() + (5.00 * (double) numOfStops));
     }
 }

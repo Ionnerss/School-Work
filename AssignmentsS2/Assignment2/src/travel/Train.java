@@ -9,29 +9,34 @@ import AssignmentsS2.Assignment2.src.exceptions.InvalidTransportDataException;
 
 public class Train extends Transportation {
     private String seatClass;
-    private Trip trip;
+    private double baseFare;
 
     public Train() {
         super();
         this.seatClass = "";
+        this.baseFare = 0.00;
     }
 
-    public Train(String companyName, String departureCity, String arrivalCity, String seatClass) throws InvalidTransportDataException {
+    public Train(String companyName, String departureCity, String arrivalCity, double baseFare, String seatClass) throws InvalidTransportDataException {
         super(companyName, departureCity, arrivalCity);
-        this.seatClass = seatClass;
+        setSeatClass(seatClass);
+        setBaseFare(baseFare);
     }
 
-    public Train(String id, String companyName, String departureCity, String arrivalCity, String seatClass) throws InvalidTransportDataException {
+    public Train(String id, String companyName, String departureCity, String arrivalCity, double baseFare, String seatClass) throws InvalidTransportDataException {
         super(id, companyName, departureCity, arrivalCity);
-        this.seatClass = seatClass;
+        setSeatClass(seatClass);
+        setBaseFare(baseFare);
     }
 
     public Train(Train other) {
         super(other);
         this.seatClass = other.seatClass;
+        this.baseFare = other.baseFare;
     }
 
     public String getSeatClass() {return this.seatClass;}
+    public double getBaseFare() {return this.baseFare;}
     
     public void setSeatClass(String seatClass) throws InvalidTransportDataException {
         if (seatClass == null)
@@ -43,9 +48,17 @@ public class Train extends Transportation {
 
         this.seatClass = seatClass;
     }
+
+    public void setBaseFare(double baseFare) throws InvalidTransportDataException {
+        if (baseFare < 0)
+            throw new InvalidTransportDataException("Base fare cannot be less than 0.");
+
+        this.baseFare = baseFare;
+    }
+
     
     @Override
-    public String toString() {return super.toString() + ", " + this.seatClass;}
+    public String toString() {return super.toString() + ";" + this.baseFare + ";" + this.seatClass;}
 
     @Override
     public boolean equals(Object other) {
@@ -60,7 +73,7 @@ public class Train extends Transportation {
 
     @Override
     protected double calculateCost(int numOfDays) {
-        double cost = trip.getBasePrice();
+        double cost = getBaseFare();
         if (seatClass.equalsIgnoreCase("First Class"))
             cost *= 1.50;
         return cost;

@@ -20,6 +20,8 @@ package AssignmentsS2.Assignment2.src.visualization;
 
 import AssignmentsS2.Assignment2.src.service.SmartTravelService;
 import AssignmentsS2.Assignment2.src.client.Client;
+import AssignmentsS2.Assignment2.src.exceptions.InvalidAccommodationDataException;
+import AssignmentsS2.Assignment2.src.exceptions.InvalidTransportDataException;
 import AssignmentsS2.Assignment2.src.travel.Trip;
 
 import java.io.File;
@@ -40,8 +42,10 @@ public class DashboardGenerator {
 	 * 
 	 * @param service SmartTravelService with populated Client/Trip arrays
 	 * @throws IOException if file I/O fails (output dir/charts)
+	 * @throws InvalidTransportDataException 
+	 * @throws InvalidAccommodationDataException 
 	 */
-    public static void generateDashboard(SmartTravelService service) throws IOException {
+    public static void generateDashboard(SmartTravelService service) throws IOException, InvalidAccommodationDataException, InvalidTransportDataException {
         // Ensure output dir exists
         new File("output").mkdirs();
         
@@ -73,8 +77,10 @@ public class DashboardGenerator {
      * 
      * @param service Service containing all data
      * @throws IOException if HTML write fails
+     * @throws InvalidTransportDataException 
+     * @throws InvalidAccommodationDataException 
      */
-    private static void generateHTMLDashboard(SmartTravelService service) throws IOException {
+    private static void generateHTMLDashboard(SmartTravelService service) throws IOException, InvalidAccommodationDataException, InvalidTransportDataException {
         PrintWriter out = new PrintWriter("output/dashboard/dashboard.html");
         out.println("<!DOCTYPE html>");
         out.println("<html lang='en'>");
@@ -121,7 +127,8 @@ public class DashboardGenerator {
      * @param service Service containing Client array
      * @param out HTML PrintWriter
      */
-    private static void writeClientsTable(SmartTravelService service, PrintWriter out) {
+    private static void writeClientsTable(SmartTravelService service, PrintWriter out)
+            throws InvalidAccommodationDataException, InvalidTransportDataException {
         out.println("        <section class='data-section'>");
         out.println("            <h2> Clients (" + service.getClientCount() + ")</h2>");
         out.println("            <table>");
@@ -134,9 +141,9 @@ public class DashboardGenerator {
             Client client = service.getClient(i);
             double spent = client.getTotalSpent();
             out.println("                    <tr>");
-            out.println("                        <td><strong>" + client.getClientId() + "</strong></td>");
+            out.println("                        <td><strong>" + client.getClientID() + "</strong></td>");
             out.println("                        <td>" + client.getFirstName() + " " + client.getLastName() + "</td>");
-            out.println("                        <td>" + client.getEmail() + "</td>");
+            out.println("                        <td>" + client.getEmailAdress() + "</td>");
             out.println("                        <td style='font-weight: bold; color: " + 
                     								(spent > 3000 ? "#d32f2f" : "#388e3c") + ";'>" + 
                     										String.format("%,.2f", spent) + "</td>");
@@ -155,7 +162,8 @@ public class DashboardGenerator {
      * @param service Service containing Trip array
      * @param out HTML PrintWriter
      */
-    private static void writeTripsTable(SmartTravelService service, PrintWriter out) {
+    private static void writeTripsTable(SmartTravelService service, PrintWriter out)
+            throws InvalidAccommodationDataException, InvalidTransportDataException {
         out.println("        <section class='data-section'>");
         out.println("            <h2> Trips (" + service.getTripCount() + ")</h2>");
         out.println("            <table>");
@@ -168,7 +176,7 @@ public class DashboardGenerator {
             Trip trip = service.getTrip(i);
             out.println("                    <tr>");
             out.println("                        <td><strong>" + trip.getTripId() + "</strong></td>");
-            out.println("                        <td>" + trip.getClientId() + "</td>");
+            out.println("                        <td>" + trip.getClient() + "</td>");
             out.println("                        <td>" + trip.getDestination() + "</td>");
             out.println("                        <td>" + trip.getDurationInDays() + "</td>");
             out.println("                        <td>$" + String.format("%.2f", service.calculateTripTotal(i)) + "</td>");
@@ -214,7 +222,8 @@ public class DashboardGenerator {
      * @param service Service containing Trip array
      * @param out HTML PrintWriter
      */
-    private static void writeStats(SmartTravelService service, PrintWriter out) {
+    private static void writeStats(SmartTravelService service, PrintWriter out)
+            throws InvalidAccommodationDataException, InvalidTransportDataException {
         
     	int tripCount = service.getTripCount();
         if (tripCount == 0) {
@@ -226,13 +235,49 @@ public class DashboardGenerator {
     	
         // 1. Total Revenue & Avg Cost
         double totalRevenue = 0.0;
-        
-		//ADD CODE
+        Trip[] trips = service.getTrips();
+        int safeTripCount = Math.min(tripCount, trips.length);
+
+        for (int i = 0; i < safeTripCount; i++) {
+            if (trips[i] == null) {
+                continue;
+            }
+            totalRevenue += service.calculateTripTotal(i);
+        }
+        double avgCost = safeTripCount == 0 ? 0.0 : totalRevenue / safeTripCount;
         
         // 2. Average Duration (days)
         double totalDays = 0.0, avgDuration =0.0;
-        
-		//ADD CODE
+
+        for (int i = 0; i < safeTripCount; i++) {
+            if (trips[i] == null) {
+                continue;
+            }
+            totalDays += trips[i].getDurationInDays();
+        }
+        avgDuration = safeTripCount == 0 ? 0.0 : totalDays / safeTripCount;
+
+        String mostVisited = "N/A";
+        int visitCount = 0;
+        for (int i = 0; i < safeTripCount; i++) {
+            Trip trip = trips[i];
+            if (trip == null) {
+                continue;
+            }
+
+            String candidate = trip.getDestination();
+            int currentCount = 0;
+            for (int j = 0; j < safeTripCount; j++) {
+                if (trips[j] != null && candidate.equals(trips[j].getDestination())) {
+                    currentCount++;
+                }
+            }
+
+            if (currentCount > visitCount) {
+                visitCount = currentCount;
+                mostVisited = candidate;
+            }
+        }
     	
         
         out.println("        <section class='stats-section'>");
@@ -296,17 +341,49 @@ public class DashboardGenerator {
      * Finds destination with most trips
      */
     private static String findMostVisitedDestination(SmartTravelService service) {
-        
-		//ADD CODE
+        Trip[] trips = service.getTrips();
+        if (trips == null || trips.length == 0 || service.getTripCount() == 0)
+            return "N/A";
+
+        int limit = Math.min(service.getTripCount(), trips.length);
+        String mostVisited = "N/A";
+        int maxCount = 0;
+
+        for (int i = 0; i < limit; i++) {
+            Trip trip = trips[i];
+            if (trip == null)
+                continue;
+
+            String destination = trip.getDestination();
+            int count = countDestinationVisits(service, destination);
+            if (count > maxCount) {
+                maxCount = count;
+                mostVisited = destination;
+            }
+        }
+
+        return mostVisited;
     }
 
     /**
      * Counts trips to specific destination
      */
     private static int countDestinationVisits(SmartTravelService service, String destination) {
-        
-		//ADD CODE
-    }
+        if (destination == null || destination.trim().isEmpty())
+            return 0;
 
-    
+        Trip[] trips = service.getTrips();
+        if (trips == null || trips.length == 0 || service.getTripCount() == 0)
+            return 0;
+
+        int limit = Math.min(service.getTripCount(), trips.length);
+        int count = 0;
+        for (int i = 0; i < limit; i++) {
+            Trip trip = trips[i];
+            if (trip != null && destination.equals(trip.getDestination()))
+                count++;
+        }
+
+        return count;
+    }
 }

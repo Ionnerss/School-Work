@@ -90,7 +90,7 @@ public abstract class Accomodation {
     }
 
     @Override
-    public String toString() {return this.accomodationID + ", " + this.name + ", " + this.location + ", " + this.pricePerNight;}
+    public String toString() {return this.accomodationID + ";" + this.name + ";" + this.location + ";" + this.pricePerNight;}
 
     @Override
     public boolean equals(Object other) {

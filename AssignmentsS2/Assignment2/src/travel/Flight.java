@@ -8,31 +8,34 @@ package AssignmentsS2.Assignment2.src.travel;
 import AssignmentsS2.Assignment2.src.exceptions.InvalidTransportDataException;
 
 public class Flight extends Transportation {
-    private double luggageAllowance;
-    private Trip trip;
-
+    private double luggageAllowance, baseFare;
 
     public Flight() {
         super();
         this.luggageAllowance = 0.0;
+        this.baseFare = 0.00;
     }
 
-    public Flight(String companyName, String departureCity, String arrivalCity, double luggageAllowance) throws InvalidTransportDataException {
+    public Flight(String companyName, String departureCity, String arrivalCity, double baseFare, double luggageAllowance) throws InvalidTransportDataException {
         super(companyName, departureCity, arrivalCity);
         setLuggageAllowance(luggageAllowance);
+        setBaseFare(baseFare);
     }
 
-    public Flight(String id, String companyName, String departureCity, String arrivalCity, double luggageAllowance) throws InvalidTransportDataException {
+    public Flight(String id, String companyName, String departureCity, String arrivalCity, double baseFare, double luggageAllowance) throws InvalidTransportDataException {
         super(id, companyName, departureCity, arrivalCity);
         setLuggageAllowance(luggageAllowance);
+        setBaseFare(baseFare);
     }
 
     public Flight(Flight other) {
         super(other);
         this.luggageAllowance = other.luggageAllowance;
+        this.baseFare = other.baseFare;
     }
 
     public double getLuggageAllowance() {return this.luggageAllowance;}
+    public double getBaseFare() {return this.baseFare;}
 
     public void setLuggageAllowance(double luggageAllowance) throws InvalidTransportDataException {
         if (luggageAllowance < 0)
@@ -41,8 +44,15 @@ public class Flight extends Transportation {
         this.luggageAllowance = luggageAllowance;
     }
 
+    public void setBaseFare(double baseFare) throws InvalidTransportDataException {
+        if (baseFare < 0)
+            throw new InvalidTransportDataException("Base fare cannot be less than 0.");
+
+        this.baseFare = baseFare;
+    }
+
     @Override
-    public String toString() {return super.toString() + ", " + this.luggageAllowance;}
+    public String toString() {return super.toString() + ";" + this.baseFare + ";" + this.luggageAllowance;}
 
     @Override
     public boolean equals(Object other) {
@@ -52,12 +62,12 @@ public class Flight extends Transportation {
 
         Flight otherFlight = (Flight) other;
 
-        return super.equals(otherFlight) && this.luggageAllowance == otherFlight.luggageAllowance;
+        return super.equals(otherFlight) && this.luggageAllowance == otherFlight.luggageAllowance && this.baseFare == otherFlight.baseFare;
     }
 
     @Override
     protected double calculateCost(int numOfDays) {
-        double cost = (double) trip.getBasePrice();
+        double cost = getBaseFare();
         if (luggageAllowance > 20) {
             int overAllowance = (int) luggageAllowance - 20;
             cost += 10 * overAllowance;

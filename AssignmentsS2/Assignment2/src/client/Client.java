@@ -1,6 +1,8 @@
 package AssignmentsS2.Assignment2.src.client;
 
 import AssignmentsS2.Assignment2.src.exceptions.InvalidClientDataException;
+import AssignmentsS2.Assignment2.src.service.SmartTravelService;
+import AssignmentsS2.Assignment2.src.travel.Trip;
 
 public class Client {
     private static int nextID = 1001;
@@ -110,5 +112,34 @@ public class Client {
         return this.getFirstName().equals(otherClient.getFirstName())
             && this.getLastName().equals(otherClient.getLastName())
             && this.getEmailAdress().equals(otherClient.getEmailAdress());
+    }
+
+
+    public double getTotalSpent() {
+        SmartTravelService service = new SmartTravelService();
+        Trip[] trips = service.getTrips();
+
+        if (trips == null || trips.length == 0)
+            return 0.0;
+
+        int limit = Math.min(service.getTripCount(), trips.length);
+        double totalSpent = 0.0;
+
+        for (int i = 0; i < limit; i++) {
+            Trip trip = trips[i];
+            if (trip == null)
+                continue;
+
+            if (this.clientID.equals(trip.getClient())) {
+                try {
+                    totalSpent += service.calculateTripTotal(i);
+                }
+                catch (Exception ignored) {
+                    // Skip invalid trip references and continue summing valid ones.
+                }
+            }
+        }
+
+        return totalSpent;
     }
 }

@@ -4,10 +4,7 @@ import java.io.IOException;
 
 import AssignmentsS2.Assignment2.src.client.Client;
 import AssignmentsS2.Assignment2.src.exceptions.*;
-import AssignmentsS2.Assignment2.src.persistance.AccommodationFileManager;
-import AssignmentsS2.Assignment2.src.persistance.ClientFileManager;
-import AssignmentsS2.Assignment2.src.persistance.TransportFileManager;
-import AssignmentsS2.Assignment2.src.persistance.TripFileManager;
+import AssignmentsS2.Assignment2.src.persistance.*;
 import AssignmentsS2.Assignment2.src.travel.*;
 
 public class SmartTravelService {
@@ -31,6 +28,58 @@ public class SmartTravelService {
     private static int durationDays;
     private static double basePrice;
 
+    public Client[] getClients() {
+        return (clients == null) ? new Client[0] : clients;
+    }
+
+    public void setClients(Client[] updatedClients) {
+        clients = (updatedClients == null) ? new Client[0] : updatedClients;
+        clientCount = countNonNull(clients);
+    }
+
+    public Trip[] getTrips() {
+        return (trips == null) ? new Trip[0] : trips;
+    }
+
+    public void setTrips(Trip[] updatedTrips) {
+        trips = (updatedTrips == null) ? new Trip[0] : updatedTrips;
+        tripCount = countNonNull(trips);
+    }
+
+    public int getTripCount() {
+        return tripCount;
+    }
+
+    public int getClientCount() {
+        return clientCount;
+    }
+
+    public int getTransportationCount() {
+        return transportationCount;
+    }
+
+    public int getAccommodationCount() {
+        return accommodationCount;
+    }
+
+    public Transportation[] getTransportations() {
+        return (transportations == null) ? new Transportation[0] : transportations;
+    }
+
+    public void setTransportations(Transportation[] updatedTransportations) {
+        transportations = (updatedTransportations == null) ? new Transportation[0] : updatedTransportations;
+        transportationCount = countNonNull(transportations);
+    }
+
+    public Accomodation[] getAccomodations() {
+        return (accomodations == null) ? new Accomodation[0] : accomodations;
+    }
+
+    public void setAccomodations(Accomodation[] updatedAccomodations) {
+        accomodations = (updatedAccomodations == null) ? new Accomodation[0] : updatedAccomodations;
+        accommodationCount = countNonNull(accomodations);
+    }
+
     public static void addClient(String firstName, String lastName, String email) throws InvalidClientDataException {
         Client newClient = new Client(firstName, lastName, email);
 
@@ -49,37 +98,21 @@ public class SmartTravelService {
     }
 
     public static Trip createTrip() throws InvalidTripDataException, InvalidClientDataException, InvalidAccommodationDataException, 
-            InvalidTransportDataException {
+            InvalidTransportDataException, EntityNotFoundException {
 
         String normalizedAccommodationId = normalize(accommodationId);
         String normalizedTransportationId = normalize(transportationId);
 
         if (normalizedAccommodationId == null && normalizedTransportationId == null) {
-            return createTrip(destination, durationDays, basePrice, clientId);
+            return createTrip(destination, durationDays, basePrice, clientId, "", "");
         }
 
         return createTrip(destination, durationDays, basePrice, clientId,
                 normalizedAccommodationId, normalizedTransportationId);
     }
 
-    public static Trip createTrip(String destination, int durationDays, double basePrice, String clientId)
-            throws InvalidTripDataException, InvalidClientDataException {
-
-        String normalizedDestination = normalize(destination);
-        String normalizedClientId = normalize(clientId);
-
-        if (normalizedClientId == null) {
-            throw new InvalidTripDataException("Client ID is mandatory.");
-        }
-
-        Client client = findClientByIdObj(normalizedClientId);
-        Trip newTrip = new Trip(normalizedDestination, durationDays, basePrice, client);
-        storeTrip(newTrip);
-        return newTrip;
-    }
-
     public static Trip createTrip(String destination, int durationDays, double basePrice, String clientId, String accommodationId, String transportationId)
-            throws InvalidTripDataException, InvalidClientDataException,InvalidAccommodationDataException, InvalidTransportDataException {
+            throws InvalidTripDataException, InvalidClientDataException,InvalidAccommodationDataException, InvalidTransportDataException, EntityNotFoundException {
                 
         String normalizedDestination = normalize(destination);
         String normalizedClientId = normalize(clientId);
@@ -108,8 +141,7 @@ public class SmartTravelService {
             transportation = findTransportationById(normalizedTransportationId);
         }
 
-        Trip newTrip = new Trip(client, accommodation, transportation,
-                normalizedDestination, durationDays, basePrice);
+        Trip newTrip = new Trip(client.getClientID(), accommodation.getAccomodationID(), transportation.getTransportID(), normalizedDestination, durationDays, basePrice);
         storeTrip(newTrip);
         return newTrip;
     }
@@ -194,6 +226,18 @@ public class SmartTravelService {
         return s.isEmpty() ? null : s;
     }
 
+    private static int countNonNull(Object[] array) {
+        if (array == null)
+            return 0;
+
+        int count = 0;
+        for (Object entry : array) {
+            if (entry != null)
+                count++;
+        }
+        return count;
+    }
+
     private static void storeTrip(Trip newTrip) {
         if (trips == null) {
             trips = new Trip[1];
@@ -212,52 +256,53 @@ public class SmartTravelService {
         ClientFileManager.loadClients(clients, folderPath);
         AccommodationFileManager.loadAccomodations(accomodations, folderPath);
         TransportFileManager.loadTransportations(transportations, folderPath);
-        TripFileManager.loadClients(trips, folderPath);
+        TripFileManager.loadTrips(trips, folderPath);
     }
 
     public static void saveAllData(String folderPath) throws IOException{
         ClientFileManager.saveClients(clients, clientCount, folderPath);
         AccommodationFileManager.saveAccomodations(accomodations, accommodationCount, folderPath);
         TransportFileManager.saveTransportations(transportations, transportationCount, folderPath);
-        TripFileManager.saveClients(trips, tripCount, folderPath);
+        TripFileManager.saveTrips(trips, tripCount, folderPath);
     }
 
-    public static double calculateTripTotal(int index) {
+    public double calculateTripTotal(int index) throws InvalidAccommodationDataException, InvalidTransportDataException {
         return trips[index].calculateTotalCost();
     }
 
     public static void testingScenario(boolean choice) throws InvalidClientDataException, InvalidTripDataException,
-        InvalidTransportDataException, InvalidAccommodationDataException {
+        InvalidTransportDataException, InvalidAccommodationDataException, EntityNotFoundException {
             
         if (choice) {
             clients = new Client[10];
-            trips = new Trip[11];
+            trips = new Trip[14];
             transportations = new Transportation[10];
             accomodations = new Accomodation[10];
 
             // Clients from clients.csv (C1008 row skipped: missing lastName field).
-            clients[0] = new Client("Sophia", "Rossi", "sophia.rossi@italy.com");
-            clients[1] = new Client("Carlos", "Silva", "carlos.silva@brazil.com");
-            clients[2] = new Client("Aiko", "Tanaka", "aiko.tanaka@japan.com");
-            clients[3] = new Client("Emma", "Wilson", "emma.wilson@usa.com");
-            clients[4] = new Client("Miguel", "Gomez", "miguel.gomez@spain.com");
-            clients[5] = new Client("John", "Smith", "john.smith@canada.com");
-            clients[6] = new Client("Alice", "Johnson", "alice.johnson@uk.com");
-            clients[7] = new Client("Diana", "Prince", "diana.prince@greece.com");
-            clients[8] = new Client("Lee", "Kim", "lee.kim@korea.com");
-            clients[9] = new Client("Mig", "Gomez", "miguel.gomez@spain.com");
+            clients[0] = new Client("C1001", "Sophia", "Rossi", "sophia.rossi@italy.com");
+            clients[1] = new Client("C1002", "Carlos", "Silva", "carlos.silva@brazil.com");
+            clients[2] = new Client("C1003", "Aiko", "Tanaka", "aiko.tanaka@japan.com");
+            clients[3] = new Client("C1004", "Emma", "Wilson", "emma.wilson@usa.com");
+            clients[4] = new Client("C1005", "Miguel", "Gomez", "miguel.gomez@spain.com");
+            clients[5] = new Client("C1006", "John", "Smith", "john.smith@canada.com");
+            clients[6] = new Client("C1007", "Alice", "Johnson", "alice.johnson@uk.com");
+            clients[7] = new Client("C1008", "Bob Browm", "bob.brown@australia.com", "");
+            clients[8] = new Client("C1009", "Diana", "Prince", "diana.prince@greece.com");
+            clients[9] = new Client("C1010", "Lee", "Kim", "lee.kim@korea.com");
+            clients[10] = new Client("C1011", "Mig", "Gomez", "miguel.gomez@spain.com");
 
             // Transportation from transports.csv (CRUISE row skipped: unsupported type).
-            transportations[0] = new Flight("Alitalia", "JFK", "FCO", "Alitalia", 23.0);
-            transportations[1] = new Train("Shinkansen", "Tokyo", "Kyoto", "HighSpeed", "Standard");
-            transportations[2] = new Bus("Greyhound", "NYC", "Boston", "Greyhound", 3);
-            transportations[3] = new Flight("LATAM", "JFK", "GIG", "LATAM", 32.0);
-            transportations[4] = new Train("Renfe", "Madrid", "Barcelona", "AVE", "Standard");
-            transportations[5] = new Bus("Blablacar", "Rome", "Milan", "Blablacar", 1);
-            transportations[6] = new Flight("ANA", "JFK", "NRT", "ANA", 32.0);
-            transportations[7] = new Train("Amtrak", "NYC", "DC", "Acela", "Standard");
-            transportations[8] = new Flight("AirFrance", "YUL", "CDG", "AirFrance", 25.0);
-            transportations[9] = new Bus("VIA", "Toronto", "Montreal", "VIA", 2);
+            transportations[0] = new Flight("TR3001", "Alitalia", "JFK", "FCO", 850.00, 23.0);
+            transportations[1] = new Train("TR3002", "Shinkansen", "Tokyo", "Kyoto", 250.00, "HighSpeed");
+            transportations[2] = new Bus("TR3003", "Greyhound", "NYC", "Boston", 75.00, 3);
+            transportations[3] = new Flight("TR3004", "LATAM", "JFK", "GIG", 950.00, 32.0);
+            transportations[4] = new Train("TR3005", "Renfe", "Madrid", "Barcelona", 120.00, "AVE");
+            transportations[5] = new Bus("TR3006", "Blablacar", "Rome", "Milan", 45.00, 1);
+            transportations[6] = new Flight("TR3007", "ANA", "JFK", "NRT", 1200.00, 32.0);
+            transportations[7] = new Train("TR3008", "Amtrak", "NYC", "DC", 89.00, "Acela");
+            transportations[8] = new Flight("TR3009", "AirFrance", "YUL", "CDG", 750.00, 25.0);
+            transportations[9] = new Bus("TR3010", "VIA", "Toronto", "Montreal", 60.00, 2);
 
             // Accommodations from accommodations.csv (HOME row skipped: unsupported type).
             accomodations[0] = new Hotel("Hilton Rome", "Rome", 280.00, 4);
@@ -271,18 +316,20 @@ public class SmartTravelService {
             accomodations[8] = new Hostel("Paris Budget", "Paris", 52.00, 8);
             accomodations[9] = new Hotel("Tokyo Hilton", "Tokyo", 380.00, 4);
 
-            // Valid trips from trips.csv (invalid rows skipped: bad duration/basePrice/missing client).
-            trips[0] = new Trip("Paris", 5, 150.00, clients[0]);
-            trips[1] = new Trip("Paris", 3, 100.00, clients[4]);
-            trips[2] = new Trip("Venice", 7, 200.00, clients[1]);
-            trips[3] = new Trip("Paris", 4, 175.00, clients[7]);
-            trips[4] = new Trip("Rome", 6, 125.00, clients[5]);
-            trips[5] = new Trip("Tokyo", 8, 225.00, clients[2]);
-            trips[6] = new Trip("Paris", 10, 300.00, clients[0]);
-            trips[7] = new Trip("Rome", 7, 275.00, clients[6]);
-            trips[8] = new Trip("Rome", 5, 180.00, clients[5]);
-            trips[9] = new Trip("LA", 10, 400.00, clients[6]);
-            trips[10] = new Trip("Tokyo", 8, 225.00, clients[2]);
+            trips[0] = new Trip("T2001", "C1001", "A4001", "TR3001", "Paris", 5, 150.00);
+            trips[1] = new Trip("T2002", "C1005", "", "TR3002", "Paris", 3, 100.00);
+            trips[2] = new Trip("T2003", "C1002", "A4002", "TR3003", "Venice", 7, 200.00);
+            trips[3] = new Trip("T2004", "C1009", "A4003", "", "Paris", 4, 175.00);
+            trips[4] = new Trip("T2005", "C1006", "", "TR3004", "Rome", 6, 125.00);
+            trips[5] = new Trip("T2006", "C1003", "A4004", "TR3005", "Tokyo", 8, 225.00);
+            trips[6] = new Trip("T2007", "C1001", "A4005", "", "Paris", 10, 300.00);
+            trips[7] = new Trip("T2008", "C1004", "", "TR3006", "London", 5, 90.00);
+            trips[8] = new Trip("T2009", "C1007", "A4006", "TR3007", "Rome", 7, 275.00);
+            trips[9] = new Trip("T2010", "C1005", "A4003", "T5003", "Madrid", -2, 250.00);
+            trips[10] = new Trip("T2007", "C1006", "A4005", "T5005", "Rome", 5, 180.00);
+            trips[11] = new Trip("T2008", "C9999", "A4006", "T5006", "NYC", 8, 300.00);
+            trips[12] = new Trip("X6008", "C1007", "A4007", "T5007", "LA", 10, 400.00);
+            trips[13] = new Trip("T2011", "C1003", "A4104", "TR3005", "Tokyo", 8, 225.00);
 
             clientCount = clients.length;
             tripCount = trips.length;
@@ -333,7 +380,7 @@ public class SmartTravelService {
      * Iterates through client array and displays each client's toString() representation.
      * Each client displays their ID, first name, last name, and email address.
      */
-    public static String printClient() {
+    public static String printClients() {
         String printString = "\n";
         for (Client person : clients)
             printString += ">. " + person.toString();
@@ -346,7 +393,7 @@ public class SmartTravelService {
      * Iterates through trip array and displays each trip's toString() representation.
      * Each trip displays its ID, destination, duration, base price, and associated client.
      */
-    public static String printTrip() {
+    public static String printTrips() {
         String printString = "\n";
         for (Trip trip : trips)
             printString += ">. " + trip.toString();
@@ -359,7 +406,7 @@ public class SmartTravelService {
      * Displays transportation entries if available, or a message if the list is empty.
      * Demonstrates polymorphism: calls toString() on base-class references (Flight, Train, Bus).
      */
-    public static String printTransportation() {
+    public static String printTransportations() {
         String printString = "\n";
         if (transportations.length == 0)
             printString += ">. No transportation options available.";
@@ -380,7 +427,7 @@ public class SmartTravelService {
      * Displays accommodation entries if available, or a message if the list is empty.
      * Demonstrates polymorphism: calls toString() on base-class references (Hotel, Hostel).
      */
-    public static String printAccomodation() {
+    public static String printAccomodations() {
         String printString = "\n";
         if (accomodations.length == 0) {
             printString = ">. No accomodations available.";
@@ -394,5 +441,17 @@ public class SmartTravelService {
             }
         }
         return (printString + "\n");
+    }
+
+    public Trip getTrip(int i) {
+        if (trips == null || i < 0 || i >= tripCount)
+            return null;
+        return trips[i];
+    }
+
+    public Client getClient(int i) {
+        if (clients == null || i < 0 || i >= clientCount)
+            return null;
+        return clients[i];
     }
 }

@@ -27,7 +27,7 @@ public class AccommodationFileManager {
                 continue;
             }
 
-            outputStream.println(SmartTravelService.printAccomodation());
+            outputStream.println(SmartTravelService.printAccomodations());
         }
 
         if (outputStream != null)

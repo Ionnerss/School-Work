@@ -93,7 +93,7 @@ public abstract class Transportation {
     }
 
     @Override
-    public String toString() {return this.transportID + ", " + this.companyName + ", " + this.departureCity + ", " + this.arrivalCity;}
+    public String toString() {return this.transportID + ";" + this.companyName + ";" + this.departureCity + ";" + this.arrivalCity;}
 
     @Override
     public boolean equals(Object other) {

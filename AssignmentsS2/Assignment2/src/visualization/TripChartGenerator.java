@@ -16,6 +16,8 @@ import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.general.DefaultPieDataset;
 
 import AssignmentsS2.Assignment2.src.service.SmartTravelService;
+import AssignmentsS2.Assignment2.src.exceptions.InvalidAccommodationDataException;
+import AssignmentsS2.Assignment2.src.exceptions.InvalidTransportDataException;
 import AssignmentsS2.Assignment2.src.travel.Trip;
 
 import java.io.File;
@@ -85,9 +87,10 @@ public class TripChartGenerator {
      * @param count number of valid elements in the array
      * @throws IOException if PNG file cannot be written
      */
-    public static void generateCostBarChart(SmartTravelService service) throws IOException {
+        public static void generateCostBarChart(SmartTravelService service)
+            throws IOException, InvalidAccommodationDataException, InvalidTransportDataException {
         
-    	Trip[] trips = service.getAllTrips();
+    	Trip[] trips = service.getTrips();
     	int count = service.getTripCount();
     	DefaultCategoryDataset dataset = new DefaultCategoryDataset();
         for (int i = 0; i < count; i++) {
@@ -114,7 +117,7 @@ public class TripChartGenerator {
      */
     public static void generateDestinationPieChart(SmartTravelService service) throws IOException {
         
-    	Trip[] trips = service.getAllTrips();
+    	Trip[] trips = service.getTrips();
     	int count = service.getTripCount();
     	DefaultPieDataset<String> dataset = new DefaultPieDataset<>();
 
@@ -149,7 +152,7 @@ public class TripChartGenerator {
      */
     public static void generateDurationLineChart(SmartTravelService service) throws IOException {
         
-    	Trip[] trips = service.getAllTrips();
+    	Trip[] trips = service.getTrips();
     	int count = service.getTripCount();
     	DefaultCategoryDataset dataset = new DefaultCategoryDataset();
         for (int i = 0; i < count; i++) {
