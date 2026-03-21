@@ -1,4 +1,4 @@
-package AssignmentsS2.Assignment2.src.persistance;
+package AssignmentsS2.Assignment2.src.persistence;
 
 import java.io.*;
 import AssignmentsS2.Assignment2.src.client.Client;
@@ -44,73 +44,96 @@ public class ClientFileManager {
     }
 
     public static int loadClients(Client[] clients, String filePath) throws IOException {
-        Scanner inputStream = null;
         int count = 0;
         int lineNo = 0;
-        String line = "null";
-        int maxIdNumSeen = -1; // to resync static ID generator after load
+        String line = "";
+        int maxIdNumSeen = -1;
 
-        try {
-            inputStream = new Scanner(new FileInputStream(filePath));
-
+        try (Scanner inputStream = new Scanner(new FileInputStream(filePath))) {
             while (inputStream.hasNextLine()) {
                 lineNo++;
-                line = inputStream.nextLine();
-                line = line.trim();
+                line = inputStream.nextLine().trim();
 
                 if (line.isEmpty()) {
-                    ErrorLogger.log("clients.csv","Client data is empty.", lineNo, line);
+                    ErrorLogger.log("clients.csv", "Client data is empty.", lineNo, line);
                     continue;
                 }
 
                 if (line.startsWith("INVALID_PREDEFINED_CLIENT;")) {
                     continue;
                 }
+
                 try {
                     String[] parts = line.split(";", -1);
                     if (parts.length != 4) {
-                        ErrorLogger.log("clients.csv","Client data is incomplete, missing info.", lineNo, line);
+                        ErrorLogger.log("clients.csv", "Client data is incomplete, missing info.", lineNo, line);
                         continue;
                     }
-    
-                    for(String str : parts) {
-                        if (str.equalsIgnoreCase("") || str == null || str.isEmpty()) {
-                            ErrorLogger.log("clients.csv", "Client data is incomplete, missing info.", lineNo, line);
-                            continue;
+
+                    boolean hasEmptyField = false;
+                    for (String part : parts) {
+                        if (part == null || part.trim().isEmpty()) {
+                            hasEmptyField = true;
+                            break;
                         }
                     }
-    
-                    if (!parts[3].contains("@")) {
-                        ErrorLogger.log("clients.csv", "Email adress is incorrect.", lineNo, line);
+
+                    if (hasEmptyField) {
+                        ErrorLogger.log("clients.csv", "Client data is incomplete, missing info.", lineNo, line);
                         continue;
                     }
-    
+
                     String id = parts[0].trim();
                     String firstName = parts[1].trim();
                     String lastName = parts[2].trim();
                     String email = parts[3].trim();
 
-                    // Build Client WITH ID FROM FILE (you must support this in Client)
+                    if (emailAlreadyLoaded(clients, count, email)) {
+                        ErrorLogger.log("clients.csv", "Duplicate email found during load.", lineNo, line);
+                        continue;
+                    }
+
+                    if (count >= clients.length) {
+                        ErrorLogger.log("clients.csv", "Clients array capacity exceeded.", lineNo, line);
+                        break;
+                    }
+
                     Client c = new Client(id, firstName, lastName, email);
                     clients[count++] = c;
 
-                    // Track max numeric part of ID for static resync
                     int n = extractClientNumber(id);
-                    if (n > maxIdNumSeen) maxIdNumSeen = n;
+                    if (n > maxIdNumSeen) {
+                        maxIdNumSeen = n;
+                    }
 
-                } catch(InvalidClientDataException | RuntimeException e) {
+                } catch (InvalidClientDataException | RuntimeException e) {
                     ErrorLogger.log("clients.csv", e.getMessage(), lineNo, line);
                 }
-            } 
-        } catch (Exception e) {
+            }
+        } catch (IOException e) {
             ErrorLogger.log("clients.csv", e.getMessage(), lineNo, line);
+            throw e;
         }
 
-        // Resync Client static next-id so new clients don’t collide with loaded IDs
         if (maxIdNumSeen >= 0) {
             Client.syncNextId(maxIdNumSeen + 1);
         }
+
         return count;
+    }
+
+    private static boolean emailAlreadyLoaded(Client[] clients, int count, String email) {
+        if (email == null) {
+            return false;
+        }
+
+        for (int i = 0; i < count; i++) {
+            if (clients[i] != null && email.equalsIgnoreCase(clients[i].getEmailAdress())) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private static int extractClientNumber(String id) {

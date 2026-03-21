@@ -61,7 +61,7 @@ public class Trip {
         String trimmed = tripId.trim();
 
         if (!trimmed.matches("T\\d+")) {
-            throw new IllegalArgumentException("Invalid Client ID format: " + tripId);
+            throw new IllegalArgumentException("Invalid Trip ID format: " + tripId);
         }
 
         this.tripId = trimmed;
@@ -99,20 +99,16 @@ public class Trip {
 
     public void setBasePrice(double basePrice) throws InvalidTripDataException {
         if (basePrice < 100)
-            throw new InvalidTripDataException("Invalid trip base price, must be greater or equal to .");
+            throw new InvalidTripDataException("Invalid trip base price, must be greater than or equal to 100.");
         this.basePrice = basePrice;
     }
 
     public void setClientId(String clientId) throws InvalidTripDataException, InvalidClientDataException, EntityNotFoundException {
         if (clientId == null || clientId.trim().isEmpty())
             throw new InvalidTripDataException("Client ID is null.");
-        
-        if (SmartTravelService.findClientByIdObj(clientId).getClientId() == null || 
-                SmartTravelService.findClientByIdObj(clientId) == null)
-            throw new EntityNotFoundException("Client ID is null or does not exist.");
-            
 
-        this.clientId = clientId;
+        SmartTravelService.findClientByIdObj(clientId.trim());
+        this.clientId = clientId.trim();
     }
 
     public void setTransportationId(String transportId) throws InvalidTripDataException, InvalidTransportDataException, EntityNotFoundException {
@@ -120,12 +116,9 @@ public class Trip {
             this.transportId = "";
             return;
         }
-        
-        if (SmartTravelService.findTransportationById(transportId).getTransportID() == null || 
-                SmartTravelService.findTransportationById(transportId) == null)
-            throw new EntityNotFoundException("Transport ID is null or does not exist.");
 
-        this.transportId = transportId;
+        SmartTravelService.findTransportationById(transportId.trim());
+        this.transportId = transportId.trim();
     }
 
     public void setAccomodationId(String accomodationId) throws InvalidTripDataException, InvalidAccommodationDataException, EntityNotFoundException {
@@ -133,12 +126,9 @@ public class Trip {
             this.accomodationId = "";
             return;
         }
-        
-        if (SmartTravelService.findAccommodationById(accomodationId).getAccomodationID() == null ||
-                SmartTravelService.findAccommodationById(accomodationId) == null)
-            throw new EntityNotFoundException("Accomodation ID is null or does not exist.");
 
-        this.accomodationId = accomodationId;
+        SmartTravelService.findAccommodationById(accomodationId.trim());
+        this.accomodationId = accomodationId.trim();
     }
 
     public static void syncNextId(int nextNumericId) {
@@ -161,7 +151,7 @@ public class Trip {
         && this.getDestination().equals(otherTrip.getDestination())
         && this.getDurationInDays() == otherTrip.getDurationInDays()
         && this.getBasePrice() == otherTrip.getBasePrice()
-        && this.getClientId() == otherTrip.getClientId();
+        && this.getClientId().equals(otherTrip.getClientId());
     }
 
     public double calculateTotalCost() throws InvalidAccommodationDataException, InvalidTransportDataException {

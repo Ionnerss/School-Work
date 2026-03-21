@@ -7,7 +7,7 @@ package AssignmentsS2.Assignment2.src.travel;
 
 import AssignmentsS2.Assignment2.src.exceptions.InvalidAccommodationDataException;
 
-public class Hostel extends Accomodation {
+public class Hostel extends Accommodation {
     private int numOfSharedBeds;
 
     public Hostel() {
@@ -40,6 +40,14 @@ public class Hostel extends Accomodation {
     }
 
     @Override
+    public void setPricePerNight(double pricePerNight) throws InvalidAccommodationDataException {
+        super.setPricePerNight(pricePerNight);
+        if (pricePerNight > 150.0) {
+            throw new InvalidAccommodationDataException("Hostel price per night cannot exceed $150.");
+        }
+    }
+
+    @Override
     public String toString() {return super.toString() + ";" + this.numOfSharedBeds;}
 
     @Override
@@ -56,7 +64,6 @@ public class Hostel extends Accomodation {
 
     @Override
     protected double calculateCost(int numOfDays) {
-        double costPerDay = 100;
-        return ((double) costPerDay * numOfDays);
+        return this.getPricePerNight() * numOfDays;
     }
 }

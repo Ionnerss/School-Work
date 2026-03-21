@@ -141,9 +141,7 @@ public class SmartTravelDriver {
     }
 
     private static void addClient() {
-        System.out.println(">. Please enter client details as follows: first name, last name, email address:");
         scanner.nextLine();
-
         System.out.print(">. First Name: ");
         String firstName = scanner.nextLine();
 
@@ -154,16 +152,12 @@ public class SmartTravelDriver {
         String emailAddress = scanner.nextLine();
 
         try {
-            Client[] clients = service.getClients();
-            Client[] updated = new Client[clients.length + 1];
-            System.arraycopy(clients, 0, updated, 0, clients.length);
-            updated[clients.length] = new Client(firstName, lastName, emailAddress);
-            service.setClients(updated);
+            SmartTravelService.addClient(firstName, lastName, emailAddress);
 
             System.out.println();
             System.out.println(">. Client added successfully.");
             System.out.println();
-        } catch (InvalidClientDataException e) {
+        } catch (InvalidClientDataException | DuplicateEmailException e) {
             System.out.println(">. Error adding client: " + e.getMessage());
             System.out.println();
         }
@@ -197,20 +191,17 @@ public class SmartTravelDriver {
         String emailAddress = scanner.nextLine();
 
         try {
-            Client[] clients = service.getClients();
-            clients[foundIndex].setFirstName(firstName);
-            clients[foundIndex].setLastName(lastName);
-            clients[foundIndex].setEmailAdress(emailAddress);
+            SmartTravelService.updateClient(clientID, firstName, lastName, emailAddress);
             SmartTravelService.clearInvalidClientById(clientID);
 
             System.out.println();
             System.out.println(">. Client info updated successfully.");
             System.out.println();
-        } catch (InvalidClientDataException e) {
+        } catch (InvalidClientDataException | DuplicateEmailException e) {
             System.out.println(">. Error updating client: " + e.getMessage());
             System.out.println();
         }
-    }
+    } 
 
     private static void deleteClient() {
         System.out.println(printAllClientsIncludingInvalid());
@@ -294,32 +285,47 @@ public class SmartTravelDriver {
             return;
         }
 
-        System.out.println(SmartTravelService.printAccomodations());
-        System.out.print(" >. Please enter accommodation ID: ");
-        String accommodationID = scanner.next();
+        String accommodationID = "";
+        if (service.getAccommodationCount() > 0) {
+            System.out.println(SmartTravelService.printAccomodations());
+            System.out.print(" >. Please enter accommodation ID (or NONE): ");
+            accommodationID = scanner.next();
 
-        int accommodationIndex = accommodationExistCheck(accommodationID);
-        if (accommodationIndex < 0) {
-            System.out.println(" >. Accommodation not found.\n");
-            return;
+            if (accommodationID.equalsIgnoreCase("NONE")) {
+                accommodationID = "";
+            } else {
+                int accommodationIndex = accommodationExistCheck(accommodationID);
+                if (accommodationIndex < 0) {
+                    System.out.println(" >. Accommodation not found.\n");
+                    return;
+                }
+            }
         }
 
-        System.out.println(SmartTravelService.printTransportations());
-        System.out.print(" >. Please enter transportation ID: ");
-        String transportID = scanner.next();
+        String transportID = "";
+        if (service.getTransportationCount() > 0) {
+            System.out.println(SmartTravelService.printTransportations());
+            System.out.print(" >. Please enter transportation ID (or NONE): ");
+            transportID = scanner.next();
 
-        int transportIndex = transportExistCheck(transportID);
-        if (transportIndex < 0) {
-            System.out.println(" >. Transportation not found.\n");
+            if (transportID.equalsIgnoreCase("NONE")) {
+                transportID = "";
+            } else {
+                int transportIndex = transportExistCheck(transportID);
+                if (transportIndex < 0) {
+                    System.out.println(" >. Transportation not found.\n");
+                    return;
+                }
+            }
+        }
+
+        if (accommodationID.isBlank() && transportID.isBlank()) {
+            System.out.println(" >. You must provide at least one of accommodation ID or transportation ID.\n");
             return;
         }
 
         try {
-            Trip[] trips = service.getTrips();
-            Trip[] updated = new Trip[trips.length + 1];
-            System.arraycopy(trips, 0, updated, 0, trips.length);
-            updated[trips.length] = new Trip(destination, duration, basePrice, clientID, accommodationID, transportID);
-            service.setTrips(updated);
+            SmartTravelService.createTrip(destination, duration, basePrice, clientID, accommodationID, transportID);
 
             System.out.println();
             System.out.println(">. Trip added successfully.");
@@ -664,7 +670,7 @@ public class SmartTravelDriver {
 
         double pricePerNight = readDouble(">. Price Per Night: ");
 
-        Accomodation newAccommodation;
+        Accommodation newAccommodation;
 
         try {
             switch (accommodationType) {
@@ -687,8 +693,8 @@ public class SmartTravelDriver {
             return;
         }
 
-        Accomodation[] accomodations = service.getAccomodations();
-        Accomodation[] updated = new Accomodation[accomodations.length + 1];
+        Accommodation[] accomodations = service.getAccomodations();
+        Accommodation[] updated = new Accommodation[accomodations.length + 1];
         System.arraycopy(accomodations, 0, updated, 0, accomodations.length);
         updated[accomodations.length] = newAccommodation;
         service.setAccomodations(updated);
@@ -713,8 +719,8 @@ public class SmartTravelDriver {
             return;
         }
 
-        Accomodation[] accommodations = service.getAccomodations();
-        Accomodation[] updated = new Accomodation[accommodations.length - 1];
+        Accommodation[] accommodations = service.getAccomodations();
+        Accommodation[] updated = new Accommodation[accommodations.length - 1];
         if (foundIndex > 0) {
             System.arraycopy(accommodations, 0, updated, 0, foundIndex);
         }
@@ -737,8 +743,8 @@ public class SmartTravelDriver {
         int filterType = readInt("");
 
         boolean found = false;
-        Accomodation[] accommodations = service.getAccomodations();
-        for (Accomodation a : accommodations) {
+        Accommodation[] accommodations = service.getAccomodations();
+        for (Accommodation a : accommodations) {
             if (a == null) {
                 continue;
             }
@@ -834,7 +840,7 @@ public class SmartTravelDriver {
         Client[] originalClients = service.getClients();
         Trip[] originalTrips = service.getTrips();
         Transportation[] originalTransportations = service.getTransportations();
-        Accomodation[] originalAccommodations = service.getAccomodations();
+        Accommodation[] originalAccommodations = service.getAccomodations();
 
         try {
             service.setClients(filterValidClients(originalClients));
@@ -939,8 +945,8 @@ public class SmartTravelDriver {
     }
 
     private static void deepCopyAccommodation() {
-        Accomodation[] accommodations = service.getAccomodations();
-        Accomodation[] deepCopy = new Accomodation[accommodations.length];
+        Accommodation[] accommodations = service.getAccomodations();
+        Accommodation[] deepCopy = new Accommodation[accommodations.length];
 
         for (int i = 0; i < accommodations.length; i++) {
             if (accommodations[i] instanceof Hotel) {
@@ -1010,8 +1016,8 @@ public class SmartTravelDriver {
     }
 
     private static boolean hasAnyAccommodation() {
-        Accomodation[] accommodations = service.getAccomodations();
-        for (Accomodation a : accommodations) {
+        Accommodation[] accommodations = service.getAccomodations();
+        for (Accommodation a : accommodations) {
             if (a != null) {
                 return true;
             }
@@ -1078,7 +1084,7 @@ public class SmartTravelDriver {
             return -1;
         }
 
-        Accomodation[] accommodations = service.getAccomodations();
+        Accommodation[] accommodations = service.getAccomodations();
         if (accommodations.length == 0 || !hasAnyAccommodation()) {
             return -2;
         }
@@ -1275,19 +1281,19 @@ public class SmartTravelDriver {
         return result;
     }
 
-    private static Accomodation[] filterValidAccommodations(Accomodation[] accommodations) {
+    private static Accommodation[] filterValidAccommodations(Accommodation[] accommodations) {
         if (accommodations == null || accommodations.length == 0)
-            return new Accomodation[0];
+            return new Accommodation[0];
 
-        Accomodation[] filtered = new Accomodation[accommodations.length];
+        Accommodation[] filtered = new Accommodation[accommodations.length];
         int count = 0;
 
-        for (Accomodation accommodation : accommodations) {
+        for (Accommodation accommodation : accommodations) {
             if (accommodation != null)
                 filtered[count++] = accommodation;
         }
 
-        Accomodation[] result = new Accomodation[count];
+        Accommodation[] result = new Accommodation[count];
         System.arraycopy(filtered, 0, result, 0, count);
         return result;
     }

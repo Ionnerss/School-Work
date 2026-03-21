@@ -8,13 +8,12 @@ import java.nio.file.Paths;
 
 import AssignmentsS2.Assignment2.src.client.Client;
 import AssignmentsS2.Assignment2.src.exceptions.*;
-import AssignmentsS2.Assignment2.src.persistance.*;
+import AssignmentsS2.Assignment2.src.persistence.*;
 import AssignmentsS2.Assignment2.src.travel.*;
-
 public class SmartTravelService {
     private static Client[] clients;
     private static Trip[] trips;
-    private static Accomodation[] accomodations;
+    private static Accommodation[] accomodations;
     private static Transportation[] transportations;
     public static final int nullIndex = -128;
 
@@ -137,17 +136,26 @@ public class SmartTravelService {
         transportationCount = countNonNull(transportations);
     }
 
-    public Accomodation[] getAccomodations() {
-        return (accomodations == null) ? new Accomodation[0] : accomodations;
+    public Accommodation[] getAccomodations() {
+        return (accomodations == null) ? new Accommodation[0] : accomodations;
     }
 
-    public void setAccomodations(Accomodation[] updatedAccomodations) {
-        accomodations = (updatedAccomodations == null) ? new Accomodation[0] : updatedAccomodations;
+    public void setAccomodations(Accommodation[] updatedAccomodations) {
+        accomodations = (updatedAccomodations == null) ? new Accommodation[0] : updatedAccomodations;
         accommodationCount = countNonNull(accomodations);
     }
 
     public static void addClient(String firstName, String lastName, String email) throws InvalidClientDataException {
-        Client newClient = new Client(firstName, lastName, email);
+        String normalizedEmail = normalize(email);
+        if (normalizedEmail == null) {
+            throw new InvalidClientDataException("Email cannot be null.");
+        }
+
+        if (emailAlreadyExists(normalizedEmail, null)) {
+            throw new DuplicateEmailException("A client with this email already exists.");
+        }
+
+        Client newClient = new Client(firstName, lastName, normalizedEmail);
 
         if (clients == null) {
             clients = new Client[1];
@@ -155,12 +163,68 @@ public class SmartTravelService {
 
         if (clientCount >= clients.length) {
             clients = appendToClientArray(newClient, new Client[clients.length + 1]);
-
             clientCount++;
             return;
         }
 
         clients[clientCount++] = newClient;
+    }
+
+    public static void updateClient(String clientId, String firstName, String lastName, String email)
+        throws InvalidClientDataException, DuplicateEmailException {
+
+        String normalizedClientId = normalize(clientId);
+        if (normalizedClientId == null) {
+            throw new InvalidClientDataException("Client ID cannot be empty.");
+        }
+
+        Client client = findClientByIdObj(normalizedClientId);
+
+        String validatedFirstName = Client.validateName(firstName, "First name");
+        String validatedLastName = Client.validateName(lastName, "Last name");
+        String validatedEmail = Client.validateEmail(email);
+
+        if (clients != null) {
+            for (Client existing : clients) {
+                if (existing == null) {
+                    continue;
+                }
+
+                if (existing.getClientId().equals(client.getClientId())) {
+                    continue;
+                }
+
+                if (existing.getEmailAdress().equalsIgnoreCase(validatedEmail)) {
+                    throw new DuplicateEmailException("A client with this email already exists.");
+                }
+            }
+        }
+
+        client.setFirstName(validatedFirstName);
+        client.setLastName(validatedLastName);
+        client.setEmailAdress(validatedEmail);
+    }
+
+    private static boolean emailAlreadyExists(String email, String excludedClientId) {
+        if (email == null || clients == null) {
+            return false;
+        }
+
+        for (Client client : clients) {
+            if (client == null) {
+                continue;
+            }
+
+            if (excludedClientId != null && excludedClientId.equals(client.getClientId())) {
+                continue;
+            }
+
+            if (email.equalsIgnoreCase(client.getEmailAdress())) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public static Trip createTrip() throws InvalidTripDataException, InvalidClientDataException, InvalidAccommodationDataException, 
@@ -178,45 +242,49 @@ public class SmartTravelService {
     }
 
     public static Trip createTrip(String destination, int durationDays, double basePrice, String clientId, String accommodationId, String transportationId)
-            throws InvalidTripDataException, InvalidClientDataException,InvalidAccommodationDataException, InvalidTransportDataException, EntityNotFoundException {
-                
+        throws InvalidTripDataException, InvalidClientDataException, InvalidAccommodationDataException, InvalidTransportDataException, EntityNotFoundException {
+
         String normalizedDestination = normalize(destination);
         String normalizedClientId = normalize(clientId);
         String normalizedAccommodationId = normalize(accommodationId);
         String normalizedTransportationId = normalize(transportationId);
+
+        if (normalizedDestination == null) {
+            throw new InvalidTripDataException("Destination cannot be null.");
+        }
 
         if (normalizedClientId == null) {
             throw new InvalidTripDataException("Client ID is mandatory.");
         }
 
         if (normalizedAccommodationId == null && normalizedTransportationId == null) {
-            throw new InvalidTripDataException(
-                    "At least one of accommodation ID or transportation ID must be provided."
-            );
+            throw new InvalidTripDataException("At least one of accommodation ID or transportation ID must be provided.");
         }
 
         Client client = findClientByIdObj(normalizedClientId);
 
-        Accomodation accommodation = null;
+        String finalAccommodationId = "";
         if (normalizedAccommodationId != null) {
-            accommodation = findAccommodationById(normalizedAccommodationId);
+            Accommodation accommodation = findAccommodationById(normalizedAccommodationId);
+            finalAccommodationId = accommodation.getAccomodationID();
         }
 
-        Transportation transportation = null;
+        String finalTransportationId = "";
         if (normalizedTransportationId != null) {
-            transportation = findTransportationById(normalizedTransportationId);
+            Transportation transportation = findTransportationById(normalizedTransportationId);
+            finalTransportationId = transportation.getTransportID();
         }
 
-        Trip newTrip = new Trip(client.getClientId(), accommodation.getAccomodationID(), transportation.getTransportID(), normalizedDestination, durationDays, basePrice);
+        Trip newTrip = new Trip(client.getClientId(), finalAccommodationId, finalTransportationId, normalizedDestination, durationDays, basePrice);
         storeTrip(newTrip);
         return newTrip;
-    }
+    } 
 
-    public static Accomodation findAccommodationById(String accommodationId)
+    public static Accommodation findAccommodationById(String accommodationId)
             throws InvalidAccommodationDataException {
 
         if (accomodations != null) {
-            for (Accomodation accomodation : accomodations) {
+            for (Accommodation accomodation : accomodations) {
                 if (accomodation != null && accomodation.getAccomodationID().equals(accommodationId))
                     return accomodation;
             }
@@ -260,9 +328,15 @@ public class SmartTravelService {
             throw new IllegalArgumentException("Invalid Client ID format: " + clientId);
         }
 
-        for (Client specifiClient : clients)
-            if (trimmed == specifiClient.getClientId())
+        if (clients == null) {
+            return false;
+        }
+
+        for (Client specificClient : clients) {
+            if (specificClient != null && trimmed.equals(specificClient.getClientId())) {
                 return true;
+            }
+        }
 
         return false;
     }
@@ -278,9 +352,15 @@ public class SmartTravelService {
             throw new InvalidClientDataException("Invalid Client ID format: " + clientID);
         }
 
-        for (Client specifiClient : clients)
-            if (trimmed == specifiClient.getClientId())
+        if (clients == null) {
+            return false;
+        }
+
+        for (Client specificClient : clients) {
+            if (specificClient != null && trimmed.equals(specificClient.getClientId())) {
                 return true;
+            }
+        }
 
         return false;
     }
@@ -325,8 +405,8 @@ public class SmartTravelService {
             Path dataDir = basePath.resolve("output").resolve("data");
             String clientsFile = dataDir.resolve("clients.csv").toString();
             String tripsFile = dataDir.resolve("trips.csv").toString();
-            String transportationsFile = dataDir.resolve("transportations.csv").toString();
-            String accomodationsFile = dataDir.resolve("accomodations.csv").toString();
+            String transportationsFile = dataDir.resolve("transports.csv").toString();
+            String accomodationsFile = dataDir.resolve("accommodations.csv").toString();
 
             ensureOutputDirectories(folderPath);
 
@@ -336,11 +416,12 @@ public class SmartTravelService {
 
             Transportation[] loadedTransportations =
                 new Transportation[Math.max(1, countDataLines(transportationsFile))];
-            TransportFileManager.loadTransportations(loadedTransportations, transportationsFile);
+            TransportationFileManager.loadTransportations(loadedTransportations, transportationsFile);
             setTransportations(trimTransportations(loadedTransportations));
 
-            Accomodation[] loadedAccommodations = loadAccommodationsFromFile(accomodationsFile);
-            setAccomodations(loadedAccommodations);
+            Accommodation[] loadedAccommodations = new Accommodation[Math.max(1, countDataLines(accomodationsFile))];
+            AccommodationFileManager.loadAccomodations(loadedAccommodations, accomodationsFile);
+            setAccomodations(trimAccomodations(loadedAccommodations));
 
             Trip[] loadedTrips = new Trip[Math.max(1, countDataLines(tripsFile))];
             TripFileManager.loadTrips(loadedTrips, tripsFile);
@@ -355,48 +436,6 @@ public class SmartTravelService {
             System.out.println();
         }
     }
-
-    private static Accomodation[] loadAccommodationsFromFile(String filePath) throws IOException {
-        Path path = Paths.get(filePath);
-        if (!Files.exists(path)) {
-            return new Accomodation[0];
-        }
-
-        Accomodation[] loaded = new Accomodation[Math.max(1, countDataLines(filePath))];
-        int index = 0;
-
-        for (String rawLine : Files.readAllLines(path)) {
-            String line = rawLine.trim();
-            if (line.isEmpty()) {
-                continue;
-            }
-
-            String[] parts = line.split(";", -1);
-            if (parts.length != 6) {
-                continue;
-            }
-
-            String type = parts[0].trim().toUpperCase();
-            String id = parts[1].trim();
-            String name = parts[2].trim();
-            String location = parts[3].trim();
-            double pricePerNight = Double.parseDouble(parts[4].trim());
-            int starOrBeds = Integer.parseInt(parts[5].trim());
-
-            try {
-                if ("HOTEL".equals(type)) {
-                    loaded[index++] = new Hotel(id, name, location, pricePerNight, starOrBeds);
-                } else if ("HOSTEL".equals(type)) {
-                    loaded[index++] = new Hostel(id, name, location, pricePerNight, starOrBeds);
-                }
-            } catch (InvalidAccommodationDataException e) {
-                // Ignore invalid entries here; dedicated file managers already handle formal error logging elsewhere.
-            }
-        }
-
-        return trimAccomodations(loaded);
-    }
-
 
     public void ensureOutputDirectories() throws IOException {
         ensureOutputDirectories(null);
@@ -493,12 +532,12 @@ public class SmartTravelService {
         return trimmed;
     }
 
-    private static Accomodation[] trimAccomodations(Accomodation[] values) {
+    private static Accommodation[] trimAccomodations(Accommodation[] values) {
         int size = countNonNull(values);
-        Accomodation[] trimmed = new Accomodation[size];
+        Accommodation[] trimmed = new Accommodation[size];
         int index = 0;
 
-        for (Accomodation value : values) {
+        for (Accommodation value : values) {
             if (value != null)
                 trimmed[index++] = value;
         }
@@ -528,14 +567,14 @@ public class SmartTravelService {
             Path dataDir = basePath.resolve("output").resolve("data");
             String clientsFile = dataDir.resolve("clients.csv").toString();
             String tripsFile = dataDir.resolve("trips.csv").toString();
-            String transportationsFile = dataDir.resolve("transportations.csv").toString();
-            String accomodationsFile = dataDir.resolve("accomodations.csv").toString();
+            String transportationsFile = dataDir.resolve("transports.csv").toString();
+            String accomodationsFile = dataDir.resolve("accommodations.csv").toString();
 
             resetOutputFolders(folderPath);
             ensureOutputDirectories(folderPath);
 
             ClientFileManager.saveClients(getClients(), countNonNull(getClients()), clientsFile);
-            TransportFileManager.saveTransportations(getTransportations(),countNonNull(getTransportations()),
+            TransportationFileManager.saveTransportations(getTransportations(),countNonNull(getTransportations()),
                 transportationsFile);
             AccommodationFileManager.saveAccomodations(getAccomodations(), countNonNull(getAccomodations()), accomodationsFile);
             TripFileManager.saveTrips(getTrips(), countNonNull(getTrips()), tripsFile);
@@ -565,7 +604,7 @@ public class SmartTravelService {
             clients = new Client[11];
             trips = new Trip[14];
             transportations = new Transportation[10];
-            accomodations = new Accomodation[10];
+            accomodations = new Accommodation[10];
 
             // Clients from clients.csv (C1008 row skipped: missing lastName field).
             tryLoadClient(0, "C1001", "Sophia", "Rossi", "sophia.rossi@italy.com");
@@ -629,7 +668,7 @@ public class SmartTravelService {
             clients = new Client[1];
             trips = new Trip[1];
             transportations = new Transportation[2];
-            accomodations = new Accomodation[1];
+            accomodations = new Accommodation[1];
 
             clientCount = 0;
             tripCount = 0;
@@ -908,7 +947,7 @@ public class SmartTravelService {
             printString = ">. No accomodations available.";
         } else {
             // Iterate through array and display each non-null accommodation option
-            for (Accomodation a : accomodations) {
+            for (Accommodation a : accomodations) {
                 if (a != null) {
                     // Polymorphic call: actual subclass toString() is invoked
                     printString += (">. " + a.toString() + "\n");

@@ -7,33 +7,33 @@ package AssignmentsS2.Assignment2.src.travel;
 
 import AssignmentsS2.Assignment2.src.exceptions.InvalidAccommodationDataException;
 
-public abstract class Accomodation {
+public abstract class Accommodation {
     private static int nextID = 4001;
     private String accomodationID, name, location;
     private double pricePerNight;
 
-    public Accomodation() {
+    public Accommodation() {
         this.accomodationID = "A" + nextID++;
         this.name = "";
         this.location = "";
         this.pricePerNight = 0.0;
     }
 
-    public Accomodation(String name, String location, double pricePerNight) throws InvalidAccommodationDataException {
+    public Accommodation(String name, String location, double pricePerNight) throws InvalidAccommodationDataException {
         this.accomodationID = "A" + nextID++;
         setName(name);
         setLocation(location);
         setPricePerNight(pricePerNight);
     }
 
-    public Accomodation(String accomodationID, String name, String location, double pricePerNight) throws InvalidAccommodationDataException {
+    public Accommodation(String accomodationID, String name, String location, double pricePerNight) throws InvalidAccommodationDataException {
         if (accomodationID == null || accomodationID.trim().isEmpty()) {
             throw new IllegalArgumentException("Accomodation ID cannot be empty.");
         }
 
         String trimmed = accomodationID.trim();
 
-        if (!trimmed.matches("C\\d+")) {
+        if (!trimmed.matches("A\\d+")) {
             throw new IllegalArgumentException("Invalid Accomodation ID format: " + accomodationID);
         }
 
@@ -43,7 +43,7 @@ public abstract class Accomodation {
         setPricePerNight(pricePerNight);
     }
 
-    public Accomodation(Accomodation other) {
+    public Accommodation(Accommodation other) {
         this.accomodationID = "A" + nextID++;
         this.name = other.name;
         this.location = other.location;
@@ -78,8 +78,8 @@ public abstract class Accomodation {
     }
 
     public void setPricePerNight(double pricePerNight) throws InvalidAccommodationDataException {
-        if (pricePerNight == 0.0)
-            throw new InvalidAccommodationDataException("Price per night cannot be 0.");
+        if (pricePerNight <= 0.0)
+            throw new InvalidAccommodationDataException("Price per night must be greater than 0.");
 
         this.pricePerNight = pricePerNight;
     }
@@ -97,7 +97,7 @@ public abstract class Accomodation {
         if (other == null || this.getClass() != other.getClass())
             return false;
 
-        Accomodation otherAcc = (Accomodation) other;
+        Accommodation otherAcc = (Accommodation) other;
 
         return this.getName().equals(otherAcc.getName())
             && this.getLocation().equals(otherAcc.getLocation())

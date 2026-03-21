@@ -1,4 +1,4 @@
-package AssignmentsS2.Assignment2.src.persistance;
+package AssignmentsS2.Assignment2.src.persistence;
 
 import java.io.BufferedWriter;
 import java.io.FileInputStream;

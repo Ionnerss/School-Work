@@ -62,7 +62,7 @@ public class Client {
         this.emailAdress = validateEmail(emailAdress);
     }
 
-    private static String validateName(String name, String field) throws InvalidClientDataException {
+    public static String validateName(String name, String field) throws InvalidClientDataException {
         if (name == null)
             throw new InvalidClientDataException(field + " cannot be null.");
 
@@ -75,7 +75,7 @@ public class Client {
         return trimmed;
     }
 
-    private static String validateEmail(String email) throws InvalidClientDataException {
+    public static String validateEmail(String email) throws InvalidClientDataException {
         if (email == null)
             throw new InvalidClientDataException("Email cannot be null.");
 

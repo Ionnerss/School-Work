@@ -1,4 +1,4 @@
-package AssignmentsS2.Assignment2.src.persistance;
+package AssignmentsS2.Assignment2.src.persistence;
 
 import java.io.BufferedWriter;
 import java.io.FileInputStream;
@@ -16,7 +16,7 @@ import AssignmentsS2.Assignment2.src.travel.Transportation;
 
 
 
-public class TransportFileManager {
+public class TransportationFileManager {
     public static void saveTransportations(Transportation[] transportations, int transCount, String filePath) throws IOException {
         if (transportations == null) throw new IllegalArgumentException("Transportations array is null.");
         if (transCount < 0 || transCount > transportations.length)
@@ -64,36 +64,41 @@ public class TransportFileManager {
     public static int loadTransportations(Transportation[] transportations, String filePath) throws IOException {
         int count = 0;
         int lineNo = 0;
-        String line = "null";
-        int maxIdNumSeen = -1; // to resync static ID generator after load
+        String line = "";
+        int maxIdNumSeen = -1;
 
         try (Scanner inputStream = new Scanner(new FileInputStream(filePath))) {
-
             while (inputStream.hasNextLine()) {
                 lineNo++;
-                line = inputStream.nextLine();
-                line = line.trim();
+                line = inputStream.nextLine().trim();
 
                 if (line.isEmpty()) {
-                    ErrorLogger.log("transportations.csv","Transportation data is empty.", lineNo, line);
+                    ErrorLogger.log("transports.csv", "Transportation data is empty.", lineNo, line);
                     continue;
                 }
 
                 if (line.startsWith("INVALID_PREDEFINED_TRANSPORT;")) {
                     continue;
                 }
+
                 try {
                     String[] parts = line.split(";", -1);
                     if (parts.length < 6 || parts.length > 7) {
-                        ErrorLogger.log("transportations.csv","Transportation data is incomplete, missing info.", lineNo, line);
+                        ErrorLogger.log("transports.csv", "Transportation data is incomplete, missing info.", lineNo, line);
                         continue;
                     }
 
-                    for (String str : parts) {
-                        if (str == null || str.trim().isEmpty()) {
-                            ErrorLogger.log("transportations.csv", "Transportation data is incomplete, missing info.", lineNo, line);
-                            continue;
+                    boolean hasEmptyField = false;
+                    for (String part : parts) {
+                        if (part == null || part.trim().isEmpty()) {
+                            hasEmptyField = true;
+                            break;
                         }
+                    }
+
+                    if (hasEmptyField) {
+                        ErrorLogger.log("transports.csv", "Transportation data is incomplete, missing info.", lineNo, line);
+                        continue;
                     }
 
                     String type;
@@ -101,9 +106,7 @@ public class TransportFileManager {
                     if (parts.length == 7) {
                         type = parts[0].trim().toUpperCase();
                         base = 1;
-                    }
-                    else {
-                        // Legacy format without type token. Infer based on last field content.
+                    } else {
                         type = inferTypeFromTail(parts[5].trim());
                         base = 0;
                     }
@@ -121,34 +124,36 @@ public class TransportFileManager {
                         case "BUS" -> t = new Bus(id, companyName, departureCity, arrivalCity, baseFare, Integer.parseInt(tail));
                         case "FLIGHT" -> t = new Flight(id, companyName, departureCity, arrivalCity, baseFare, Double.parseDouble(tail));
                         default -> {
-                            ErrorLogger.log("transportations.csv", "Unsupported transportation type: " + type, lineNo, line);
+                            ErrorLogger.log("transports.csv", "Unsupported transportation type: " + type, lineNo, line);
                             continue;
                         }
                     }
 
                     if (count >= transportations.length) {
-                        ErrorLogger.log("transportations.csv", "Transportation array capacity exceeded.", lineNo, line);
+                        ErrorLogger.log("transports.csv", "Transportation array capacity exceeded.", lineNo, line);
                         break;
                     }
 
                     transportations[count++] = t;
 
-                    // Track max numeric part of ID for static resync
                     int n = extractTransportationNumber(id);
-                    if (n > maxIdNumSeen) maxIdNumSeen = n;
+                    if (n > maxIdNumSeen) {
+                        maxIdNumSeen = n;
+                    }
 
-                } catch(InvalidTransportDataException | RuntimeException e) {
-                    ErrorLogger.log("transportations.csv", e.getMessage(), lineNo, line);
+                } catch (InvalidTransportDataException | RuntimeException e) {
+                    ErrorLogger.log("transports.csv", e.getMessage(), lineNo, line);
                 }
-            } 
-        } catch (Exception e) {
-            ErrorLogger.log("transportations.csv", e.getMessage(), lineNo, line);
+            }
+        } catch (IOException e) {
+            ErrorLogger.log("transports.csv", e.getMessage(), lineNo, line);
+            throw e;
         }
 
-        // Resync Transportation static next-id so new transportations don’t collide with loaded IDs
         if (maxIdNumSeen >= 0) {
             Transportation.syncNextId(maxIdNumSeen + 1);
         }
+
         return count;
     }
 
