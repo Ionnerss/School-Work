@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+    <meta charset='UTF-8'>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+    <title>SmartTravel A2 Dashboard</title>
+    <link rel='stylesheet' href='./styles.css'>
+</head>
+<body>
+    <div class='container'>
+        <header>
+            <h1>SmartTravel Dashboard</h1>
+            <p>A2: File I/O + Exceptions | 10 Clients | 7 Trips</p>
+        </header>
+        <section class='data-section'>
+            <h2> Clients (10)</h2>
+            <table>
+                <thead>
+                    <tr><th>ID</th><th>Name</th><th>Email</th><th>Total Spent ($)</th></tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>C1001</strong></td>
+                        <td>Sophia Rossi</td>
+                        <td>sophia.rossi@italy.com</td>
+                        <td style='font-weight: bold; color: #388e3c;'>2,430.00</td>
+                    </tr>
+                    <tr>
+                        <td><strong>C1002</strong></td>
+                        <td>Carlos Silva</td>
+                        <td>carlos.silva@brazil.com</td>
+                        <td style='font-weight: bold; color: #388e3c;'>675.00</td>
+                    </tr>
+                    <tr>
+                        <td><strong>C1003</strong></td>
+                        <td>Aiko Tanaka</td>
+                        <td>aiko.tanaka@japan.com</td>
+                        <td style='font-weight: bold; color: #d32f2f;'>3,625.00</td>
+                    </tr>
+                    <tr>
+                        <td><strong>C1004</strong></td>
+                        <td>Emma Wilson</td>
+                        <td>emma.wilson@usa.com</td>
+                        <td style='font-weight: bold; color: #388e3c;'>0.00</td>
+                    </tr>
+                    <tr>
+                        <td><strong>C1005</strong></td>
+                        <td>Miguel Gomez</td>
+                        <td>miguel.gomez@spain.com</td>
+                        <td style='font-weight: bold; color: #388e3c;'>350.00</td>
+                    </tr>
+                    <tr>
+                        <td><strong>C1006</strong></td>
+                        <td>John Smith</td>
+                        <td>john.smith@canada.com</td>
+                        <td style='font-weight: bold; color: #388e3c;'>1,195.00</td>
+                    </tr>
+                    <tr>
+                        <td><strong>C1007</strong></td>
+                        <td>Alice Johnson</td>
+                        <td>alice.johnson@uk.com</td>
+                        <td style='font-weight: bold; color: #d32f2f;'>3,625.00</td>
+                    </tr>
+                    <tr>
+                        <td><strong>C1009</strong></td>
+                        <td>Diana Prince</td>
+                        <td>diana.prince@greece.com</td>
+                        <td style='font-weight: bold; color: #388e3c;'>1,455.00</td>
+                    </tr>
+                    <tr>
+                        <td><strong>C1010</strong></td>
+                        <td>Lee Kim</td>
+                        <td>lee.kim@korea.com</td>
+                        <td style='font-weight: bold; color: #388e3c;'>0.00</td>
+                    </tr>
+                    <tr>
+                        <td><strong>C1011</strong></td>
+                        <td>Mig Gomez</td>
+                        <td>miguel.gomez@spain.com</td>
+                        <td style='font-weight: bold; color: #388e3c;'>0.00</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+        <section class='data-section'>
+            <h2> Trips (7)</h2>
+            <table>
+                <thead>
+                    <tr><th>ID</th><th>Client</th><th>Destination</th><th>Days</th><th>Price</th></tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>T2001</strong></td>
+                        <td>C1001</td>
+                        <td>Paris</td>
+                        <td>5</td>
+                        <td>$2430.00</td>
+                    </tr>
+                    <tr>
+                        <td><strong>T2002</strong></td>
+                        <td>C1005</td>
+                        <td>Paris</td>
+                        <td>3</td>
+                        <td>$350.00</td>
+                    </tr>
+                    <tr>
+                        <td><strong>T2003</strong></td>
+                        <td>C1002</td>
+                        <td>Venice</td>
+                        <td>7</td>
+                        <td>$675.00</td>
+                    </tr>
+                    <tr>
+                        <td><strong>T2004</strong></td>
+                        <td>C1009</td>
+                        <td>Paris</td>
+                        <td>4</td>
+                        <td>$1455.00</td>
+                    </tr>
+                    <tr>
+                        <td><strong>T2005</strong></td>
+                        <td>C1006</td>
+                        <td>Rome</td>
+                        <td>6</td>
+                        <td>$1195.00</td>
+                    </tr>
+                    <tr>
+                        <td><strong>T2006</strong></td>
+                        <td>C1003</td>
+                        <td>Tokyo</td>
+                        <td>8</td>
+                        <td>$3625.00</td>
+                    </tr>
+                    <tr>
+                        <td><strong>T2009</strong></td>
+                        <td>C1007</td>
+                        <td>Rome</td>
+                        <td>7</td>
+                        <td>$3625.00</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+        <section class='charts-section'>
+            <h2>Analytics (JFreeChart)</h2>
+            <div class='chart-grid'>
+                <figure class='chart-card'>
+                    <img src='../charts/trip_cost_bar_chart.png' alt='Trip Costs' loading='lazy'>
+                    <figcaption>Total Cost per Trip</figcaption>
+                </figure>
+                <figure class='chart-card'>
+                    <img src='../charts/trips_per_destination_pie.png' alt='Destinations' loading='lazy'>
+                    <figcaption>Trips per Destination</figcaption>
+                </figure>
+                <figure class='chart-card'>
+                    <img src='../charts/trip_duration_line_chart.png' alt='Durations' loading='lazy'>
+                    <figcaption>Trip Durations</figcaption>
+                </figure>
+            </div>
+        </section>
+        <section class='stats-section'>
+            <h2>Quick Stats (7 Trips)</h2>
+            <div class='stat-grid'>
+                <div class='stat-item'>
+                    <span class='stat-label'>Avg Trip Cost</span>
+                    <span class='stat-value'>$1,908</span>
+                </div>
+                <div class='stat-item'>
+                    <span class='stat-label'>Avg Duration</span>
+                    <span class='stat-value'>5.7 days</span>
+                </div>
+                <div class='stat-item'>
+                    <span class='stat-label'>Total Revenue</span>
+                    <span class='stat-value'>$13,355</span>
+                </div>
+                <div class='stat-item'>
+                    <span class='stat-label'>Most Visited</span>
+                    <span class='stat-value'>Paris<br><small>(3 trips)</small></span>
+                </div>
+            </div>
+        </section>
+    </div>
+</body>
+</html>

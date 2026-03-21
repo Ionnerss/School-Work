@@ -226,13 +226,13 @@ public class SmartTravelDriver {
         }
 
         Client[] clients = service.getClients();
-        Client[] updated = new Client[clients.length - 1];
-        if (foundIndex > 0) {
-            System.arraycopy(clients, 0, updated, 0, foundIndex);
+        Client[] updated = clients.clone();
+
+        for (int i = foundIndex; i < service.getClientCount() - 1; i++) {
+            updated[i] = updated[i + 1];
         }
-        if (foundIndex < clients.length - 1) {
-            System.arraycopy(clients, foundIndex + 1, updated, foundIndex, clients.length - foundIndex - 1);
-        }
+        updated[service.getClientCount() - 1] = null;
+
         service.setClients(updated);
 
         System.out.println(">. Client deleted successfully.\n");
@@ -398,13 +398,13 @@ public class SmartTravelDriver {
         }
 
         Trip[] trips = service.getTrips();
-        Trip[] updated = new Trip[trips.length - 1];
-        if (foundIndex > 0) {
-            System.arraycopy(trips, 0, updated, 0, foundIndex);
+        Trip[] updated = trips.clone();
+
+        for (int i = foundIndex; i < service.getTripCount() - 1; i++) {
+            updated[i] = updated[i + 1];
         }
-        if (foundIndex < trips.length - 1) {
-            System.arraycopy(trips, foundIndex + 1, updated, foundIndex, trips.length - foundIndex - 1);
-        }
+        updated[service.getTripCount() - 1] = null;
+
         service.setTrips(updated);
 
         System.out.println(">. Trip cancelled successfully.\n");
@@ -540,9 +540,14 @@ public class SmartTravelDriver {
         }
 
         Transportation[] transportations = service.getTransportations();
-        Transportation[] updated = new Transportation[transportations.length + 1];
-        System.arraycopy(transportations, 0, updated, 0, transportations.length);
-        updated[transportations.length] = newTransport;
+
+        if (service.getTransportationCount() >= SmartTravelService.MAX_TRANSPORTATIONS) {
+            System.out.println(">. Transportation array is full.\n");
+            return;
+        }
+
+        Transportation[] updated = transportations.clone();
+        updated[service.getTransportationCount()] = newTransport;
         service.setTransportations(updated);
         SmartTravelService.clearInvalidTransportationById(newTransport.getTransportID());
 
@@ -566,14 +571,13 @@ public class SmartTravelDriver {
         }
 
         Transportation[] transportations = service.getTransportations();
-        Transportation[] updated = new Transportation[transportations.length - 1];
-        if (foundIndex > 0) {
-            System.arraycopy(transportations, 0, updated, 0, foundIndex);
+        Transportation[] updated = transportations.clone();
+
+        for (int i = foundIndex; i < service.getTransportationCount() - 1; i++) {
+            updated[i] = updated[i + 1];
         }
-        if (foundIndex < transportations.length - 1) {
-            System.arraycopy(transportations, foundIndex + 1, updated, foundIndex,
-                    transportations.length - foundIndex - 1);
-        }
+        updated[service.getTransportationCount() - 1] = null;
+
         service.setTransportations(updated);
 
         System.out.println(">. Transportation removed successfully.\n");
@@ -699,9 +703,14 @@ public class SmartTravelDriver {
         }
 
         Accommodation[] accomodations = service.getAccomodations();
-        Accommodation[] updated = new Accommodation[accomodations.length + 1];
-        System.arraycopy(accomodations, 0, updated, 0, accomodations.length);
-        updated[accomodations.length] = newAccommodation;
+
+        if (service.getAccommodationCount() >= SmartTravelService.MAX_ACCOMMODATIONS) {
+            System.out.println(">. Accommodation array is full.\n");
+            return;
+        }
+
+        Accommodation[] updated = accomodations.clone();
+        updated[service.getAccommodationCount()] = newAccommodation;
         service.setAccomodations(updated);
         SmartTravelService.clearInvalidAccomodationById(newAccommodation.getAccomodationID());
 
@@ -725,14 +734,13 @@ public class SmartTravelDriver {
         }
 
         Accommodation[] accommodations = service.getAccomodations();
-        Accommodation[] updated = new Accommodation[accommodations.length - 1];
-        if (foundIndex > 0) {
-            System.arraycopy(accommodations, 0, updated, 0, foundIndex);
+        Accommodation[] updated = accommodations.clone();
+
+        for (int i = foundIndex; i < service.getAccommodationCount() - 1; i++) {
+            updated[i] = updated[i + 1];
         }
-        if (foundIndex < accommodations.length - 1) {
-            System.arraycopy(accommodations, foundIndex + 1, updated, foundIndex,
-                    accommodations.length - foundIndex - 1);
-        }
+        updated[service.getAccommodationCount() - 1] = null;
+
         service.setAccomodations(updated);
 
         System.out.println(">. Accommodation removed successfully.\n");

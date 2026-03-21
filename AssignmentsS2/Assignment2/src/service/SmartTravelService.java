@@ -11,10 +11,15 @@ import AssignmentsS2.Assignment2.src.exceptions.*;
 import AssignmentsS2.Assignment2.src.persistence.*;
 import AssignmentsS2.Assignment2.src.travel.*;
 public class SmartTravelService {
-    private static Client[] clients;
-    private static Trip[] trips;
-    private static Accommodation[] accomodations;
-    private static Transportation[] transportations;
+    public static final int MAX_CLIENTS = 100;
+    public static final int MAX_TRIPS = 200;
+    public static final int MAX_ACCOMMODATIONS = 50;
+    public static final int MAX_TRANSPORTATIONS = 50;
+
+    private static Client[] clients = new Client[MAX_CLIENTS];
+    private static Trip[] trips = new Trip[MAX_TRIPS];
+    private static Accommodation[] accomodations = new Accommodation[MAX_ACCOMMODATIONS];
+    private static Transportation[] transportations = new Transportation[MAX_TRANSPORTATIONS];
     public static final int nullIndex = -128;
 
     // Added missing state used by existing logic
@@ -46,8 +51,20 @@ public class SmartTravelService {
     }
 
     public void setClients(Client[] updatedClients) {
-        clients = (updatedClients == null) ? new Client[0] : updatedClients;
-        clientCount = countNonNull(clients);
+        clients = new Client[MAX_CLIENTS];
+        clientCount = 0;
+
+        if (updatedClients == null)
+            return;
+
+        for (Client client : updatedClients) {
+            if (client == null)
+                continue;
+            if (clientCount >= MAX_CLIENTS)
+                throw new IllegalStateException("Too many clients. Max is " + MAX_CLIENTS + ".");
+            clients[clientCount++] = client;
+        }
+
         refreshClientAmountsSpent();
     }
 
@@ -68,8 +85,20 @@ public class SmartTravelService {
     }
 
     public void setTrips(Trip[] updatedTrips) {
-        trips = (updatedTrips == null) ? new Trip[0] : updatedTrips;
-        tripCount = countNonNull(trips);
+        trips = new Trip[MAX_TRIPS];
+        tripCount = 0;
+
+        if (updatedTrips == null)
+            return;
+
+        for (Trip trip : updatedTrips) {
+            if (trip == null)
+                continue;
+            if (tripCount >= MAX_TRIPS)
+                throw new IllegalStateException("Too many trips. Max is " + MAX_TRIPS + ".");
+            trips[tripCount++] = trip;
+        }
+
         refreshClientAmountsSpent();
     }
 
@@ -134,8 +163,19 @@ public class SmartTravelService {
     }
 
     public void setTransportations(Transportation[] updatedTransportations) {
-        transportations = (updatedTransportations == null) ? new Transportation[0] : updatedTransportations;
-        transportationCount = countNonNull(transportations);
+        transportations = new Transportation[MAX_TRANSPORTATIONS];
+        transportationCount = 0;
+
+        if (updatedTransportations == null)
+            return;
+
+        for (Transportation transportation : updatedTransportations) {
+            if (transportation == null)
+                continue;
+            if (transportationCount >= MAX_TRANSPORTATIONS)
+                throw new IllegalStateException("Too many transportations. Max is " + MAX_TRANSPORTATIONS + ".");
+            transportations[transportationCount++] = transportation;
+        }
     }
 
     public Accommodation[] getAccomodations() {
@@ -143,32 +183,33 @@ public class SmartTravelService {
     }
 
     public void setAccomodations(Accommodation[] updatedAccomodations) {
-        accomodations = (updatedAccomodations == null) ? new Accommodation[0] : updatedAccomodations;
-        accommodationCount = countNonNull(accomodations);
+        accomodations = new Accommodation[MAX_ACCOMMODATIONS];
+        accommodationCount = 0;
+
+        if (updatedAccomodations == null)
+            return;
+
+        for (Accommodation accommodation : updatedAccomodations) {
+            if (accommodation == null)
+                continue;
+            if (accommodationCount >= MAX_ACCOMMODATIONS)
+                throw new IllegalStateException("Too many accommodations. Max is " + MAX_ACCOMMODATIONS + ".");
+            accomodations[accommodationCount++] = accommodation;
+        }
     }
 
     public static void addClient(String firstName, String lastName, String email) throws InvalidClientDataException {
         String normalizedEmail = normalize(email);
-        if (normalizedEmail == null) {
+        if (normalizedEmail == null)
             throw new InvalidClientDataException("Email cannot be null.");
-        }
 
-        if (emailAlreadyExists(normalizedEmail, null)) {
+        if (emailAlreadyExists(normalizedEmail, null))
             throw new DuplicateEmailException("A client with this email already exists.");
-        }
+
+        if (clientCount >= MAX_CLIENTS)
+            throw new IllegalStateException("Client array is full. Max is " + MAX_CLIENTS + ".");
 
         Client newClient = new Client(firstName, lastName, normalizedEmail);
-
-        if (clients == null) {
-            clients = new Client[1];
-        }
-
-        if (clientCount >= clients.length) {
-            clients = appendToClientArray(newClient, new Client[clients.length + 1]);
-            clientCount++;
-            return;
-        }
-
         clients[clientCount++] = newClient;
     }
 
@@ -435,16 +476,8 @@ public class SmartTravelService {
     }
 
     private static void storeTrip(Trip newTrip) {
-        if (trips == null) {
-            trips = new Trip[1];
-        }
-
-        if (tripCount >= trips.length) {
-            trips = appendToTripArray(newTrip, new Trip[trips.length + 1]);
-            tripCount++;
-            refreshClientAmountsSpent();
-            return;
-        }
+        if (tripCount >= MAX_TRIPS)
+            throw new IllegalStateException("Trip array is full. Max is " + MAX_TRIPS + ".");
 
         trips[tripCount++] = newTrip;
         refreshClientAmountsSpent();
@@ -462,22 +495,21 @@ public class SmartTravelService {
 
             ensureOutputDirectories(folderPath);
 
-            Client[] loadedClients = new Client[Math.max(1, countDataLines(clientsFile))];
+            Client[] loadedClients = new Client[MAX_CLIENTS];
             ClientFileManager.loadClients(loadedClients, clientsFile);
-            setClients(trimClients(loadedClients));
+            setClients(loadedClients);
 
-            Transportation[] loadedTransportations =
-                new Transportation[Math.max(1, countDataLines(transportationsFile))];
+            Transportation[] loadedTransportations = new Transportation[MAX_TRANSPORTATIONS];
             TransportationFileManager.loadTransportations(loadedTransportations, transportationsFile);
-            setTransportations(trimTransportations(loadedTransportations));
+            setTransportations(loadedTransportations);
 
-            Accommodation[] loadedAccommodations = new Accommodation[Math.max(1, countDataLines(accomodationsFile))];
+            Accommodation[] loadedAccommodations = new Accommodation[MAX_ACCOMMODATIONS];
             AccommodationFileManager.loadAccomodations(loadedAccommodations, accomodationsFile);
-            setAccomodations(trimAccomodations(loadedAccommodations));
+            setAccomodations(loadedAccommodations);
 
-            Trip[] loadedTrips = new Trip[Math.max(1, countDataLines(tripsFile))];
+            Trip[] loadedTrips = new Trip[MAX_TRIPS];
             TripFileManager.loadTrips(loadedTrips, tripsFile);
-            setTrips(trimTrips(loadedTrips));
+            setTrips(loadedTrips);
 
             System.out.println();
             System.out.println(">. Data loaded successfully from output/data/*.csv.");
@@ -535,6 +567,9 @@ public class SmartTravelService {
 
         try (var stream = Files.list(directory)) {
             for (Path child : stream.toList()) {
+                if ("styles.css".equalsIgnoreCase(child.getFileName().toString())) {
+                    continue;
+                }
                 if (Files.isDirectory(child)) {
                     deleteDirectoryContents(child);
                     Files.deleteIfExists(child);
@@ -543,73 +578,6 @@ public class SmartTravelService {
                 }
             }
         }
-    }
-
-    private static Client[] trimClients(Client[] values) {
-        int size = countNonNull(values);
-        Client[] trimmed = new Client[size];
-        int index = 0;
-
-        for (Client value : values) {
-            if (value != null)
-                trimmed[index++] = value;
-        }
-
-        return trimmed;
-    }
-
-    private static Transportation[] trimTransportations(Transportation[] values) {
-        int size = countNonNull(values);
-        Transportation[] trimmed = new Transportation[size];
-        int index = 0;
-
-        for (Transportation value : values) {
-            if (value != null)
-                trimmed[index++] = value;
-        }
-
-        return trimmed;
-    }
-
-    private static Trip[] trimTrips(Trip[] values) {
-        int size = countNonNull(values);
-        Trip[] trimmed = new Trip[size];
-        int index = 0;
-
-        for (Trip value : values) {
-            if (value != null)
-                trimmed[index++] = value;
-        }
-
-        return trimmed;
-    }
-
-    private static Accommodation[] trimAccomodations(Accommodation[] values) {
-        int size = countNonNull(values);
-        Accommodation[] trimmed = new Accommodation[size];
-        int index = 0;
-
-        for (Accommodation value : values) {
-            if (value != null)
-                trimmed[index++] = value;
-        }
-
-        return trimmed;
-    }
-
-    private static int countDataLines(String filePath) throws IOException {
-        Path path = Paths.get(filePath);
-        if (!Files.exists(path)) {
-            return 0;
-        }
-
-        int count = 0;
-        for (String line : Files.readAllLines(path)) {
-            if (!line.trim().isEmpty()) {
-                count++;
-            }
-        }
-        return count;
     }
 
     public void saveAllData(String folderPath) throws IOException{
@@ -908,32 +876,6 @@ public class SmartTravelService {
         for (int i = write; i < invalidAccomodationRows.length; i++)
             invalidAccomodationRows[i] = null;
         invalidAccomodationCount = write;
-    }
-
-    private static Client[] appendToClientArray(Client element, Client[] expanded) {
-        int oldLength = (clients == null) ? 0 : clients.length;
-
-        if (expanded == null || expanded.length != oldLength + 1)
-            throw new IllegalArgumentException("Expanded array must have length oldLength + 1.");
-
-        for (int i = 0; i < oldLength; i++)
-            expanded[i] = clients[i];
-
-        expanded[oldLength] = element;
-        return expanded;
-    }
-
-    private static Trip[] appendToTripArray(Trip element, Trip[] expanded) {
-        int oldLength = (trips == null) ? 0 : trips.length;
-
-        if (expanded == null || expanded.length != oldLength + 1)
-            throw new IllegalArgumentException("Expanded array must have length oldLength + 1.");
-
-        for (int i = 0; i < oldLength; i++)
-            expanded[i] = trips[i];
-
-        expanded[oldLength] = element;
-        return expanded;
     }
 
     /**
