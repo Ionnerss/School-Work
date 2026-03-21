@@ -6,10 +6,10 @@ import AssignmentsS2.Assignment2.src.travel.Trip;
 
 public class Client {
     private static int nextID = 1001;
-    private String clientID, firstName, lastName, emailAdress;
+    private String clientId, firstName, lastName, emailAdress;
 
     public Client() {
-        this.clientID = "C" + nextID++;
+        this.clientId = "C" + nextID++;
         this.firstName = "";
         this.lastName = "";
         this.emailAdress = "";
@@ -17,7 +17,7 @@ public class Client {
 
     
     public Client(String firstName, String lastName, String emailAdress) throws InvalidClientDataException {
-        this.clientID = "C" + nextID++;
+        this.clientId = "C" + nextID++;
         setFirstName(firstName);
         setLastName(lastName);
         setEmailAdress(emailAdress);
@@ -34,20 +34,20 @@ public class Client {
             throw new InvalidClientDataException("Invalid Client ID format: " + clientID);
         }
 
-        this.clientID = trimmed;
+        this.clientId = trimmed;
         setFirstName(firstName);
         setLastName(lastName);
         setEmailAdress(emailAdress);
     }
 
     public Client(Client other) {
-        this.clientID = "C" + nextID++;
+        this.clientId = "C" + nextID++;
         this.firstName = other.firstName;
         this.lastName = other.lastName;
         this.emailAdress = other.emailAdress;
     }
 
-    public String getClientID() {return this.clientID;}
+    public String getClientId() {return this.clientId;}
     public String getFirstName() {return this.firstName;}
     public String getLastName() {return this.lastName;}
     public String getEmailAdress() {return this.emailAdress;}
@@ -100,7 +100,7 @@ public class Client {
     }
 
     @Override
-    public String toString() {return this.clientID + ": " + this.firstName + ", " + this.lastName + ", " + this.emailAdress;}
+    public String toString() {return this.clientId + ": " + this.firstName + ", " + this.lastName + ", " + this.emailAdress;}
 
     @Override
     public boolean equals(Object other) {
@@ -130,7 +130,7 @@ public class Client {
             if (trip == null)
                 continue;
 
-            if (this.clientID.equals(trip.getClient())) {
+            if (this.clientId.equals(trip.getClientId())) {
                 try {
                     totalSpent += service.calculateTripTotal(i);
                 }

@@ -1,4 +1,4 @@
-package AssignmentsS2.Assignment2.src.visualization;
+package visualization;
 
 /**
  * DashboardGenerator - Generates a professional HTML Dashboard for SmartTravel Pro (COMP249 A2)
@@ -18,11 +18,9 @@ package AssignmentsS2.Assignment2.src.visualization;
  * @version Winter 2026 - A2
  */
 
-import  AssignmentsS2.Assignment2.src.service.SmartTravelService;
-import  AssignmentsS2.Assignment2.src.client.Client;
-import AssignmentsS2.Assignment2.src.exceptions.InvalidAccommodationDataException;
-import AssignmentsS2.Assignment2.src.exceptions.InvalidTransportDataException;
-import  AssignmentsS2.Assignment2.src.travel.Trip;
+import service.SmartTravelService;
+import client.Client;
+import travel.Trip;
 
 import java.io.File;
 import java.io.PrintWriter;
@@ -42,14 +40,10 @@ public class DashboardGenerator {
 	 * 
 	 * @param service SmartTravelService with populated Client/Trip arrays
 	 * @throws IOException if file I/O fails (output dir/charts)
-	 * @throws InvalidTransportDataException 
-	 * @throws InvalidAccommodationDataException 
 	 */
-    public static void generateDashboard(SmartTravelService service) throws IOException, InvalidAccommodationDataException, InvalidTransportDataException {
+    public static void generateDashboard(SmartTravelService service) throws IOException {
         // Ensure output dir exists
-        new File("AssignmentsS2/Assignment2/output").mkdirs();
-        new File("AssignmentsS2/Assignment2/output/charts").mkdirs();
-        new File("AssignmentsS2/Assignment2/output/dashboard").mkdirs();
+        new File("output").mkdirs();
         
         // 1. Generate charts FIRST (your existing code)
         TripChartGenerator.generateCostBarChart(service);
@@ -79,11 +73,9 @@ public class DashboardGenerator {
      * 
      * @param service Service containing all data
      * @throws IOException if HTML write fails
-     * @throws InvalidTransportDataException 
-     * @throws InvalidAccommodationDataException 
      */
-    private static void generateHTMLDashboard(SmartTravelService service) throws IOException, InvalidAccommodationDataException, InvalidTransportDataException {
-        PrintWriter out = new PrintWriter("AssignmentsS2/Assignment2/output/dashboard/dashboard.html");
+    private static void generateHTMLDashboard(SmartTravelService service) throws IOException {
+        PrintWriter out = new PrintWriter("output/dashboard/dashboard.html");
         out.println("<!DOCTYPE html>");
         out.println("<html lang='en'>");
         out.println("<head>");
@@ -91,7 +83,7 @@ public class DashboardGenerator {
         out.println("    <meta name='viewport' content='width=device-width, initial-scale=1.0'>");
         out.println("    <title>SmartTravel A2 Dashboard</title>");
         // 
-        out.println("    <link rel='stylesheet' href='./styles.css'>");
+        out.println("    <link rel='stylesheet' href='styles.css'>");
         out.println("</head>");
         out.println("<body>");
         out.println("    <div class='container'>");
@@ -144,7 +136,7 @@ public class DashboardGenerator {
             out.println("                    <tr>");
             out.println("                        <td><strong>" + client.getClientId() + "</strong></td>");
             out.println("                        <td>" + client.getFirstName() + " " + client.getLastName() + "</td>");
-            out.println("                        <td>" + client.getEmailAdress() + "</td>");
+            out.println("                        <td>" + client.getEmail() + "</td>");
             out.println("                        <td style='font-weight: bold; color: " + 
                     								(spent > 3000 ? "#d32f2f" : "#388e3c") + ";'>" + 
                     										String.format("%,.2f", spent) + "</td>");
@@ -162,10 +154,8 @@ public class DashboardGenerator {
      * 
      * @param service Service containing Trip array
      * @param out HTML PrintWriter
-     * @throws InvalidTransportDataException 
-     * @throws InvalidAccommodationDataException 
      */
-    private static void writeTripsTable(SmartTravelService service, PrintWriter out) throws InvalidAccommodationDataException, InvalidTransportDataException {
+    private static void writeTripsTable(SmartTravelService service, PrintWriter out) {
         out.println("        <section class='data-section'>");
         out.println("            <h2> Trips (" + service.getTripCount() + ")</h2>");
         out.println("            <table>");
@@ -174,7 +164,7 @@ public class DashboardGenerator {
         out.println("                </thead>");
         out.println("                <tbody>");
         
-       for (int i = 0; i < service.getTripCount(); i++) {
+        for (int i = 0; i < service.getTripCount(); i++) {
             Trip trip = service.getTrip(i);
             out.println("                    <tr>");
             out.println("                        <td><strong>" + trip.getTripId() + "</strong></td>");
@@ -237,40 +227,12 @@ public class DashboardGenerator {
         // 1. Total Revenue & Avg Cost
         double totalRevenue = 0.0;
         
-        Trip[] trips = service.getTrips();
-        int validTripCount = 0;
-        double avgCost = 0.0;
-
-        for (int i = 0; i < trips.length; i++) {
-            Trip trip = trips[i];
-            if (trip == null)
-                continue;
-
-            try {
-                totalRevenue += service.calculateTripTotal(i);
-                validTripCount++;
-            } catch (InvalidAccommodationDataException | InvalidTransportDataException e) {
-                // Skip trips that cannot be priced due to missing linked data.
-            }
-        }
-
-        if (validTripCount > 0)
-            avgCost = totalRevenue / validTripCount;
+		//ADD CODE
         
         // 2. Average Duration (days)
         double totalDays = 0.0, avgDuration =0.0;
         
-        for (int i = 0; i < trips.length; i++) {
-            Trip trip = trips[i];
-            if (trip != null)
-                totalDays += trip.getDurationInDays();
-        }
-
-        if (validTripCount > 0)
-            avgDuration = totalDays / validTripCount;
-
-        String mostVisited = findMostVisitedDestination(service);
-        int visitCount = countDestinationVisits(service, mostVisited);
+		//ADD CODE
     	
         
         out.println("        <section class='stats-section'>");
@@ -335,27 +297,7 @@ public class DashboardGenerator {
      */
     private static String findMostVisitedDestination(SmartTravelService service) {
         
-        Trip[] trips = service.getTrips();
-        if (trips == null || trips.length == 0 || service.getTripCount() == 0)
-            return "N/A";
-
-        String mostVisited = "N/A";
-        int maxCount = 0;
-
-        for (int i = 0; i < trips.length; i++) {
-            Trip trip = trips[i];
-            if (trip == null)
-                continue;
-
-            String destination = trip.getDestination();
-            int count = countDestinationVisits(service, destination);
-            if (count > maxCount) {
-                maxCount = count;
-                mostVisited = destination;
-            }
-        }
-
-        return mostVisited;
+		//ADD CODE
     }
 
     /**
@@ -363,23 +305,8 @@ public class DashboardGenerator {
      */
     private static int countDestinationVisits(SmartTravelService service, String destination) {
         
-        if (destination == null || destination.trim().isEmpty() || "N/A".equals(destination))
-            return 0;
-
-        Trip[] trips = service.getTrips();
-        if (trips == null || trips.length == 0 || service.getTripCount() == 0)
-            return 0;
-
-        int count = 0;
-        for (int i = 0; i < trips.length; i++) {
-            Trip trip = trips[i];
-            if (trip != null && destination.equals(trip.getDestination()))
-                count++;
-        }
-
-        return count;
+		//ADD CODE
     }
 
     
 }
-

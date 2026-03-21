@@ -19,19 +19,33 @@ public class AccommodationFileManager {
         if (accCount < 0 || accCount > accomodations.length)
             throw new IllegalArgumentException("Accomodation count is out of range.");
 
-        PrintWriter outputStream = new PrintWriter(new BufferedWriter(new FileWriter(filePath)));
+        try (PrintWriter outputStream = new PrintWriter(new BufferedWriter(new FileWriter(filePath)))) {
+            int outputLine = 0;
 
-        for (int i = 0; i < accCount; i++) {
-            if (accomodations[i] == null) {
-                ErrorLogger.log("accomodations.csv", "Specific accomodation data is empty.", i, "null");
-                continue;
+            for (int i = 0; i < accCount; i++) {
+                if (accomodations[i] == null) {
+                    ErrorLogger.log("accomodations.csv", "Specific accomodation data is empty.", i + 1, "null");
+                    continue;
+                }
+
+                String type = accomodations[i] instanceof Hotel ? "HOTEL"
+                        : accomodations[i] instanceof Hostel ? "HOSTEL" : "ACCOMMODATION";
+                String csvLine = type + ";" + accomodations[i];
+                outputStream.println(csvLine);
+                outputLine++;
             }
 
-            outputStream.println(SmartTravelService.printAccomodations());
-        }
+            for (int i = 0; i < SmartTravelService.getInvalidAccomodationCount(); i++) {
+                String invalidRow = SmartTravelService.getInvalidAccomodationRow(i);
+                if (invalidRow == null)
+                    continue;
 
-        if (outputStream != null)
-            outputStream.close();
+                String csvLine = "INVALID_PREDEFINED_ACCOMODATION;" + invalidRow;
+                outputStream.println(csvLine);
+                outputLine++;
+                ErrorLogger.log("accomodations.csv", "Invalid predefined entry preserved", outputLine, csvLine);
+            }
+        }
     }
 
     public static int loadAccomodations(Accomodation[] accomodations, String filePath) throws IOException {
@@ -51,6 +65,10 @@ public class AccommodationFileManager {
 
                 if (line.isEmpty()) {
                     ErrorLogger.log("accomodations.csv","Accomodation data is empty.", lineNo, line);
+                    continue;
+                }
+
+                if (line.startsWith("INVALID_PREDEFINED_ACCOMODATION;")) {
                     continue;
                 }
                 try {
@@ -105,7 +123,7 @@ public class AccommodationFileManager {
     private static int extractAccomodationNumber(String id) {
         if (id == null) return -1;
         id = id.trim();
-        if (id.length() < 5 || id.charAt(0) != 'C') return -1;
+        if (id.length() < 5 || id.charAt(0) != 'A') return -1;
 
         try {
             return Integer.parseInt(id.substring(1));

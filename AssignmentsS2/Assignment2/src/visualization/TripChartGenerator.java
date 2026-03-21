@@ -94,6 +94,10 @@ public class TripChartGenerator {
     	int count = service.getTripCount();
     	DefaultCategoryDataset dataset = new DefaultCategoryDataset();
         for (int i = 0; i < count; i++) {
+            if (i >= trips.length || trips[i] == null) {
+                continue;
+            }
+
             dataset.addValue(service.calculateTripTotal(i), "Total Cost", trips[i].getTripId());
         }
 
@@ -105,7 +109,7 @@ public class TripChartGenerator {
         );
         
         applyChartStyling(chart);
-        ChartUtils.saveChartAsPNG(new File("output/charts/trip_cost_bar_chart.png"), chart, 800, 600);
+        ChartUtils.saveChartAsPNG(new File("AssignmentsS2/Assignment2/output/charts/trip_cost_bar_chart.png"), chart, 800, 600);
     }
 
     /**
@@ -123,6 +127,10 @@ public class TripChartGenerator {
 
         // Count trips per destination
         for (int i = 0; i < count; i++) {
+            if (i >= trips.length || trips[i] == null) {
+                continue;
+            }
+
             String destination = trips[i].getDestination();
             if (dataset.getIndex(destination) != -1) {
                 double value = dataset.getValue(destination).doubleValue();
@@ -140,7 +148,7 @@ public class TripChartGenerator {
                 false
         );
         applyChartStyling(chart);
-        ChartUtils.saveChartAsPNG(new File("output/charts/trips_per_destination_pie.png"), chart, 800, 600);
+        ChartUtils.saveChartAsPNG(new File("AssignmentsS2/Assignment2/output/charts/trips_per_destination_pie.png"), chart, 800, 600);
     }
 
     /**
@@ -156,6 +164,10 @@ public class TripChartGenerator {
     	int count = service.getTripCount();
     	DefaultCategoryDataset dataset = new DefaultCategoryDataset();
         for (int i = 0; i < count; i++) {
+            if (i >= trips.length || trips[i] == null) {
+                continue;
+            }
+
             dataset.addValue(trips[i].getDurationInDays(), "Duration (days)", trips[i].getTripId());
         }
 
@@ -174,6 +186,6 @@ public class TripChartGenerator {
         renderer.setSeriesShapesVisible(0, true);
         renderer.setSeriesShapesFilled(0, true);
         
-        ChartUtils.saveChartAsPNG(new File("output/charts/trip_duration_line_chart.png"), chart, 800, 600);
+        ChartUtils.saveChartAsPNG(new File("AssignmentsS2/Assignment2/output/charts/trip_duration_line_chart.png"), chart, 800, 600);
     }
 }

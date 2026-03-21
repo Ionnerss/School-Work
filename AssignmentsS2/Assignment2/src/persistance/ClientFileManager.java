@@ -3,6 +3,7 @@ package AssignmentsS2.Assignment2.src.persistance;
 import java.io.*;
 import AssignmentsS2.Assignment2.src.client.Client;
 import AssignmentsS2.Assignment2.src.exceptions.InvalidClientDataException;
+import AssignmentsS2.Assignment2.src.service.SmartTravelService;
 import java.util.Scanner;
 
 public class ClientFileManager {
@@ -13,14 +14,29 @@ public class ClientFileManager {
 
         PrintWriter outputStream = new PrintWriter(new BufferedWriter(new FileWriter(filePath)));
 
+        int outputLine = 0;
+
         for (int i = 0; i < clientCount; i++) {
             if (clients[i] == null) {
-                ErrorLogger.log("clients.csv", "Specific client data is empty.", i, "null");
+                ErrorLogger.log("clients.csv", "Specific client data is empty.", i + 1, "null");
                 continue;
             }
 
-            outputStream.println(clients[i].getClientID() + ";" + clients[i].getFirstName() + ";" + 
-                clients[i].getLastName() + ";" + clients[i].getEmailAdress());
+            String csvLine = clients[i].getClientId() + ";" + clients[i].getFirstName() + ";" +
+                clients[i].getLastName() + ";" + clients[i].getEmailAdress();
+            outputStream.println(csvLine);
+            outputLine++;
+        }
+
+        for (int i = 0; i < SmartTravelService.getInvalidClientCount(); i++) {
+            String invalidRow = SmartTravelService.getInvalidClientRow(i);
+            if (invalidRow == null)
+                continue;
+
+            String csvLine = "INVALID_PREDEFINED_CLIENT;" + invalidRow;
+            outputStream.println(csvLine);
+            outputLine++;
+            ErrorLogger.log("clients.csv", "Invalid predefined entry preserved", outputLine, csvLine);
         }
 
         if (outputStream != null)
@@ -44,6 +60,10 @@ public class ClientFileManager {
 
                 if (line.isEmpty()) {
                     ErrorLogger.log("clients.csv","Client data is empty.", lineNo, line);
+                    continue;
+                }
+
+                if (line.startsWith("INVALID_PREDEFINED_CLIENT;")) {
                     continue;
                 }
                 try {

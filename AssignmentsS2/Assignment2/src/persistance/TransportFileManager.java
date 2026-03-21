@@ -8,6 +8,7 @@ import java.io.PrintWriter;
 import java.util.Scanner;
 
 import AssignmentsS2.Assignment2.src.exceptions.InvalidTransportDataException;
+import AssignmentsS2.Assignment2.src.service.SmartTravelService;
 import AssignmentsS2.Assignment2.src.travel.Bus;
 import AssignmentsS2.Assignment2.src.travel.Flight;
 import AssignmentsS2.Assignment2.src.travel.Train;
@@ -22,6 +23,8 @@ public class TransportFileManager {
             throw new IllegalArgumentException("Transportation count is out of range.");
 
         try (PrintWriter outputStream = new PrintWriter(new BufferedWriter(new FileWriter(filePath)))) {
+            int outputLine = 0;
+
             for (int i = 0; i < transCount; i++) {
                 if (transportations[i] == null) {
                     ErrorLogger.log("transportations.csv", "Specific transportation data is empty.", i + 1, "null");
@@ -30,16 +33,30 @@ public class TransportFileManager {
 
                 if (transportations[i] instanceof Flight) {
                     outputStream.println("FLIGHT;" + transportations[i]);
+                    outputLine++;
                 }
                 else if (transportations[i] instanceof Train) {
                     outputStream.println("TRAIN;" + transportations[i]);
+                    outputLine++;
                 }
                 else if (transportations[i] instanceof Bus) {
                     outputStream.println("BUS;" + transportations[i]);
+                    outputLine++;
                 }
                 else {
                     ErrorLogger.log("transportations.csv", "Unknown transportation subtype.", i + 1, transportations[i].toString());
                 }
+            }
+
+            for (int i = 0; i < SmartTravelService.getInvalidTransportationCount(); i++) {
+                String invalidRow = SmartTravelService.getInvalidTransportationRow(i);
+                if (invalidRow == null)
+                    continue;
+
+                String csvLine = "INVALID_PREDEFINED_TRANSPORT;" + invalidRow;
+                outputStream.println(csvLine);
+                outputLine++;
+                ErrorLogger.log("transportations.csv", "Invalid predefined entry preserved", outputLine, csvLine);
             }
         }
     }
@@ -59,6 +76,10 @@ public class TransportFileManager {
 
                 if (line.isEmpty()) {
                     ErrorLogger.log("transportations.csv","Transportation data is empty.", lineNo, line);
+                    continue;
+                }
+
+                if (line.startsWith("INVALID_PREDEFINED_TRANSPORT;")) {
                     continue;
                 }
                 try {
@@ -152,7 +173,7 @@ public class TransportFileManager {
     private static int extractTransportationNumber(String id) {
         if (id == null) return -1;
         id = id.trim();
-        if (!id.startsWith("TR") || id.length() < 3) return -1;
+        if (!id.startsWith("TR") || id.length() < 5) return -1;
 
         try {
             return Integer.parseInt(id.substring(2));

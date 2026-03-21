@@ -8,6 +8,7 @@ import java.io.PrintWriter;
 import java.util.Scanner;
 
 import AssignmentsS2.Assignment2.src.exceptions.*;
+import AssignmentsS2.Assignment2.src.service.SmartTravelService;
 import AssignmentsS2.Assignment2.src.travel.Trip;
 
 public class TripFileManager {
@@ -17,18 +18,34 @@ public class TripFileManager {
             throw new IllegalArgumentException("Trip count is out of range.");
 
         try (PrintWriter outputStream = new PrintWriter(new BufferedWriter(new FileWriter(filePath)))) {
+            int outputLine = 0;
+
             for (int i = 0; i < tripCount; i++) {
                 if (trips[i] == null) {
                     ErrorLogger.log("trips.csv", "Specific trip data is empty.", i + 1, "null");
                     continue;
                 }
 
-                String accomodationId = (trips[i].geAccomodation() == null) ? "" : trips[i].geAccomodation();
-                String transportId = (trips[i].geTransportation() == null) ? "" : trips[i].geTransportation();
+                String accomodationId = (trips[i].geAccomodationId() == null) ? "" : trips[i].geAccomodationId();
+                String transportId = (trips[i].geTransportationId() == null) ? "" : trips[i].geTransportationId();
 
-                outputStream.println(trips[i].getTripId() + ";" + trips[i].getClient() + ";"
+                String csvLine = trips[i].getTripId() + ";" + trips[i].getClientId() + ";"
                         + accomodationId + ";" + transportId + ";"
-                        + trips[i].getDestination() + ";" + trips[i].getDurationInDays() + ";" + trips[i].getBasePrice());
+                        + trips[i].getDestination() + ";" + trips[i].getDurationInDays() + ";" + trips[i].getBasePrice();
+
+                outputStream.println(csvLine);
+                outputLine++;
+            }
+
+            for (int i = 0; i < SmartTravelService.getInvalidTripCount(); i++) {
+                String invalidRow = SmartTravelService.getInvalidTripRow(i);
+                if (invalidRow == null)
+                    continue;
+
+                String csvLine = "INVALID_PREDEFINED_TRIP;" + invalidRow;
+                outputStream.println(csvLine);
+                outputLine++;
+                ErrorLogger.log("trips.csv", "Invalid predefined entry preserved", outputLine, csvLine);
             }
         }
     }
@@ -48,6 +65,10 @@ public class TripFileManager {
 
                 if (line.isEmpty()) {
                     ErrorLogger.log("trips.csv","Trip data is empty.", lineNo, line);
+                    continue;
+                }
+
+                if (line.startsWith("INVALID_PREDEFINED_TRIP;")) {
                     continue;
                 }
                 try {
@@ -104,7 +125,7 @@ public class TripFileManager {
     private static int extractTripNumber(String id) {
         if (id == null) return -1;
         id = id.trim();
-        if (id.length() < 2 || id.charAt(0) != 'T') return -1;
+        if (id.length() < 4 || id.charAt(0) != 'T') return -1;
 
         try {
             return Integer.parseInt(id.substring(1));

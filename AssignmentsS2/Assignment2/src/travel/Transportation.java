@@ -32,7 +32,7 @@ public abstract class Transportation {
 
         String trimmed = transportationID.trim();
 
-        if (!trimmed.matches("C\\d+")) {
+        if (!trimmed.matches("TR\\d+")) {
             throw new IllegalArgumentException("Invalid Transportation ID format: " + transportationID);
         }
 
