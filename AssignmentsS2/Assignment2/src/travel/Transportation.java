@@ -1,9 +1,13 @@
 package AssignmentsS2.Assignment2.src.travel;
-// -------------------------------------------------------- 
-// Assignment 1 - Transportation Class
-// Written by: Catalin-Ion Besleaga (40347936)
-// For COMP 248 Section S – Fall 2025
-// --------------------------------------------------------
+
+/*
+ * Assignment 2
+ * Question: SmartTravel Transportation abstract class
+ * Written by: Catalin-Ion Besleaga (40347936)
+ *
+ * This abstract parent class stores shared transportation information
+ * and validation for flights, trains, and buses.
+ */
 
 import AssignmentsS2.Assignment2.src.exceptions.InvalidTransportDataException;
 
@@ -13,9 +17,13 @@ public abstract class Transportation {
 
     public Transportation() {
         this.transportID = "TR" + nextID++;
-        this.companyName = "";
-        this.departureCity = "";
-        this.arrivalCity = "";
+        try {
+            setCompanyName("Unknown Company");
+            setDepartureCity("Unknown");
+            setArrivalCity("Unknown");
+        } catch (InvalidTransportDataException e) {
+            throw new IllegalStateException("Default transportation initialization failed.", e);
+        }
     }
 
     public Transportation(String companyName, String departureCity, String arrivalCity) throws InvalidTransportDataException {
@@ -27,13 +35,13 @@ public abstract class Transportation {
 
     public Transportation(String transportationID, String companyName, String departureCity, String arrivalCity) throws InvalidTransportDataException {
         if (transportationID == null || transportationID.trim().isEmpty()) {
-            throw new IllegalArgumentException("Transportation ID cannot be empty.");
+            throw new InvalidTransportDataException("Transportation ID cannot be empty.");
         }
 
         String trimmed = transportationID.trim();
 
         if (!trimmed.matches("TR\\d+")) {
-            throw new IllegalArgumentException("Invalid Transportation ID format: " + transportationID);
+            throw new InvalidTransportDataException("Invalid Transportation ID format: " + transportationID);
         }
 
         this.transportID = trimmed;
@@ -62,7 +70,7 @@ public abstract class Transportation {
         if (trimmed.isEmpty())
             throw new InvalidTransportDataException("Company name cannot be null.");
 
-        this.companyName = companyName;
+        this.companyName = trimmed;
     }
 
     public void setDepartureCity(String departureCity) throws InvalidTransportDataException {
@@ -73,7 +81,7 @@ public abstract class Transportation {
         if (trimmed.isEmpty())
             throw new InvalidTransportDataException("Departure city cannot be null.");
 
-        this.departureCity = departureCity;
+        this.departureCity = trimmed;
     }
 
     public void setArrivalCity(String arrivalCity) throws InvalidTransportDataException {
@@ -84,7 +92,7 @@ public abstract class Transportation {
         if (trimmed.isEmpty())
             throw new InvalidTransportDataException("Arrival city cannot be null.");
 
-        this.arrivalCity = arrivalCity;
+        this.arrivalCity = trimmed;
     }
 
     public static void syncNextId(int nextNumericId) {

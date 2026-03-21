@@ -1,9 +1,13 @@
 package AssignmentsS2.Assignment2.src.travel;
-// -------------------------------------------------------- 
-// Assignment 1 - Trip Class
-// Written by: Catalin-Ion Besleaga (40347936)
-// For COMP 248 Section S – Fall 2025
-// --------------------------------------------------------
+
+/*
+ * Assignment 2
+ * Question: SmartTravel Trip class
+ * Written by: Catalin-Ion Besleaga (40347936)
+ *
+ * This class stores trip information, validates trip rules, resolves
+ * linked entities by ID, and computes the total trip cost.
+ */
 
 import AssignmentsS2.Assignment2.src.service.SmartTravelService;
 import AssignmentsS2.Assignment2.src.exceptions.*;
@@ -16,18 +20,13 @@ public class Trip {
 
 
     public Trip() {
-        this.tripId = "T" + nextID++;
-        this.destination = "No Destination";
-        this.duration = 0;
-        this.basePrice = 0.0;
-        this.clientId = "";
-        this.transportId = "";
-        this.accomodationId = "";
-    }
+    throw new UnsupportedOperationException(
+        "Default Trip constructor is not supported because a trip requires a valid client ID and at least one linked accommodation or transportation ID."
+    );
+}
 
-    public Trip(String clientId, String accomodationId, String transportId, String destination, int duration, double basePrice) 
-            throws InvalidTripDataException, InvalidClientDataException, EntityNotFoundException, InvalidTransportDataException, 
-                    InvalidAccommodationDataException {
+    public Trip(String clientId, String accomodationId, String transportId, String destination, int duration, double basePrice)
+        throws InvalidTripDataException, EntityNotFoundException {
         this.tripId = "T" + nextID++;
         setDestination(destination);
         setDurationInDays(duration);
@@ -38,7 +37,7 @@ public class Trip {
     }
 
     public Trip(String destination, int duration, double basePrice, String clientId, String accomodationId, String transportId)
-            throws InvalidTripDataException, InvalidClientDataException, EntityNotFoundException, InvalidTransportDataException, InvalidAccommodationDataException {
+        throws InvalidTripDataException, EntityNotFoundException {
         this(clientId, accomodationId, transportId, destination, duration, basePrice);
     }
 
@@ -52,16 +51,16 @@ public class Trip {
         this.accomodationId = other.accomodationId;
     }
 
-    public Trip(String tripId, String clientId, String accomodationId, String transportId, String destination, int duration, double basePrice) 
-            throws InvalidTripDataException, InvalidClientDataException, EntityNotFoundException, InvalidTransportDataException, InvalidAccommodationDataException {
+    public Trip(String tripId, String clientId, String accomodationId, String transportId, String destination, int duration, double basePrice)
+        throws InvalidTripDataException, EntityNotFoundException {
         if (tripId == null || tripId.trim().isEmpty()) {
-            throw new IllegalArgumentException("Trip ID cannot be empty.");
+            throw new InvalidTripDataException("Trip ID cannot be empty.");
         }
 
         String trimmed = tripId.trim();
 
         if (!trimmed.matches("T\\d+")) {
-            throw new IllegalArgumentException("Invalid Trip ID format: " + tripId);
+            throw new InvalidTripDataException("Invalid Trip ID format: " + tripId);
         }
 
         this.tripId = trimmed;
@@ -103,32 +102,38 @@ public class Trip {
         this.basePrice = basePrice;
     }
 
-    public void setClientId(String clientId) throws InvalidTripDataException, InvalidClientDataException, EntityNotFoundException {
+    public void setClientId(String clientId) throws InvalidTripDataException, EntityNotFoundException {
         if (clientId == null || clientId.trim().isEmpty())
-            throw new InvalidTripDataException("Client ID is null.");
+            throw new InvalidTripDataException("Client ID is mandatory.");
 
-        SmartTravelService.findClientByIdObj(clientId.trim());
-        this.clientId = clientId.trim();
+        String trimmed = clientId.trim();
+        if (!trimmed.matches("C\\d+"))
+            throw new InvalidTripDataException("Invalid Client ID format: " + clientId);
+
+        SmartTravelService.findClientByIdObj(trimmed);
+        this.clientId = trimmed;
     }
 
-    public void setTransportationId(String transportId) throws InvalidTripDataException, InvalidTransportDataException, EntityNotFoundException {
+    public void setTransportationId(String transportId) throws EntityNotFoundException {
         if (transportId == null || transportId.trim().isEmpty()) {
             this.transportId = "";
             return;
         }
 
-        SmartTravelService.findTransportationById(transportId.trim());
-        this.transportId = transportId.trim();
+        String trimmed = transportId.trim();
+        SmartTravelService.findTransportationById(trimmed);
+        this.transportId = trimmed;
     }
 
-    public void setAccomodationId(String accomodationId) throws InvalidTripDataException, InvalidAccommodationDataException, EntityNotFoundException {
+    public void setAccomodationId(String accomodationId) throws EntityNotFoundException {
         if (accomodationId == null || accomodationId.trim().isEmpty()) {
             this.accomodationId = "";
             return;
         }
 
-        SmartTravelService.findAccommodationById(accomodationId.trim());
-        this.accomodationId = accomodationId.trim();
+        String trimmed = accomodationId.trim();
+        SmartTravelService.findAccommodationById(trimmed);
+        this.accomodationId = trimmed;
     }
 
     public static void syncNextId(int nextNumericId) {
@@ -154,7 +159,7 @@ public class Trip {
         && this.getClientId().equals(otherTrip.getClientId());
     }
 
-    public double calculateTotalCost() throws InvalidAccommodationDataException, InvalidTransportDataException {
+    public double calculateTotalCost() throws EntityNotFoundException {
         double total = this.basePrice;
 
         if (transportId != null && !transportId.trim().equalsIgnoreCase(""))

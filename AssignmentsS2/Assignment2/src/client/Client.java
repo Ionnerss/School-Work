@@ -1,29 +1,42 @@
 package AssignmentsS2.Assignment2.src.client;
 
+/*
+ * Assignment 2
+ * Question: SmartTravel Client class
+ * Written by: Catalin-Ion Besleaga (40347936)
+ *
+ * This class stores client information, validates client data,
+ * manages IDs, and computes total spending across trips.
+ */
+
 import AssignmentsS2.Assignment2.src.exceptions.InvalidClientDataException;
-import AssignmentsS2.Assignment2.src.service.SmartTravelService;
-import AssignmentsS2.Assignment2.src.travel.Trip;
 
 public class Client {
     private static int nextID = 1001;
     private String clientId, firstName, lastName, emailAdress;
+    private double amountSpent;
 
     public Client() {
-        this.clientId = "C" + nextID++;
-        this.firstName = "";
-        this.lastName = "";
-        this.emailAdress = "";
+    this.clientId = "C" + nextID++;
+    try {
+        setFirstName("Unknown");
+        setLastName("Client");
+        setEmailAdress("placeholder" + this.clientId.substring(1) + "@example.com");
+    } catch (InvalidClientDataException e) {
+        throw new IllegalStateException("Default client initialization failed.", e);
+    }
+    this.amountSpent = 0.0;
     }
 
-    
     public Client(String firstName, String lastName, String emailAdress) throws InvalidClientDataException {
         this.clientId = "C" + nextID++;
         setFirstName(firstName);
         setLastName(lastName);
         setEmailAdress(emailAdress);
+        this.amountSpent = 0.0;
     }
-    
-    public Client (String clientID, String firstName, String lastName, String emailAdress) throws InvalidClientDataException {
+
+    public Client(String clientID, String firstName, String lastName, String emailAdress) throws InvalidClientDataException {
         if (clientID == null || clientID.trim().isEmpty()) {
             throw new InvalidClientDataException("Client ID cannot be empty.");
         }
@@ -38,6 +51,7 @@ public class Client {
         setFirstName(firstName);
         setLastName(lastName);
         setEmailAdress(emailAdress);
+        this.amountSpent = 0.0;
     }
 
     public Client(Client other) {
@@ -45,12 +59,14 @@ public class Client {
         this.firstName = other.firstName;
         this.lastName = other.lastName;
         this.emailAdress = other.emailAdress;
+        this.amountSpent = other.amountSpent;
     }
 
     public String getClientId() {return this.clientId;}
     public String getFirstName() {return this.firstName;}
     public String getLastName() {return this.lastName;}
     public String getEmailAdress() {return this.emailAdress;}
+    public double getAmountSpent() {return this.amountSpent;}
 
     public void setFirstName(String firstName) throws InvalidClientDataException {
         this.firstName = validateName(firstName, "First name");
@@ -99,6 +115,16 @@ public class Client {
             nextID = nextNumericId;
     }
 
+    public void resetAmountSpent() {
+        this.amountSpent = 0.0;
+    }
+
+    public void addToAmountSpent(double amount) {
+        if (amount > 0) {
+            this.amountSpent += amount;
+        }
+    }
+
     @Override
     public String toString() {return this.clientId + ": " + this.firstName + ", " + this.lastName + ", " + this.emailAdress;}
 
@@ -114,32 +140,7 @@ public class Client {
             && this.getEmailAdress().equals(otherClient.getEmailAdress());
     }
 
-
     public double getTotalSpent() {
-        SmartTravelService service = new SmartTravelService();
-        Trip[] trips = service.getTrips();
-
-        if (trips == null || trips.length == 0)
-            return 0.0;
-
-        int limit = Math.min(service.getTripCount(), trips.length);
-        double totalSpent = 0.0;
-
-        for (int i = 0; i < limit; i++) {
-            Trip trip = trips[i];
-            if (trip == null)
-                continue;
-
-            if (this.clientId.equals(trip.getClientId())) {
-                try {
-                    totalSpent += service.calculateTripTotal(i);
-                }
-                catch (Exception ignored) {
-                    // Skip invalid trip references and continue summing valid ones.
-                }
-            }
-        }
-
-        return totalSpent;
+        return this.amountSpent;
     }
 }

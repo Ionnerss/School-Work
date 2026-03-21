@@ -48,6 +48,7 @@ public class SmartTravelService {
     public void setClients(Client[] updatedClients) {
         clients = (updatedClients == null) ? new Client[0] : updatedClients;
         clientCount = countNonNull(clients);
+        refreshClientAmountsSpent();
     }
 
     public Trip[] getTrips() {
@@ -69,6 +70,7 @@ public class SmartTravelService {
     public void setTrips(Trip[] updatedTrips) {
         trips = (updatedTrips == null) ? new Trip[0] : updatedTrips;
         tripCount = countNonNull(trips);
+        refreshClientAmountsSpent();
     }
 
     public int getTripCount() {
@@ -171,7 +173,7 @@ public class SmartTravelService {
     }
 
     public static void updateClient(String clientId, String firstName, String lastName, String email)
-        throws InvalidClientDataException, DuplicateEmailException {
+        throws InvalidClientDataException, DuplicateEmailException, EntityNotFoundException {
 
         String normalizedClientId = normalize(clientId);
         if (normalizedClientId == null) {
@@ -227,8 +229,7 @@ public class SmartTravelService {
         return false;
     }
 
-    public static Trip createTrip() throws InvalidTripDataException, InvalidClientDataException, InvalidAccommodationDataException, 
-            InvalidTransportDataException, EntityNotFoundException {
+    public static Trip createTrip() throws InvalidTripDataException, EntityNotFoundException {
 
         String normalizedAccommodationId = normalize(accommodationId);
         String normalizedTransportationId = normalize(transportationId);
@@ -242,7 +243,7 @@ public class SmartTravelService {
     }
 
     public static Trip createTrip(String destination, int durationDays, double basePrice, String clientId, String accommodationId, String transportationId)
-        throws InvalidTripDataException, InvalidClientDataException, InvalidAccommodationDataException, InvalidTransportDataException, EntityNotFoundException {
+        throws InvalidTripDataException, EntityNotFoundException {
 
         String normalizedDestination = normalize(destination);
         String normalizedClientId = normalize(clientId);
@@ -281,40 +282,58 @@ public class SmartTravelService {
     } 
 
     public static Accommodation findAccommodationById(String accommodationId)
-            throws InvalidAccommodationDataException {
+        throws EntityNotFoundException {
+
+        String normalizedAccommodationId = normalize(accommodationId);
+
+        if (normalizedAccommodationId == null || !normalizedAccommodationId.matches("A\\d+")) {
+            throw new EntityNotFoundException("Accommodation ID not found: " + accommodationId);
+        }
 
         if (accomodations != null) {
             for (Accommodation accomodation : accomodations) {
-                if (accomodation != null && accomodation.getAccomodationID().equals(accommodationId))
+                if (accomodation != null && accomodation.getAccomodationID().equals(normalizedAccommodationId))
                     return accomodation;
             }
         }
 
-        throw new InvalidAccommodationDataException("Accommodation ID not found: " + accommodationId);
+        throw new EntityNotFoundException("Accommodation ID not found: " + accommodationId);
     }
 
     public static Transportation findTransportationById(String transportationId)
-            throws InvalidTransportDataException {
+        throws EntityNotFoundException {
+
+        String normalizedTransportationId = normalize(transportationId);
+
+        if (normalizedTransportationId == null || !normalizedTransportationId.matches("TR\\d+")) {
+            throw new EntityNotFoundException("Transportation ID not found: " + transportationId);
+        }
 
         if (transportations != null) {
             for (Transportation transportation : transportations) {
-                if (transportation != null && transportation.getTransportID().equals(transportationId))
+                if (transportation != null && transportation.getTransportID().equals(normalizedTransportationId))
                     return transportation;
             }
         }
 
-        throw new InvalidTransportDataException("Transportation ID not found: " + transportationId);
+        throw new EntityNotFoundException("Transportation ID not found: " + transportationId);
     }
 
-    public static Client findClientByIdObj(String clientId) throws InvalidClientDataException {
+    public static Client findClientByIdObj(String clientId) throws EntityNotFoundException {
+        String normalizedClientId = normalize(clientId);
+
+        if (normalizedClientId == null || !normalizedClientId.matches("C\\d+")) {
+            throw new EntityNotFoundException("Client ID not found: " + clientId);
+        }
+
         if (clients != null) {
             for (Client client : clients) {
-                if (client != null && client.getClientId().equals(clientId))
+                if (client != null && client.getClientId().equals(normalizedClientId))
                     return client;
             }
         }
 
-        throw new InvalidClientDataException("Client ID not found: " + clientId);
+        throw new EntityNotFoundException("Client ID not found: " + clientId);
     }
 
     public static boolean findClientbyIdBool(String clientId) {
@@ -384,6 +403,37 @@ public class SmartTravelService {
         return count;
     }
 
+    private static void refreshClientAmountsSpent() {
+        if (clients == null) {
+            return;
+        }
+
+        for (Client client : clients) {
+            if (client != null) {
+                client.resetAmountSpent();
+            }
+        }
+
+        if (trips == null) {
+            return;
+        }
+
+        int limit = Math.min(tripCount, trips.length);
+        for (int i = 0; i < limit; i++) {
+            Trip trip = trips[i];
+            if (trip == null) {
+                continue;
+            }
+
+            try {
+                Client owner = findClientByIdObj(trip.getClientId());
+                owner.addToAmountSpent(trip.calculateTotalCost());
+            } catch (Exception ignored) {
+                // Ignore broken references while rebuilding stored totals.
+            }
+        }
+    }
+
     private static void storeTrip(Trip newTrip) {
         if (trips == null) {
             trips = new Trip[1];
@@ -392,10 +442,12 @@ public class SmartTravelService {
         if (tripCount >= trips.length) {
             trips = appendToTripArray(newTrip, new Trip[trips.length + 1]);
             tripCount++;
+            refreshClientAmountsSpent();
             return;
         }
 
         trips[tripCount++] = newTrip;
+        refreshClientAmountsSpent();
     }
 
     public void loadAllData(String folderPath) throws IOException {
@@ -589,7 +641,7 @@ public class SmartTravelService {
         }
     }
 
-    public double calculateTripTotal(int index) throws InvalidAccommodationDataException, InvalidTransportDataException {
+    public double calculateTripTotal(int index) throws EntityNotFoundException {
         if (trips == null || index < 0 || index >= trips.length || trips[index] == null)
             return 0.0;
 

@@ -1,9 +1,13 @@
 package AssignmentsS2.Assignment2.src.travel;
-// -------------------------------------------------------- 
-// Assignment 1 - Accomodation Class
-// Written by: Catalin-Ion Besleaga (40347936)
-// For COMP 248 Section S – Fall 2025
-// --------------------------------------------------------
+
+/*
+ * Assignment 2
+ * Question: SmartTravel Accommodation abstract class
+ * Written by: Catalin-Ion Besleaga (40347936)
+ *
+ * This abstract parent class represents common accommodation data and
+ * validation shared by hotels and hostels.
+ */
 
 import AssignmentsS2.Assignment2.src.exceptions.InvalidAccommodationDataException;
 
@@ -14,9 +18,13 @@ public abstract class Accommodation {
 
     public Accommodation() {
         this.accomodationID = "A" + nextID++;
-        this.name = "";
-        this.location = "";
-        this.pricePerNight = 0.0;
+        try {
+            setName("Unknown Accommodation");
+            setLocation("Unknown");
+            setPricePerNight(1.0);
+        } catch (InvalidAccommodationDataException e) {
+            throw new IllegalStateException("Default accommodation initialization failed.", e);
+        }
     }
 
     public Accommodation(String name, String location, double pricePerNight) throws InvalidAccommodationDataException {
@@ -28,13 +36,13 @@ public abstract class Accommodation {
 
     public Accommodation(String accomodationID, String name, String location, double pricePerNight) throws InvalidAccommodationDataException {
         if (accomodationID == null || accomodationID.trim().isEmpty()) {
-            throw new IllegalArgumentException("Accomodation ID cannot be empty.");
+            throw new InvalidAccommodationDataException("Accommodation ID cannot be empty.");
         }
 
         String trimmed = accomodationID.trim();
 
         if (!trimmed.matches("A\\d+")) {
-            throw new IllegalArgumentException("Invalid Accomodation ID format: " + accomodationID);
+            throw new InvalidAccommodationDataException("Invalid Accommodation ID format: " + accomodationID);
         }
 
         this.accomodationID = trimmed;
@@ -63,7 +71,7 @@ public abstract class Accommodation {
         if (trimmed.isEmpty())
             throw new InvalidAccommodationDataException("Name cannot be null.");
 
-        this.name = name;
+        this.name = trimmed;
     }
 
     public void setLocation(String location) throws InvalidAccommodationDataException {
@@ -74,7 +82,7 @@ public abstract class Accommodation {
         if (trimmed.isEmpty())
             throw new InvalidAccommodationDataException("Location city cannot be null.");
 
-        this.location = location;
+        this.location = trimmed;
     }
 
     public void setPricePerNight(double pricePerNight) throws InvalidAccommodationDataException {

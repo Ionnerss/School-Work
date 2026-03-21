@@ -1,9 +1,13 @@
 package AssignmentsS2.Assignment2.src.travel;
-// -------------------------------------------------------- 
-// Assignment 1 - Train Class
-// Written by: Catalin-Ion Besleaga (40347936)
-// For COMP 248 Section S – Fall 2025
-// --------------------------------------------------------
+
+/*
+ * Assignment 2
+ * Question: SmartTravel Train class
+ * Written by: Catalin-Ion Besleaga (40347936)
+ *
+ * This class represents train transportation and validates seat class
+ * and fare information.
+ */
 
 import AssignmentsS2.Assignment2.src.exceptions.InvalidTransportDataException;
 
@@ -13,8 +17,12 @@ public class Train extends Transportation {
 
     public Train() {
         super();
-        this.seatClass = "";
-        this.baseFare = 0.00;
+        try {
+            setSeatClass("Standard");
+            setBaseFare(0.0);
+        } catch (InvalidTransportDataException e) {
+            throw new IllegalStateException("Default train initialization failed.", e);
+        }
     }
 
     public Train(String companyName, String departureCity, String arrivalCity, double baseFare, String seatClass) throws InvalidTransportDataException {

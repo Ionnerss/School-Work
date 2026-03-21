@@ -106,8 +106,7 @@ public class TripFileManager {
                     int n = extractTripNumber(tripId);
                     if (n > maxIdNumSeen) maxIdNumSeen = n;
 
-                } catch (InvalidTripDataException | InvalidClientDataException | InvalidAccommodationDataException |
-                        InvalidTransportDataException | EntityNotFoundException | RuntimeException e) {
+                } catch (InvalidTripDataException | EntityNotFoundException | RuntimeException e) {
                     ErrorLogger.log("trips.csv", e.getMessage(), lineNo, line);
                 }
             } 

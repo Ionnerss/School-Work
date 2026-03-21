@@ -20,6 +20,7 @@ package AssignmentsS2.Assignment2.src.visualization;
 
 import  AssignmentsS2.Assignment2.src.service.SmartTravelService;
 import  AssignmentsS2.Assignment2.src.client.Client;
+import AssignmentsS2.Assignment2.src.exceptions.EntityNotFoundException;
 import AssignmentsS2.Assignment2.src.exceptions.InvalidAccommodationDataException;
 import AssignmentsS2.Assignment2.src.exceptions.InvalidTransportDataException;
 import  AssignmentsS2.Assignment2.src.travel.Trip;
@@ -44,8 +45,9 @@ public class DashboardGenerator {
 	 * @throws IOException if file I/O fails (output dir/charts)
 	 * @throws InvalidTransportDataException 
 	 * @throws InvalidAccommodationDataException 
+	 * @throws EntityNotFoundException 
 	 */
-    public static void generateDashboard(SmartTravelService service) throws IOException, InvalidAccommodationDataException, InvalidTransportDataException {
+    public static void generateDashboard(SmartTravelService service) throws IOException, InvalidAccommodationDataException, InvalidTransportDataException, EntityNotFoundException {
         // Ensure output dir exists
         new File("AssignmentsS2/Assignment2/output").mkdirs();
         new File("AssignmentsS2/Assignment2/output/charts").mkdirs();
@@ -81,8 +83,9 @@ public class DashboardGenerator {
      * @throws IOException if HTML write fails
      * @throws InvalidTransportDataException 
      * @throws InvalidAccommodationDataException 
+     * @throws EntityNotFoundException 
      */
-    private static void generateHTMLDashboard(SmartTravelService service) throws IOException, InvalidAccommodationDataException, InvalidTransportDataException {
+    private static void generateHTMLDashboard(SmartTravelService service) throws IOException, InvalidAccommodationDataException, InvalidTransportDataException, EntityNotFoundException {
         PrintWriter out = new PrintWriter("AssignmentsS2/Assignment2/output/dashboard/dashboard.html");
         out.println("<!DOCTYPE html>");
         out.println("<html lang='en'>");
@@ -164,8 +167,9 @@ public class DashboardGenerator {
      * @param out HTML PrintWriter
      * @throws InvalidTransportDataException 
      * @throws InvalidAccommodationDataException 
+     * @throws EntityNotFoundException 
      */
-    private static void writeTripsTable(SmartTravelService service, PrintWriter out) throws InvalidAccommodationDataException, InvalidTransportDataException {
+    private static void writeTripsTable(SmartTravelService service, PrintWriter out) throws InvalidAccommodationDataException, InvalidTransportDataException, EntityNotFoundException {
         out.println("        <section class='data-section'>");
         out.println("            <h2> Trips (" + service.getTripCount() + ")</h2>");
         out.println("            <table>");
@@ -223,8 +227,9 @@ public class DashboardGenerator {
      * 
      * @param service Service containing Trip array
      * @param out HTML PrintWriter
+     * @throws EntityNotFoundException 
      */
-    private static void writeStats(SmartTravelService service, PrintWriter out) {
+    private static void writeStats(SmartTravelService service, PrintWriter out) throws EntityNotFoundException {
         
     	int tripCount = service.getTripCount();
         if (tripCount == 0) {
@@ -246,12 +251,8 @@ public class DashboardGenerator {
             if (trip == null)
                 continue;
 
-            try {
-                totalRevenue += service.calculateTripTotal(i);
-                validTripCount++;
-            } catch (InvalidAccommodationDataException | InvalidTransportDataException e) {
-                // Skip trips that cannot be priced due to missing linked data.
-            }
+            totalRevenue += service.calculateTripTotal(i);
+            validTripCount++;
         }
 
         if (validTripCount > 0)

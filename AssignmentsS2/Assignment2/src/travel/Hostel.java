@@ -1,9 +1,13 @@
 package AssignmentsS2.Assignment2.src.travel;
-// -------------------------------------------------------- 
-// Assignment 1 - Hostel Class
-// Written by: Catalin-Ion Besleaga (40347936)
-// For COMP 248 Section S – Fall 2025
-// --------------------------------------------------------
+
+/*
+ * Assignment 2
+ * Question: SmartTravel Hostel class
+ * Written by: Catalin-Ion Besleaga (40347936)
+ *
+ * This class represents hostel accommodations and validates shared beds
+ * and hostel pricing rules.
+ */
 
 import AssignmentsS2.Assignment2.src.exceptions.InvalidAccommodationDataException;
 
@@ -12,7 +16,11 @@ public class Hostel extends Accommodation {
 
     public Hostel() {
         super();
-        this.numOfSharedBeds = 0;
+        try {
+            setNumOfSharedBeds(0);
+        } catch (InvalidAccommodationDataException e) {
+            throw new IllegalStateException("Default hostel initialization failed.", e);
+        }
     }
 
     public Hostel(String name, String location, double pricePerNight, int numOfSharedBeds) throws InvalidAccommodationDataException {

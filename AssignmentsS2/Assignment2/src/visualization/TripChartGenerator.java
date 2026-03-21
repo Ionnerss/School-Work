@@ -16,6 +16,7 @@ import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.general.DefaultPieDataset;
 
 import AssignmentsS2.Assignment2.src.service.SmartTravelService;
+import AssignmentsS2.Assignment2.src.exceptions.EntityNotFoundException;
 import AssignmentsS2.Assignment2.src.exceptions.InvalidAccommodationDataException;
 import AssignmentsS2.Assignment2.src.exceptions.InvalidTransportDataException;
 import AssignmentsS2.Assignment2.src.travel.Trip;
@@ -86,9 +87,10 @@ public class TripChartGenerator {
      * @param trips array of Trip objects
      * @param count number of valid elements in the array
      * @throws IOException if PNG file cannot be written
+	 * @throws EntityNotFoundException 
      */
         public static void generateCostBarChart(SmartTravelService service)
-            throws IOException, InvalidAccommodationDataException, InvalidTransportDataException {
+            throws IOException, InvalidAccommodationDataException, InvalidTransportDataException, EntityNotFoundException {
         
     	Trip[] trips = service.getTrips();
     	int count = service.getTripCount();

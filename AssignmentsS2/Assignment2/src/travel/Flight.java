@@ -1,9 +1,13 @@
 package AssignmentsS2.Assignment2.src.travel;
-// -------------------------------------------------------- 
-// Assignment 1 - Flight Class
-// Written by: Catalin-Ion Besleaga (40347936)
-// For COMP 248 Section S – Fall 2025
-// --------------------------------------------------------
+
+/*
+ * Assignment 2
+ * Question: SmartTravel Flight class
+ * Written by: Catalin-Ion Besleaga (40347936)
+ *
+ * This class represents flight transportation and validates base fare
+ * and luggage allowance.
+ */
 
 import AssignmentsS2.Assignment2.src.exceptions.InvalidTransportDataException;
 
@@ -12,8 +16,12 @@ public class Flight extends Transportation {
 
     public Flight() {
         super();
-        this.luggageAllowance = 0.0;
-        this.baseFare = 0.00;
+        try {
+            setLuggageAllowance(0.0);
+            setBaseFare(0.0);
+        } catch (InvalidTransportDataException e) {
+            throw new IllegalStateException("Default flight initialization failed.", e);
+        }
     }
 
     public Flight(String companyName, String departureCity, String arrivalCity, double baseFare, double luggageAllowance) throws InvalidTransportDataException {

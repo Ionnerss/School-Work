@@ -1,9 +1,13 @@
 package AssignmentsS2.Assignment2.src.travel;
-// -------------------------------------------------------- 
-// Assignment 1 - Bus Class
-// Written by: Catalin-Ion Besleaga (40347936)
-// For COMP 248 Section S – Fall 2025
-// --------------------------------------------------------
+
+/*
+ * Assignment 2
+ * Question: SmartTravel Bus class
+ * Written by: Catalin-Ion Besleaga (40347936)
+ *
+ * This class represents bus transportation and validates stop count
+ * and fare rules.
+ */
 
 import AssignmentsS2.Assignment2.src.exceptions.InvalidTransportDataException;
 
@@ -13,8 +17,12 @@ public class Bus extends Transportation {
 
     public Bus() {
         super();
-        this.numOfStops = 0;
-        this.baseFare = 0.00;
+        try {
+            setNumOfStops(1);
+            setBaseFare(0.0);
+        } catch (InvalidTransportDataException e) {
+            throw new IllegalStateException("Default bus initialization failed.", e);
+        }
     }
 
     public Bus(String companyName, String departureCity, String arrivalCity, double baseFare, int numOfStops) throws InvalidTransportDataException {

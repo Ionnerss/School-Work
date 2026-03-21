@@ -1,9 +1,14 @@
 package AssignmentsS2.Assignment2.src.driver;
-// --------------------------------------------------------
-// Assignment 1 - Main driver
-// Written by: Catalin-Ion Besleaga (40347936)
-// For COMP 248 Section S - Fall 2025
-// --------------------------------------------------------
+
+/*
+ * Assignment 2
+ * Question: Full SmartTravel Data Management Project
+ * Written by: Catalin-Ion Besleaga (40347936)
+ *
+ * This driver runs the SmartTravel console system. It lets the user manage
+ * clients, trips, transportation, accommodations, load and save CSV data,
+ * run the predefined scenario, and generate the dashboard.
+ */
 
 import AssignmentsS2.Assignment2.src.client.Client;
 import AssignmentsS2.Assignment2.src.exceptions.*;
@@ -22,9 +27,10 @@ public class SmartTravelDriver {
     private static boolean backToSubmenu;
     private static int choice;
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, EntityNotFoundException {
 
         System.out.println("Welcome to the SmartTravel Program!");
+        System.out.println("Written by: Catalin-Ion Besleaga (40347936)");
         System.out.println();
 
         choice = readInt("Would you like to continue with a predefined scenario or no (TESTING) (1 = yes, 2 = no)? ");
@@ -197,7 +203,7 @@ public class SmartTravelDriver {
             System.out.println();
             System.out.println(">. Client info updated successfully.");
             System.out.println();
-        } catch (InvalidClientDataException | DuplicateEmailException e) {
+        }  catch (InvalidClientDataException | DuplicateEmailException | EntityNotFoundException e) {
             System.out.println(">. Error updating client: " + e.getMessage());
             System.out.println();
         }
@@ -330,8 +336,7 @@ public class SmartTravelDriver {
             System.out.println();
             System.out.println(">. Trip added successfully.");
             System.out.println();
-        } catch (InvalidTripDataException | InvalidClientDataException | InvalidAccommodationDataException |
-                InvalidTransportDataException | EntityNotFoundException e) {
+        } catch (InvalidTripDataException | EntityNotFoundException e) {
             System.out.println(">. Error adding trip: " + e.getMessage());
             System.out.println();
         }
@@ -836,7 +841,7 @@ public class SmartTravelDriver {
         }
     }
 
-    private static void generateDashboard() {
+    private static void generateDashboard() throws EntityNotFoundException {
         Client[] originalClients = service.getClients();
         Trip[] originalTrips = service.getTrips();
         Transportation[] originalTransportations = service.getTransportations();
@@ -878,8 +883,8 @@ public class SmartTravelDriver {
                     mostExpensive = t;
                     maxCost = currentCost;
                 }
-            } catch (InvalidAccommodationDataException | InvalidTransportDataException e) {
-                // Skip invalid trip references while finding the maximum.
+            } catch (EntityNotFoundException e) {
+                // Skip broken linked references while finding the maximum.
             }
         }
 
@@ -917,7 +922,7 @@ public class SmartTravelDriver {
             System.out.println();
             System.out.println(" >. Total Cost for Trip " + tripID + ": $" + String.format("%.2f", totalCost));
             System.out.println();
-        } catch (InvalidAccommodationDataException | InvalidTransportDataException e) {
+        } catch (EntityNotFoundException e) {
             System.out.println(" >. Error calculating trip total: " + e.getMessage());
             System.out.println();
         }
@@ -1298,7 +1303,7 @@ public class SmartTravelDriver {
         return result;
     }
 
-    private static Trip[] filterValidTrips(SmartTravelService currentService, Trip[] trips) {
+    private static Trip[] filterValidTrips(SmartTravelService currentService, Trip[] trips) throws EntityNotFoundException {
         if (trips == null || trips.length == 0)
             return new Trip[0];
 
@@ -1338,12 +1343,8 @@ public class SmartTravelDriver {
             if (tripIndex < 0)
                 continue;
 
-            try {
-                currentService.calculateTripTotal(tripIndex);
-                filtered[count++] = trip;
-            } catch (InvalidAccommodationDataException | InvalidTransportDataException e) {
-                // Skip invalid linked references for dashboard and charts.
-            }
+            currentService.calculateTripTotal(tripIndex);
+            filtered[count++] = trip;
         }
 
         Trip[] result = new Trip[count];

@@ -1,9 +1,13 @@
 package AssignmentsS2.Assignment2.src.travel;
-// -------------------------------------------------------- 
-// Assignment 1 - Hotel Class
-// Written by: Catalin-Ion Besleaga (40347936)
-// For COMP 248 Section S – Fall 2025
-// --------------------------------------------------------
+
+/*
+ * Assignment 2
+ * Question: SmartTravel Hotel class
+ * Written by: Catalin-Ion Besleaga (40347936)
+ *
+ * This class represents hotel accommodations and validates star rating
+ * and nightly pricing.
+ */
 
 import AssignmentsS2.Assignment2.src.exceptions.InvalidAccommodationDataException;
 
@@ -12,7 +16,11 @@ public class Hotel extends Accommodation {
     
     public Hotel() {
         super();
-        this.starRating = 0;
+        try {
+            setStarRating(1);
+        } catch (InvalidAccommodationDataException e) {
+            throw new IllegalStateException("Default hotel initialization failed.", e);
+        }
     }
 
     public Hotel(String name, String location, double pricePerNight, int starRating) throws InvalidAccommodationDataException {
