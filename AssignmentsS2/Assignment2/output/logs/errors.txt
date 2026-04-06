@@ -1,11 +1,2 @@
-[17:20:15.725924] clients.csv line 12 | reason: Invalid predefined entry preserved | data: INVALID_PREDEFINED_CLIENT;C1008;Bob Browm;bob.brown@australia.com; [Email cannot be null.]
-[17:20:15.728700] trips.csv line 8 | reason: Specific trip data is empty. | data: null
-[17:20:15.728916] trips.csv line 8 | reason: Invalid predefined entry preserved | data: INVALID_PREDEFINED_TRIP;T2008;C1004;;TR3006;London;5;90.0 [Invalid trip base price, must be greater than or equal to 100.]
-[17:20:15.729059] trips.csv line 9 | reason: Invalid predefined entry preserved | data: INVALID_PREDEFINED_TRIP;T2010;C1005;A4003;T5003;Madrid;-2;250.0 [Invalid trip duration, must be between 1 and 20 days (inclusive).]
-[17:20:15.729211] trips.csv line 10 | reason: Invalid predefined entry preserved | data: INVALID_PREDEFINED_TRIP;T2007;C1006;A4005;T5005;Rome;5;180.0 [Transportation ID not found: T5005]
-[17:20:15.729342] trips.csv line 11 | reason: Invalid predefined entry preserved | data: INVALID_PREDEFINED_TRIP;T2008;C9999;A4006;T5006;NYC;8;300.0 [Client ID not found: C9999]
-[17:20:15.729504] trips.csv line 12 | reason: Invalid predefined entry preserved | data: INVALID_PREDEFINED_TRIP;X6008;C1007;A4007;T5007;LA;10;400.0 [Invalid Trip ID format: X6008]
-[17:20:15.729806] trips.csv line 13 | reason: Invalid predefined entry preserved | data: INVALID_PREDEFINED_TRIP;T2011;C1003;A4104;TR3005;Tokyo;8;225.0 [Accommodation ID not found: A4104]
-[17:20:28.952744] clients.csv line 2 | reason: Client data is incomplete, missing info. | data: C1002;;Silva;carlos.silva@brazil.com
-[17:20:28.954969] clients.csv line 11 | reason: Duplicate email found during load. | data: C1011;Mig;Gomez;miguel.gomez@spain.com
-[17:20:28.960720] trips.csv line 3 | reason: Client ID not found: C1002 | data: T2003;C1002;A4002;TR3003;Venice;7;200.0
+[13:34:23.180990] clients.csv line 2 | reason: Client data is incomplete, missing info. | data: C1003;;Tanaka;aiko.tanaka@japan.com
+[13:34:23.188740] trips.csv line 5 | reason: Client ID not found: C1003 | data: T2006;C1003;A4004;TR3005;Tokyo;8;225.0
