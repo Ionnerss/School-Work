@@ -10,8 +10,10 @@ package AssignmentsS2.Assignment3.src.travel;
  */
 
 import AssignmentsS2.Assignment3.src.exceptions.InvalidTransportDataException;
+import AssignmentsS2.Assignment3.src.interfaces.CsvPersistable;
+import AssignmentsS2.Assignment3.src.interfaces.Identifiable;
 
-public abstract class Transportation {
+public abstract class Transportation implements Identifiable, CsvPersistable, Comparable<Transportation> {
     private static int nextID = 3001;
     protected String transportID, companyName, departureCity, arrivalCity;
 
@@ -57,7 +59,8 @@ public abstract class Transportation {
         this.arrivalCity = other.arrivalCity;
     }
 
-    public String getTransportID() {return this.transportID;}
+    @Override
+    public String getId() {return this.transportID;}
     public String getCompanyName() {return this.companyName;}
     public String getDepartureCity() {return this.departureCity;}
     public String getArrivalCity() {return this.arrivalCity;}
@@ -101,7 +104,7 @@ public abstract class Transportation {
     }
 
     @Override
-    public String toString() {return this.transportID + ";" + this.companyName + ";" + this.departureCity + ";" + this.arrivalCity;}
+    public String toString() {return toBaseCsvRow();}
 
     @Override
     public boolean equals(Object other) {
@@ -116,4 +119,73 @@ public abstract class Transportation {
     }
 
     protected abstract double calculateCost(int numOfDays);
+
+    protected String toBaseCsvRow() {
+        return this.transportID + ";" + this.companyName + ";" + this.departureCity + ";" + this.arrivalCity;
+    }
+
+    public static Transportation fromCsvRow(String csvLine) throws InvalidTransportDataException {
+        if (csvLine == null) {
+            throw new InvalidTransportDataException("CSV row cannot be null.");
+        }
+
+        String[] parts = csvLine.split(";", -1);
+
+        if (parts.length != 7) {
+            throw new InvalidTransportDataException("Transportation CSV row must have exactly 7 fields.");
+        }
+
+        String type = parts[0].trim().toUpperCase();
+        String id = parts[1].trim();
+        String companyName = parts[2].trim();
+        String departureCity = parts[3].trim();
+        String arrivalCity = parts[4].trim();
+
+        if (id.isEmpty() || companyName.isEmpty() || departureCity.isEmpty()
+                || arrivalCity.isEmpty() || parts[5].trim().isEmpty() || parts[6].trim().isEmpty()) {
+            throw new InvalidTransportDataException("Transportation required CSV fields cannot be empty.");
+        }
+
+        double basePrice;
+
+        try {
+            basePrice = Double.parseDouble(parts[5].trim());
+        } catch (NumberFormatException e) {
+            throw new InvalidTransportDataException("Transportation base price is invalid.");
+        }
+
+        if (type.equals("FLIGHT")) {
+            try {
+                double luggageAllowance = Double.parseDouble(parts[6].trim());
+                return new Flight(id, companyName, departureCity, arrivalCity, basePrice, luggageAllowance);
+            } catch (NumberFormatException e) {
+                throw new InvalidTransportDataException("Flight luggage allowance is invalid.");
+            }
+        } else if (type.equals("TRAIN")) {
+            return new Train(id, companyName, departureCity, arrivalCity, basePrice, parts[6].trim());
+        } else if (type.equals("BUS")) {
+            try {
+                int numOfStops = Integer.parseInt(parts[6].trim());
+                return new Bus(id, companyName, departureCity, arrivalCity, basePrice, numOfStops);
+            } catch (NumberFormatException e) {
+                throw new InvalidTransportDataException("Bus number of stops is invalid.");
+            }
+        } else {
+            throw new InvalidTransportDataException("Unknown transportation type: " + type);
+        }
+    }
+
+    @Override
+    public int compareTo(Transportation other) {
+        if (other == null) {
+            return -1;
+        }
+
+        return Double.compare(other.getBasePrice(), this.getBasePrice());
+    }
+
+    public abstract double getBasePrice();
+
+    @Override
+    public abstract String toCsvRow();
 }

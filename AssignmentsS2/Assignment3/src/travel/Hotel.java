@@ -67,4 +67,9 @@ public class Hotel extends Accommodation {
         double costPerNight = this.getPricePerNight();
         return (costPerNight * numOfDays);
     }
+
+    @Override
+    public String toCsvRow() {
+        return "HOTEL;" + super.toBaseCsvRow() + ";" + this.starRating;
+    }
 }

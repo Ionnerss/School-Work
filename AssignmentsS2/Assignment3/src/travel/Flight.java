@@ -82,4 +82,14 @@ public class Flight extends Transportation {
         }
         return cost;
     }
+
+    @Override
+    public double getBasePrice() {
+        return this.baseFare;
+    }
+
+    @Override
+    public String toCsvRow() {
+        return "FLIGHT;" + super.toBaseCsvRow() + ";" + this.baseFare + ";" + this.luggageAllowance;
+    }
 }

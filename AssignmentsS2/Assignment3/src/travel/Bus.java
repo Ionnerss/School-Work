@@ -78,4 +78,14 @@ public class Bus extends Transportation {
     protected double calculateCost(int numOfDays) {
         return ( (double) getBaseFare() + (5.00 * (double) numOfStops));
     }
+
+    @Override
+    public double getBasePrice() {
+        return this.baseFare;
+    }
+
+    @Override
+    public String toCsvRow() {
+        return "BUS;" + super.toBaseCsvRow() + ";" + this.baseFare + ";" + this.numOfStops;
+    }
 }

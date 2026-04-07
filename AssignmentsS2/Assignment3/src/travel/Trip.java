@@ -11,8 +11,12 @@ package AssignmentsS2.Assignment3.src.travel;
 
 import AssignmentsS2.Assignment3.src.service.SmartTravelService;
 import AssignmentsS2.Assignment3.src.exceptions.*;
+import AssignmentsS2.Assignment3.src.interfaces.CsvPersistable;
+import AssignmentsS2.Assignment3.src.interfaces.Identifiable;
+import AssignmentsS2.Assignment3.src.interfaces.Billable;
 
-public class Trip {
+
+public class Trip implements Identifiable, CsvPersistable, Billable, Comparable<Trip> {
     private static int nextID = 2001;
     private String destination, tripId, clientId, accomodationId, transportId;
     private int duration;
@@ -72,13 +76,14 @@ public class Trip {
         setAccomodationId(accomodationId);
     }
 
-    public String getTripId() {return tripId;}
-    public String getDestination() {return destination;}
-    public int getDurationInDays() {return duration;}
-    public double getBasePrice() {return basePrice;}
-    public String getClientId() {return clientId;}
-    public String geTransportationId() {return transportId;}
-    public String geAccomodationId() {return accomodationId;}
+    @Override
+    public String getId() {return this.tripId;}
+    public String getDestination() {return this.destination;}
+    public int getDurationInDays() {return this.duration;}
+    public double getBasePrice() {return this.basePrice;}
+    public String getClientId() {return this.clientId;}
+    public String getTransportationId() {return this.transportId;}
+    public String getAccomodationId() {return this.accomodationId;}
 
     public void setDestination(String destination) throws InvalidTripDataException {
         if (destination == null)
@@ -142,7 +147,7 @@ public class Trip {
     }
 
     @Override
-    public String toString() {return this.tripId + "; " + this.clientId + ";" + this.accomodationId + ";"
+    public String toString() {return this.tripId + ";" + this.clientId + ";" + this.accomodationId + ";"
         + this.transportId + ";" + this.destination + ";" + this.duration + ";" + this.basePrice;}
     
     @Override
@@ -152,7 +157,7 @@ public class Trip {
         
         Trip otherTrip = (Trip) other;
         
-        return this.getTripId().equals(otherTrip.getTripId())
+        return this.getId().equals(otherTrip.getId())
         && this.getDestination().equals(otherTrip.getDestination())
         && this.getDurationInDays() == otherTrip.getDurationInDays()
         && this.getBasePrice() == otherTrip.getBasePrice()
@@ -169,5 +174,60 @@ public class Trip {
             total += SmartTravelService.findAccommodationById(accomodationId).calculateCost(duration);
 
         return total;
+    }
+
+    @Override
+    public String toCsvRow() {
+        String accommodation = (this.accomodationId == null) ? "" : this.accomodationId;
+        String transportation = (this.transportId == null) ? "" : this.transportId;
+
+        return this.tripId + ";" + this.clientId + ";" + accommodation + ";" +
+            transportation + ";" + this.destination + ";" + this.duration + ";" + this.basePrice;
+    }
+
+    public static Trip fromCsvRow(String csvLine) throws InvalidTripDataException, EntityNotFoundException {
+        if (csvLine == null) {
+            throw new InvalidTripDataException("CSV row cannot be null.");
+        }
+
+        String[] parts = csvLine.split(";", -1);
+
+        if (parts.length != 7) {
+            throw new InvalidTripDataException("Trip CSV row must have exactly 7 fields.");
+        }
+
+        String tripId = parts[0].trim();
+        String clientId = parts[1].trim();
+        String accommodationId = parts[2].trim();
+        String transportationId = parts[3].trim();
+        String destination = parts[4].trim();
+
+        if (tripId.isEmpty() || clientId.isEmpty() || destination.isEmpty()
+                || parts[5].trim().isEmpty() || parts[6].trim().isEmpty()) {
+            throw new InvalidTripDataException("Trip required CSV fields cannot be empty.");
+        }
+
+        int duration = Integer.parseInt(parts[5].trim());
+        double basePrice = Double.parseDouble(parts[6].trim());
+
+        return new Trip(tripId, clientId, accommodationId, transportationId, destination, duration, basePrice);
+    }
+
+    @Override
+    public double getTotalCost() {
+        try {
+            return calculateTotalCost();
+        } catch (EntityNotFoundException e) {
+            throw new IllegalStateException("Unable to calculate total trip cost: " + e.getMessage(), e);
+        }
+    }
+    
+    @Override
+    public int compareTo(Trip other) {
+        if (other == null) {
+            return -1;
+        }
+
+        return Double.compare(other.getTotalCost(), this.getTotalCost());
     }
 }

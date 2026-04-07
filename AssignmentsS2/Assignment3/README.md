@@ -399,3 +399,7 @@ This project is a structured Java travel management system that demonstrates:
 - dashboard/chart generation
 - separation of concerns between UI, service, model, persistence, and visualization layers
 
+
+### Stuff to add later
+LinkedList is suitable for RecentList because this feature frequently adds new items to the front and removes old items from the end. Those operations match a recent-history list naturally and make the implementation simple and clean.
+

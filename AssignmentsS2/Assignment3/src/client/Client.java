@@ -10,8 +10,10 @@ package AssignmentsS2.Assignment3.src.client;
  */
 
 import AssignmentsS2.Assignment3.src.exceptions.InvalidClientDataException;
+import AssignmentsS2.Assignment3.src.interfaces.CsvPersistable;
+import AssignmentsS2.Assignment3.src.interfaces.Identifiable;
 
-public class Client {
+public class Client implements Identifiable, CsvPersistable, Comparable<Client> {
     private static int nextID = 1001;
     private String clientId, firstName, lastName, emailAdress;
     private double amountSpent;
@@ -62,7 +64,8 @@ public class Client {
         this.amountSpent = other.amountSpent;
     }
 
-    public String getClientId() {return this.clientId;}
+    @Override
+    public String getId() {return this.clientId;}
     public String getFirstName() {return this.firstName;}
     public String getLastName() {return this.lastName;}
     public String getEmailAdress() {return this.emailAdress;}
@@ -142,5 +145,38 @@ public class Client {
 
     public double getTotalSpent() {
         return this.amountSpent;
+    }
+
+    @Override
+    public String toCsvRow() {
+        return this.clientId + ";" + this.firstName + ";" + this.lastName + ";" + this.emailAdress;
+    }
+
+    public static Client fromCsvRow(String csvLine) throws InvalidClientDataException {
+        if (csvLine == null) {
+            throw new InvalidClientDataException("CSV row cannot be null.");
+        }
+
+        String[] parts = csvLine.split(";", -1);
+
+        if (parts.length != 4) {
+            throw new InvalidClientDataException("Client CSV row must have exactly 4 fields.");
+        }
+
+        String id = parts[0].trim();
+        String firstName = parts[1].trim();
+        String lastName = parts[2].trim();
+        String email = parts[3].trim();
+
+        return new Client(id, firstName, lastName, email);
+    }
+
+    @Override
+    public int compareTo(Client other) {
+        if (other == null) {
+            return -1;
+        }
+
+        return Double.compare(other.getTotalSpent(), this.getTotalSpent());
     }
 }

@@ -74,4 +74,9 @@ public class Hostel extends Accommodation {
     protected double calculateCost(int numOfDays) {
         return this.getPricePerNight() * numOfDays;
     }
+
+    @Override
+    public String toCsvRow() {
+        return "HOSTEL;" + super.toBaseCsvRow() + ";" + this.numOfSharedBeds;
+    }
 }

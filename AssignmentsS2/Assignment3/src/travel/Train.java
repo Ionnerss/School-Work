@@ -86,4 +86,14 @@ public class Train extends Transportation {
             cost *= 1.50;
         return cost;
     }
+
+    @Override
+    public double getBasePrice() {
+        return this.baseFare;
+    }
+
+    @Override
+    public String toCsvRow() {
+        return "TRAIN;" + super.toBaseCsvRow() + ";" + this.baseFare + ";" + this.seatClass;
+    }
 }
