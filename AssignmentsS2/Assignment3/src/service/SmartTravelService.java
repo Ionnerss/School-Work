@@ -4,6 +4,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 
 
 import AssignmentsS2.Assignment3.src.client.Client;
@@ -16,27 +19,11 @@ public class SmartTravelService {
     public static final int MAX_ACCOMMODATIONS = 50;
     public static final int MAX_TRANSPORTATIONS = 50;
 
-    private static Client[] clients = new Client[MAX_CLIENTS];
-    private static Trip[] trips = new Trip[MAX_TRIPS];
-    private static Accommodation[] accomodations = new Accommodation[MAX_ACCOMMODATIONS];
-    private static Transportation[] transportations = new Transportation[MAX_TRANSPORTATIONS];
+    private static List<Client> clients = new ArrayList<>(MAX_CLIENTS);
+    private static List<Trip> trips = new ArrayList<>(MAX_TRIPS);
+    private static List<Accommodation> accomodations = new ArrayList<>(MAX_ACCOMMODATIONS);
+    private static List<Transportation> transportations = new ArrayList<>(MAX_TRANSPORTATIONS);
     public static final int nullIndex = -128;
-
-    // Added missing state used by existing logic
-    private static int clientCount = 0;
-    private static int tripCount = 0;
-    private static int accommodationCount = 0;
-    private static int transportationCount = 0;
-
-    // Keep invalid predefined rows visible to users instead of silently dropping them.
-    private static String[] invalidClientRows = new String[20];
-    private static String[] invalidTripRows = new String[30];
-    private static String[] invalidTransportationRows = new String[20];
-    private static String[] invalidAccomodationRows = new String[20];
-    private static int invalidClientCount = 0;
-    private static int invalidTripCount = 0;
-    private static int invalidTransportationCount = 0;
-    private static int invalidAccomodationCount = 0;
 
     // Added missing fields referenced by createTrip()
     private static String clientId;
@@ -46,157 +33,254 @@ public class SmartTravelService {
     private static int durationDays;
     private static double basePrice;
 
-    public Client[] getClients() {
-        return (clients == null) ? new Client[0] : clients;
+    //-------------
+    // public List<Client> getClients() {
+    //     return (clients == null) ? new ArrayList<>() : clients;
+    // }
+
+    // public List<Trip> getTrips() {
+    //     return (trips == null) ? new ArrayList<>() : trips;
+    // }
+    
+    // public List<Transportation> getTransportations() {
+    //     return (transportations == null) ? new ArrayList<>() : transportations;
+    // }
+
+    // public List<Accommodation> getAccomodations() {
+    //     return (accomodations == null) ? new ArrayList<>() : accomodations;
+    // }
+
+    public <T> List<T> getType(List<T> collection) {
+        return (collection == null) ? new ArrayList<>() : collection;
     }
+    //------------
 
-    public void setClients(Client[] updatedClients) {
-        clients = new Client[MAX_CLIENTS];
-        clientCount = 0;
 
-        if (updatedClients == null)
-            return;
 
-        for (Client client : updatedClients) {
-            if (client == null)
-                continue;
-            if (clientCount >= MAX_CLIENTS)
-                throw new IllegalStateException("Too many clients. Max is " + MAX_CLIENTS + ".");
-            clients[clientCount++] = client;
+    //------------
+    // public void setClients(Client[] updatedClients) {
+    //     clients = new ArrayList<>(MAX_CLIENTS);
+
+    //     if (updatedClients == null)
+    //         return;
+        
+    //     for (Client client : updatedClients) {
+    //         if (client == null)
+    //             continue;
+
+    //         if (clients.size() >= MAX_CLIENTS)
+    //             throw new IllegalStateException("Too many clients. Max is " + MAX_CLIENTS + ".");
+
+    //         clients.add(client);
+    //     }
+
+    //     refreshClientAmountsSpent();
+    // }
+
+    // public void setTrips(Trip[] updatedTrips) {
+    //     trips = new Trip[MAX_TRIPS];
+    //     tripCount = 0;
+
+    //     if (updatedTrips == null)
+    //         return;
+
+    //     for (Trip trip : updatedTrips) {
+    //         if (trip == null)
+    //             continue;
+    //         if (tripCount >= MAX_TRIPS)
+    //             throw new IllegalStateException("Too many trips. Max is " + MAX_TRIPS + ".");
+    //         trips[tripCount++] = trip;
+    //     }
+
+    //     refreshClientAmountsSpent();
+    // }
+
+    // public void setTransportations(Transportation[] updatedTransportations) {
+    //     transportations = new Transportation[MAX_TRANSPORTATIONS];
+    //     transportationCount = 0;
+
+    //     if (updatedTransportations == null)
+    //         return;
+
+    //     for (Transportation transportation : updatedTransportations) {
+    //         if (transportation == null)
+    //             continue;
+    //         if (transportationCount >= MAX_TRANSPORTATIONS)
+    //             throw new IllegalStateException("Too many transportations. Max is " + MAX_TRANSPORTATIONS + ".");
+    //         transportations[transportationCount++] = transportation;
+    //     }
+    // }
+
+    // public void setAccomodations(Accommodation[] updatedAccomodations) {
+    //     accomodations = new Accommodation[MAX_ACCOMMODATIONS];
+    //     accommodationCount = 0;
+
+    //     if (updatedAccomodations == null)
+    //         return;
+
+    //     for (Accommodation accommodation : updatedAccomodations) {
+    //         if (accommodation == null)
+    //             continue;
+    //         if (accommodationCount >= MAX_ACCOMMODATIONS)
+    //             throw new IllegalStateException("Too many accommodations. Max is " + MAX_ACCOMMODATIONS + ".");
+    //         accomodations[accommodationCount++] = accommodation;
+    //     }
+    // }
+
+    public <T> void setCollection(List<T> collection, List<T> updatedCollection, int max, String typeName) {
+        collection = new ArrayList<>();
+
+        if (updatedCollection == null) return;
+
+        for (T element : updatedCollection) {
+            if (element == null) continue;
+            if (collection.size() >= max)
+                throw new IllegalStateException("Too many " + typeName + ". Max is " + max + ".");
+
+            collection.add(element);
         }
 
-        refreshClientAmountsSpent();
+        if (collection instanceof Client || collection instanceof Trip) refreshClientAmountsSpent();
     }
-
-    public Trip[] getTrips() {
-        return (trips == null) ? new Trip[0] : trips;
-    }
+    //------------
 
     public Trip getTrip(int i) {
-        if (trips == null || i < 0 || i >= tripCount)
+        if (trips == null || i < 0 || i >= trips.size())
             return null;
-        return trips[i];
+        return trips.get(i);
     }
 
     public Client getClient(int i) {
-        if (clients == null || i < 0 || i >= clientCount)
+        if (clients == null || i < 0 || i >= trips.size())
             return null;
-        return clients[i];
+        return clients.get(i);
     }
 
-    public void setTrips(Trip[] updatedTrips) {
-        trips = new Trip[MAX_TRIPS];
-        tripCount = 0;
+    //------------
+    // public int getTripCount() {
+    //     return tripCount;
+    // }
 
-        if (updatedTrips == null)
-            return;
+    // public int getClientCount() {
+    //     return clientCount;
+    // }
 
-        for (Trip trip : updatedTrips) {
-            if (trip == null)
-                continue;
-            if (tripCount >= MAX_TRIPS)
-                throw new IllegalStateException("Too many trips. Max is " + MAX_TRIPS + ".");
-            trips[tripCount++] = trip;
+    // public int getTransportationCount() {
+    //     return transportationCount;
+    // }
+
+    // public int getAccommodationCount() {
+    //     return accommodationCount;
+    // }
+
+    public <T> int getCollectionCount(List<T> collection) {
+        return collection.size();
+    }
+    //------------
+
+    //------------
+    public static class InvalidCollection {
+        private String[] rows;
+        private int count;
+        private int maxSize;
+        
+        public InvalidCollection(int maxSize) {
+            this.rows = new String[maxSize];
+            this.count = 0;
+            this.maxSize = maxSize;
         }
-
-        refreshClientAmountsSpent();
-    }
-
-    public int getTripCount() {
-        return tripCount;
-    }
-
-    public int getClientCount() {
-        return clientCount;
-    }
-
-    public int getTransportationCount() {
-        return transportationCount;
-    }
-
-    public int getAccommodationCount() {
-        return accommodationCount;
-    }
-
-    public static int getInvalidClientCount() {
-        return invalidClientCount;
-    }
-
-    public static String getInvalidClientRow(int index) {
-        if (index < 0 || index >= invalidClientCount)
-            return null;
-        return invalidClientRows[index];
-    }
-
-    public static int getInvalidTripCount() {
-        return invalidTripCount;
-    }
-
-    public static String getInvalidTripRow(int index) {
-        if (index < 0 || index >= invalidTripCount)
-            return null;
-        return invalidTripRows[index];
-    }
-
-    public static int getInvalidTransportationCount() {
-        return invalidTransportationCount;
-    }
-
-    public static String getInvalidTransportationRow(int index) {
-        if (index < 0 || index >= invalidTransportationCount)
-            return null;
-        return invalidTransportationRows[index];
-    }
-
-    public static int getInvalidAccomodationCount() {
-        return invalidAccomodationCount;
-    }
-
-    public static String getInvalidAccomodationRow(int index) {
-        if (index < 0 || index >= invalidAccomodationCount)
-            return null;
-        return invalidAccomodationRows[index];
-    }
-
-    public Transportation[] getTransportations() {
-        return (transportations == null) ? new Transportation[0] : transportations;
-    }
-
-    public void setTransportations(Transportation[] updatedTransportations) {
-        transportations = new Transportation[MAX_TRANSPORTATIONS];
-        transportationCount = 0;
-
-        if (updatedTransportations == null)
-            return;
-
-        for (Transportation transportation : updatedTransportations) {
-            if (transportation == null)
-                continue;
-            if (transportationCount >= MAX_TRANSPORTATIONS)
-                throw new IllegalStateException("Too many transportations. Max is " + MAX_TRANSPORTATIONS + ".");
-            transportations[transportationCount++] = transportation;
+        
+        public int getCount() {
+            return count;
+        }
+        
+        public String getRow(int index) {
+            if (index < 0 || index >= count)
+                return null;
+            return rows[index];
+        }
+        
+        public void addRow(String row) {
+            if (count < maxSize)
+                rows[count++] = row;
+        }
+        
+        public void clear() {
+            rows = new String[maxSize];
+            count = 0;
+        }
+        
+        public void clearById(String id, boolean isPrefix) {
+            int write = 0;
+            for (int i = 0; i < count; i++) {
+                String row = rows[i];
+                boolean matches = isPrefix ? 
+                    (row != null && row.startsWith(id + ";")) : 
+                    (row != null && row.contains(id));
+                    
+                if (!matches) {
+                    rows[write++] = row;
+                }
+            }
+            
+            for (int i = write; i < rows.length; i++)
+                rows[i] = null;
+            count = write;
         }
     }
 
-    public Accommodation[] getAccomodations() {
-        return (accomodations == null) ? new Accommodation[0] : accomodations;
+    private static InvalidCollection invalidClients = new InvalidCollection(20);
+    private static InvalidCollection invalidTrips = new InvalidCollection(30);
+    private static InvalidCollection invalidTransportations = new InvalidCollection(20);
+    private static InvalidCollection invalidAccommodations = new InvalidCollection(20);
+
+    // Get the right collection based on type name
+    private static InvalidCollection getInvalidCollection(String collectionType) {
+        if (collectionType.equals("clients"))
+            return invalidClients;
+        else if (collectionType.equals("trips"))
+            return invalidTrips;
+        else if (collectionType.equals("transportations"))
+            return invalidTransportations;
+        else if (collectionType.equals("accommodations"))
+            return invalidAccommodations;
+        return null;
     }
 
-    public void setAccomodations(Accommodation[] updatedAccomodations) {
-        accomodations = new Accommodation[MAX_ACCOMMODATIONS];
-        accommodationCount = 0;
-
-        if (updatedAccomodations == null)
-            return;
-
-        for (Accommodation accommodation : updatedAccomodations) {
-            if (accommodation == null)
-                continue;
-            if (accommodationCount >= MAX_ACCOMMODATIONS)
-                throw new IllegalStateException("Too many accommodations. Max is " + MAX_ACCOMMODATIONS + ".");
-            accomodations[accommodationCount++] = accommodation;
-        }
+    // PUBLIC: Get count for any type
+    public static int getInvalidCollectionCount(String collectionType) {
+        InvalidCollection collection = getInvalidCollection(collectionType);
+        return collection != null ? collection.getCount() : 0;
     }
+
+    // PUBLIC: Get row for any type
+    public static String getInvalidCollectionRow(String collectionType, int index) {
+        InvalidCollection collection = getInvalidCollection(collectionType);
+        return collection != null ? collection.getRow(index) : null;
+    }
+
+    // PRIVATE: Add row for any type
+    private static void addInvalidRow(String collectionType, String row) {
+        InvalidCollection collection = getInvalidCollection(collectionType);
+        if (collection != null)
+            collection.addRow(row);
+    }
+
+    // PUBLIC: Clear by ID for any type
+    public static void clearInvalidById(String collectionType, String id, boolean isPrefix) {
+        InvalidCollection collection = getInvalidCollection(collectionType);
+        if (collection != null)
+            collection.clearById(id, isPrefix);
+    }
+
+    // PUBLIC: Clear all invalid rows
+    public static void clearInvalidPredefinedRows() {
+        invalidClients.clear();
+        invalidTrips.clear();
+        invalidTransportations.clear();
+        invalidAccommodations.clear();
+    }
+    //------------
 
     public static void addClient(String firstName, String lastName, String email) throws InvalidClientDataException {
         String normalizedEmail = normalize(email);
@@ -206,11 +290,11 @@ public class SmartTravelService {
         if (emailAlreadyExists(normalizedEmail, null))
             throw new DuplicateEmailException("A client with this email already exists.");
 
-        if (clientCount >= MAX_CLIENTS)
+        if (clients.size() >= MAX_CLIENTS)
             throw new IllegalStateException("Client array is full. Max is " + MAX_CLIENTS + ".");
 
         Client newClient = new Client(firstName, lastName, normalizedEmail);
-        clients[clientCount++] = newClient;
+        clients.add(newClient);
     }
 
     public static void updateClient(String clientId, String firstName, String lastName, String email)
@@ -459,9 +543,8 @@ public class SmartTravelService {
             return;
         }
 
-        int limit = Math.min(tripCount, trips.length);
-        for (int i = 0; i < limit; i++) {
-            Trip trip = trips[i];
+        for (int i = 0; i < trips.size(); i++) {
+            Trip trip = trips.get(i);
             if (trip == null) {
                 continue;
             }
@@ -476,10 +559,10 @@ public class SmartTravelService {
     }
 
     private static void storeTrip(Trip newTrip) {
-        if (tripCount >= MAX_TRIPS)
+        if (trips.size() >= MAX_TRIPS)
             throw new IllegalStateException("Trip array is full. Max is " + MAX_TRIPS + ".");
 
-        trips[tripCount++] = newTrip;
+        trips.add(newTrip);
         refreshClientAmountsSpent();
     }
 
@@ -495,9 +578,10 @@ public class SmartTravelService {
 
             ensureOutputDirectories(folderPath);
 
-            Client[] loadedClients = new Client[MAX_CLIENTS];
+            List<Client> loadedClients = new ArrayList<Client>(MAX_CLIENTS);
             ClientFileManager.loadClients(loadedClients, clientsFile);
-            setClients(loadedClients);
+            //setClients(loadedClients);
+            setCollection(clients, loadedClients, MAX_CLIENTS, "clients");
 
             Transportation[] loadedTransportations = new Transportation[MAX_TRANSPORTATIONS];
             TransportationFileManager.loadTransportations(loadedTransportations, transportationsFile);
@@ -777,17 +861,6 @@ public class SmartTravelService {
             addInvalidTripRow(tripId + ";" + clientId + ";" + accomodationId + ";" + transportationId + ";"
                     + destination + ";" + duration + ";" + basePrice + " [" + e.getMessage() + "]");
         }
-    }
-
-    private static void clearInvalidPredefinedRows() {
-        invalidClientRows = new String[20];
-        invalidTripRows = new String[30];
-        invalidTransportationRows = new String[20];
-        invalidAccomodationRows = new String[20];
-        invalidClientCount = 0;
-        invalidTripCount = 0;
-        invalidTransportationCount = 0;
-        invalidAccomodationCount = 0;
     }
 
     private static void addInvalidClientRow(String row) {
