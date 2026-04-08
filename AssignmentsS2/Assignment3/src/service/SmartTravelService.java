@@ -700,7 +700,7 @@ public class SmartTravelService {
 
         for (Object item : items) {
             if (item != null) {
-                output.append(">. ").append(item).append("");
+                output.append(">. ").append(item).append("\n");
             }
         }
 
