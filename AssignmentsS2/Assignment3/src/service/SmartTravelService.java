@@ -734,6 +734,13 @@ public class SmartTravelService {
             System.out.println(">. Errors, if any, were logged to output/logs/errors.txt.");
             System.out.println();
         } catch (IOException e) {
+            ErrorLogger.log(
+                    "loadAllData",
+                    "Error loading data: " + e.getMessage(),
+                    0,
+                    (folderPath == null ? "<default-path>" : folderPath)
+            );
+
             System.out.println(">. Error loading data: " + e.getMessage());
             System.out.println();
         }
@@ -770,6 +777,13 @@ public class SmartTravelService {
             System.out.println(">. Errors, if any, were logged to output/logs/errors.txt.");
             System.out.println();
         } catch (IOException e) {
+            ErrorLogger.log(
+                    "saveAllData",
+                    "Error saving data: " + e.getMessage(),
+                    0,
+                    (folderPath == null ? "<default-path>" : folderPath)
+            );
+
             System.out.println(">. Error saving data: " + e.getMessage());
             System.out.println();
         }
@@ -780,12 +794,18 @@ public class SmartTravelService {
             return;
         }
 
+        Path path = Paths.get(filepath);
+        String sourceFile = (path.getFileName() == null) ? filepath : path.getFileName().toString();
+
         try (PrintWriter outputStream = new PrintWriter(new BufferedWriter(new FileWriter(filepath, true)))) {
             for (String row : rows) {
                 if (row != null) {
                     outputStream.println(prefix + row);
                 }
             }
+        } catch (IOException e) {
+            ErrorLogger.log(sourceFile, "Unable to append invalid rows: " + e.getMessage(), 0, filepath);
+            throw e;
         }
     }
 
@@ -804,31 +824,42 @@ public class SmartTravelService {
     }
 
     private Path resolveProjectBasePath(String folderPath) {
-        if (folderPath != null && !folderPath.trim().isEmpty()) {
-            return Paths.get(folderPath).toAbsolutePath().normalize();
+        Path start = (folderPath != null && !folderPath.trim().isEmpty())
+                ? Paths.get(folderPath).toAbsolutePath().normalize()
+                : Paths.get("").toAbsolutePath().normalize();
+
+        Path current = start;
+
+        while (current != null) {
+            if (Files.exists(current.resolve("src")) && Files.exists(current.resolve("libraries"))) {
+                return current;
+            }
+
+            String folderName = (current.getFileName() == null) ? "" : current.getFileName().toString();
+            if ("Assignment3".equalsIgnoreCase(folderName) && Files.exists(current.resolve("src"))) {
+                return current;
+            }
+
+            Path nested = current.resolve("AssignmentsS2").resolve("Assignment3");
+            if (Files.exists(nested.resolve("src")) && Files.exists(nested.resolve("libraries"))) {
+                return nested.toAbsolutePath().normalize();
+            }
+
+            current = current.getParent();
         }
 
-        Path cwd = Paths.get("").toAbsolutePath().normalize();
-
-        if (Files.exists(cwd.resolve("src")) && Files.exists(cwd.resolve("libraries"))) {
-            return cwd;
-        }
-
-        Path assignment3 = cwd.resolve("AssignmentsS2").resolve("Assignment3");
-        if (Files.exists(assignment3)) {
-            return assignment3;
-        }
-
-        return cwd;
+        return start;
     }
 
     private void resetOutputFolders(String folderPath) throws IOException {
         Path basePath = resolveProjectBasePath(folderPath);
         Path outputPath = basePath.resolve("output");
 
-        deleteDirectoryContents(outputPath.resolve("logs"));
         deleteDirectoryContents(outputPath.resolve("dashboard"));
-        deleteDirectoryContents(outputPath.resolve("charts"));  
+        deleteDirectoryContents(outputPath.resolve("charts"));
+
+        // Keep logs. Deleting them makes it look like logging stopped working.
+        Files.createDirectories(outputPath.resolve("logs"));
     }
 
     private void deleteDirectoryContents(Path directory) throws IOException {
