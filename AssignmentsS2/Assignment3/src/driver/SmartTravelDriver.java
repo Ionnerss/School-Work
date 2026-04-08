@@ -10,6 +10,12 @@ package AssignmentsS2.Assignment3.src.driver;
  * run the predefined scenario, generate the dashboard, and use A3 analytics.
  */
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
+import java.util.function.Predicate;
+
 import AssignmentsS2.Assignment3.src.client.Client;
 import AssignmentsS2.Assignment3.src.exceptions.*;
 import AssignmentsS2.Assignment3.src.service.RecentList;
@@ -17,16 +23,9 @@ import AssignmentsS2.Assignment3.src.service.SmartTravelService;
 import AssignmentsS2.Assignment3.src.travel.*;
 import AssignmentsS2.Assignment3.src.visualization.DashboardGenerator;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
-import java.util.function.Predicate;
-
 public class SmartTravelDriver {
     private static final Scanner scanner = new Scanner(System.in);
     private static final SmartTravelService service = new SmartTravelService();
-
     private static final RecentList<Trip> recentTrips = new RecentList<>();
     private static final RecentList<Client> recentTopClients = new RecentList<>();
 
@@ -184,7 +183,6 @@ public class SmartTravelDriver {
 
         try {
             SmartTravelService.addClient(firstName, lastName, emailAddress);
-
             System.out.println();
             System.out.println(">. Client added successfully.");
             System.out.println();
@@ -300,8 +298,7 @@ public class SmartTravelDriver {
         System.out.print(">. Please enter client ID whom you'd like to link the trip to: ");
         String clientID = scanner.next();
 
-        int clientIndex = clientExistCheck(clientID);
-        if (clientIndex < 0) {
+        if (clientExistCheck(clientID) < 0) {
             System.out.println(">. Client not found.\n");
             return;
         }
@@ -314,12 +311,9 @@ public class SmartTravelDriver {
 
             if (accommodationID.equalsIgnoreCase("NONE")) {
                 accommodationID = "";
-            } else {
-                int accommodationIndex = accommodationExistCheck(accommodationID);
-                if (accommodationIndex < 0) {
-                    System.out.println(">. Accommodation not found.\n");
-                    return;
-                }
+            } else if (accommodationExistCheck(accommodationID) < 0) {
+                System.out.println(">. Accommodation not found.\n");
+                return;
             }
         }
 
@@ -331,12 +325,9 @@ public class SmartTravelDriver {
 
             if (transportID.equalsIgnoreCase("NONE")) {
                 transportID = "";
-            } else {
-                int transportIndex = transportExistCheck(transportID);
-                if (transportIndex < 0) {
-                    System.out.println(">. Transportation not found.\n");
-                    return;
-                }
+            } else if (transportExistCheck(transportID) < 0) {
+                System.out.println(">. Transportation not found.\n");
+                return;
             }
         }
 
@@ -465,7 +456,6 @@ public class SmartTravelDriver {
             String[] parts = invalidRow.split(";", -1);
             if (parts.length > 1 && clientID.equalsIgnoreCase(parts[1].trim())) {
                 System.out.println(">. [INVALID] " + invalidRow);
-                foundTrips = true;
             }
         }
 
@@ -522,9 +512,8 @@ public class SmartTravelDriver {
 
         double baseFare = readDouble(">. Base Fare: ");
 
-        Transportation newTransport;
-
         try {
+            Transportation newTransport;
             switch (transportType) {
                 case 1 -> {
                     double luggageAllowance = readDouble(">. Luggage Allowance (kg): ");
@@ -545,21 +534,14 @@ public class SmartTravelDriver {
                     return;
                 }
             }
-        } catch (InvalidTransportDataException e) {
+
+            SmartTravelService.addTransportation(newTransport);
+            SmartTravelService.clearInvalidTransportationById(newTransport.getId());
+            System.out.println(">. Transportation added successfully.\n");
+        } catch (InvalidTransportDataException | IllegalStateException e) {
             System.out.println(">. Error adding transportation: " + e.getMessage());
             System.out.println();
-            return;
         }
-
-        if (service.getTransportationCount() >= SmartTravelService.MAX_TRANSPORTATIONS) {
-            System.out.println(">. Transportation list is full.\n");
-            return;
-        }
-
-        service.getTransportations().add(newTransport);
-        SmartTravelService.clearInvalidTransportationById(newTransport.getId());
-
-        System.out.println(">. Transportation added successfully.\n");
     }
 
     private static void removeTransportation() {
@@ -590,8 +572,8 @@ public class SmartTravelDriver {
                 >. Please enter option: """);
 
         int filterType = readInt("");
-
         boolean found = false;
+
         for (Transportation transportation : service.getTransportations()) {
             if (transportation == null) {
                 continue;
@@ -617,12 +599,10 @@ public class SmartTravelDriver {
         };
 
         if (!typePrefix.isEmpty()) {
-            int invalidTransportationCount = SmartTravelService.getInvalidTransportationCount();
-            for (int i = 0; i < invalidTransportationCount; i++) {
+            for (int i = 0; i < SmartTravelService.getInvalidTransportationCount(); i++) {
                 String invalidRow = SmartTravelService.getInvalidTransportationRow(i);
                 if (invalidRow != null && invalidRow.startsWith(typePrefix)) {
                     System.out.println(">. [INVALID] " + invalidRow);
-                    found = true;
                 }
             }
         }
@@ -676,9 +656,8 @@ public class SmartTravelDriver {
 
         double pricePerNight = readDouble(">. Price Per Night: ");
 
-        Accommodation newAccommodation;
-
         try {
+            Accommodation newAccommodation;
             switch (accommodationType) {
                 case 1 -> {
                     int starRating = readInt(">. Star Rating: ");
@@ -693,21 +672,14 @@ public class SmartTravelDriver {
                     return;
                 }
             }
-        } catch (InvalidAccommodationDataException e) {
+
+            SmartTravelService.addAccommodation(newAccommodation);
+            SmartTravelService.clearInvalidAccomodationById(newAccommodation.getId());
+            System.out.println(">. Accommodation added successfully.\n");
+        } catch (InvalidAccommodationDataException | IllegalStateException e) {
             System.out.println(">. Error adding accommodation: " + e.getMessage());
             System.out.println();
-            return;
         }
-
-        if (service.getAccommodationCount() >= SmartTravelService.MAX_ACCOMMODATIONS) {
-            System.out.println(">. Accommodation list is full.\n");
-            return;
-        }
-
-        service.getAccomodations().add(newAccommodation);
-        SmartTravelService.clearInvalidAccomodationById(newAccommodation.getId());
-
-        System.out.println(">. Accommodation added successfully.\n");
     }
 
     private static void removeAccommodation() {
@@ -737,8 +709,8 @@ public class SmartTravelDriver {
                 >. Please enter option: """);
 
         int filterType = readInt("");
-
         boolean found = false;
+
         for (Accommodation accommodation : service.getAccomodations()) {
             if (accommodation == null) {
                 continue;
@@ -762,12 +734,10 @@ public class SmartTravelDriver {
         };
 
         if (!typePrefix.isEmpty()) {
-            int invalidAccommodationCount = SmartTravelService.getInvalidAccomodationCount();
-            for (int i = 0; i < invalidAccommodationCount; i++) {
+            for (int i = 0; i < SmartTravelService.getInvalidAccomodationCount(); i++) {
                 String invalidRow = SmartTravelService.getInvalidAccomodationRow(i);
                 if (invalidRow != null && invalidRow.startsWith(typePrefix)) {
                     System.out.println(">. [INVALID] " + invalidRow);
-                    found = true;
                 }
             }
         }
@@ -783,8 +753,8 @@ public class SmartTravelDriver {
                     What would you like to do?
                     1. Display the most expensive trip
                     2. Calculate and display the total cost of a trip
-                    3. Create a deep copy of the transportation list
-                    4. Create a deep copy of the accommodation list
+                    3. Create a deep copy of the transportation collection
+                    4. Create a deep copy of the accommodation collection
                     5. Exit
                     >. Please enter option: """);
 
@@ -801,6 +771,106 @@ public class SmartTravelDriver {
         } while (backToSubmenu);
 
         return true;
+    }
+
+    private static void displayMostExpensiveTrip() {
+        Trip mostExpensive = null;
+        double maxCost = -1.0;
+
+        for (Trip trip : service.getTrips()) {
+            if (trip == null) {
+                continue;
+            }
+
+            try {
+                double currentCost = trip.calculateTotalCost();
+                if (mostExpensive == null || currentCost > maxCost) {
+                    mostExpensive = trip;
+                    maxCost = currentCost;
+                }
+            } catch (EntityNotFoundException ignored) {
+                // Skip broken trip links.
+            }
+        }
+
+        if (mostExpensive == null) {
+            System.out.println(">. No trips in list.\n");
+            return;
+        }
+
+        System.out.println();
+        System.out.println(">. Most Expensive Trip:");
+        System.out.println(">. " + mostExpensive);
+        System.out.println(">. Total Cost: $" + String.format("%.2f", maxCost));
+        System.out.println();
+    }
+
+    private static void calculateTripCost() {
+        System.out.println(printAllTripsIncludingInvalid());
+        if (!hasAnyTrip()) {
+            System.out.println(">. No trips in list.\n");
+            return;
+        }
+
+        System.out.print(">. Please enter trip ID to calculate total cost: ");
+        String tripID = scanner.next();
+
+        int foundIndex = tripExistCheck(tripID);
+        if (foundIndex < 0) {
+            System.out.println(">. Trip not found.\n");
+            return;
+        }
+
+        try {
+            Trip trip = service.getTrip(foundIndex);
+            double totalCost = trip.calculateTotalCost();
+            recentTrips.addRecent(trip);
+
+            System.out.println();
+            System.out.println(">. Total Cost for Trip " + tripID + ": $" + String.format("%.2f", totalCost));
+            System.out.println();
+        } catch (EntityNotFoundException e) {
+            System.out.println(">. Error calculating trip total: " + e.getMessage());
+            System.out.println();
+        }
+    }
+
+    private static void deepCopyTransportation() {
+        List<Transportation> deepCopy = new ArrayList<>();
+
+        for (Transportation transportation : service.getTransportations()) {
+            if (transportation instanceof Flight) {
+                deepCopy.add(new Flight((Flight) transportation));
+            } else if (transportation instanceof Train) {
+                deepCopy.add(new Train((Train) transportation));
+            } else if (transportation instanceof Bus) {
+                deepCopy.add(new Bus((Bus) transportation));
+            }
+        }
+
+        System.out.println();
+        System.out.println(">. Deep copy of transportation collection created successfully.");
+        System.out.println(">. Original collection size: " + service.getTransportations().size());
+        System.out.println(">. Deep copy collection size: " + deepCopy.size());
+        System.out.println();
+    }
+
+    private static void deepCopyAccommodation() {
+        List<Accommodation> deepCopy = new ArrayList<>();
+
+        for (Accommodation accommodation : service.getAccomodations()) {
+            if (accommodation instanceof Hotel) {
+                deepCopy.add(new Hotel((Hotel) accommodation));
+            } else if (accommodation instanceof Hostel) {
+                deepCopy.add(new Hostel((Hostel) accommodation));
+            }
+        }
+
+        System.out.println();
+        System.out.println(">. Deep copy of accommodation collection created successfully.");
+        System.out.println(">. Original collection size: " + service.getAccomodations().size());
+        System.out.println(">. Deep copy collection size: " + deepCopy.size());
+        System.out.println();
     }
 
     private static boolean advancedAnalytics() {
@@ -843,12 +913,12 @@ public class SmartTravelDriver {
         System.out.print(">. Enter destination to filter by: ");
         String destination = scanner.nextLine().trim();
 
-        Predicate<Trip> destinationFilter =
-                trip -> trip != null
+        Predicate<Trip> destinationFilter = trip ->
+                trip != null
                         && trip.getDestination() != null
                         && trip.getDestination().equalsIgnoreCase(destination);
 
-        List<Trip> filteredTrips = filterTrips(destinationFilter);
+        List<Trip> filteredTrips = service.filterTrips(destinationFilter);
 
         System.out.println();
         System.out.println(">. Trips matching destination \"" + destination + "\":");
@@ -882,10 +952,11 @@ public class SmartTravelDriver {
             }
         };
 
-        List<Trip> filteredTrips = filterTrips(costRangeFilter);
+        List<Trip> filteredTrips = service.filterTrips(costRangeFilter);
 
         System.out.println();
-        System.out.println(">. Trips in cost range $" + String.format("%.2f", min) + " to $" + String.format("%.2f", max) + ":");
+        System.out.println(">. Trips in cost range $" + String.format("%.2f", min)
+                + " to $" + String.format("%.2f", max) + ":");
         printTripList(filteredTrips);
     }
 
@@ -896,8 +967,7 @@ public class SmartTravelDriver {
         }
 
         int maxToShow = readInt(">. How many top clients would you like to show? ");
-
-        List<Client> sortedClients = copyAndSortNaturally(service.getClients());
+        List<Client> sortedClients = service.getSortedClients();
 
         System.out.println();
         System.out.println(">. Top Clients by Spending:");
@@ -922,6 +992,7 @@ public class SmartTravelDriver {
     private static void recentTripsDemo() {
         System.out.println();
         System.out.println(">. Recent Trips:");
+
         if (recentTrips.isEmpty()) {
             System.out.println(">. No recent trips tracked yet.");
             System.out.println();
@@ -961,10 +1032,11 @@ public class SmartTravelDriver {
     }
 
     private static void printSortedClients() {
-        List<Client> sortedClients = copyAndSortNaturally(service.getClients());
+        List<Client> sortedClients = service.getSortedClients();
 
         System.out.println();
         System.out.println(">. Clients (business natural order):");
+
         if (sortedClients.isEmpty()) {
             System.out.println(">. No clients in list.\n");
             return;
@@ -973,14 +1045,21 @@ public class SmartTravelDriver {
         for (Client client : sortedClients) {
             System.out.println(">. " + client + " | Total Spent: $" + String.format("%.2f", client.getTotalSpent()));
         }
+
         System.out.println();
     }
 
     private static void printSortedTrips() {
-        List<Trip> sortedTrips = copyAndSortNaturally(service.getTrips());
+        List<Trip> sortedTrips;
+        try {
+            sortedTrips = service.getSortedTrips();
+        } catch (RuntimeException e) {
+            sortedTrips = getSafelySortedTrips();
+        }
 
         System.out.println();
         System.out.println(">. Trips (business natural order):");
+
         if (sortedTrips.isEmpty()) {
             System.out.println(">. No trips in list.\n");
             return;
@@ -993,53 +1072,106 @@ public class SmartTravelDriver {
                 System.out.println(">. " + trip + " | Total Cost: unavailable");
             }
         }
+
         System.out.println();
     }
 
+    private static List<Trip> getSafelySortedTrips() {
+        List<Trip> copy = new ArrayList<>();
+        for (Trip trip : service.getTrips()) {
+            if (trip != null) {
+                copy.add(trip);
+            }
+        }
+
+        for (int i = 1; i < copy.size(); i++) {
+            Trip key = copy.get(i);
+            double keyCost = safeTripTotal(key);
+            int j = i - 1;
+
+            while (j >= 0 && safeTripTotal(copy.get(j)) < keyCost) {
+                copy.set(j + 1, copy.get(j));
+                j--;
+            }
+
+            copy.set(j + 1, key);
+        }
+
+        return copy;
+    }
+
+    private static double safeTripTotal(Trip trip) {
+        if (trip == null) {
+            return -1.0;
+        }
+
+        try {
+            return trip.calculateTotalCost();
+        } catch (EntityNotFoundException e) {
+            return -1.0;
+        }
+    }
+
     private static void printSortedTransportations() {
-        List<Transportation> sortedTransportations = copyAndSortNaturally(service.getTransportations());
+        List<Transportation> sortedTransportations = service.getSortedTransportations();
 
         System.out.println();
         System.out.println(">. Transportation (business natural order):");
+
         if (sortedTransportations.isEmpty()) {
             System.out.println(">. No transportation in list.\n");
             return;
         }
 
         for (Transportation transportation : sortedTransportations) {
-            System.out.println(">. " + transportation);
+            System.out.println(">. " + transportation + " | Base Price: $" + String.format("%.2f", transportation.getBasePrice()));
         }
+
         System.out.println();
     }
 
     private static void printSortedAccommodations() {
-        List<Accommodation> sortedAccommodations = copyAndSortNaturally(service.getAccomodations());
+        List<Accommodation> sortedAccommodations = service.getSortedAccommodations();
 
         System.out.println();
-        System.out.println(">. Accommodation (business natural order):");
+        System.out.println(">. Accommodations (business natural order):");
+
         if (sortedAccommodations.isEmpty()) {
             System.out.println(">. No accommodations in list.\n");
             return;
         }
 
         for (Accommodation accommodation : sortedAccommodations) {
-            System.out.println(">. " + accommodation);
+            System.out.println(">. " + accommodation + " | Price/Night: $" + String.format("%.2f", accommodation.getPricePerNight()));
         }
+
+        System.out.println();
+    }
+
+    private static void printTripList(List<Trip> trips) {
+        if (trips == null || trips.isEmpty()) {
+            System.out.println(">. No trips matched.");
+            System.out.println();
+            return;
+        }
+
+        for (Trip trip : trips) {
+            if (trip == null) {
+                continue;
+            }
+
+            try {
+                System.out.println(">. " + trip + " | Total Cost: $" + String.format("%.2f", trip.calculateTotalCost()));
+            } catch (EntityNotFoundException e) {
+                System.out.println(">. " + trip + " | Total Cost: unavailable");
+            }
+        }
+
         System.out.println();
     }
 
     private static void generateDashboard() {
-        List<Client> originalClients = new ArrayList<>(service.getClients());
-        List<Trip> originalTrips = new ArrayList<>(service.getTrips());
-        List<Transportation> originalTransportations = new ArrayList<>(service.getTransportations());
-        List<Accommodation> originalAccommodations = new ArrayList<>(service.getAccomodations());
-
         try {
-            service.setClients(filterValidClients(originalClients));
-            service.setTransportations(filterValidTransportations(originalTransportations));
-            service.setAccomodations(filterValidAccommodations(originalAccommodations));
-            service.setTrips(filterValidTrips(service, originalTrips));
-
             service.ensureOutputDirectories();
             DashboardGenerator.generateDashboard(service);
             System.out.println(">. Dashboard generated successfully in output/dashboard.");
@@ -1047,116 +1179,7 @@ public class SmartTravelDriver {
         } catch (IOException | InvalidAccommodationDataException | InvalidTransportDataException | EntityNotFoundException e) {
             System.out.println(">. Error generating dashboard: " + e.getMessage());
             System.out.println();
-        } finally {
-            service.setClients(originalClients);
-            service.setTransportations(originalTransportations);
-            service.setAccomodations(originalAccommodations);
-            service.setTrips(originalTrips);
         }
-    }
-
-    private static void displayMostExpensiveTrip() {
-        Trip mostExpensive = null;
-        double maxCost = -1;
-
-        for (Trip trip : service.getTrips()) {
-            if (trip == null) {
-                continue;
-            }
-
-            try {
-                double currentCost = trip.calculateTotalCost();
-                if (mostExpensive == null || currentCost > maxCost) {
-                    mostExpensive = trip;
-                    maxCost = currentCost;
-                }
-            } catch (EntityNotFoundException e) {
-                // Skip broken linked references while finding the maximum.
-            }
-        }
-
-        if (mostExpensive == null) {
-            System.out.println(">. No trips in list.\n");
-            return;
-        }
-
-        recentTrips.addRecent(mostExpensive);
-
-        System.out.println();
-        System.out.println(">. Most Expensive Trip:");
-        System.out.println(">. " + mostExpensive);
-        System.out.println(">. Total Cost: $" + String.format("%.2f", maxCost));
-        System.out.println();
-    }
-
-    private static void calculateTripCost() {
-        System.out.println(printAllTripsIncludingInvalid());
-        if (!hasAnyTrip()) {
-            System.out.println(">. No trips in list.\n");
-            return;
-        }
-
-        System.out.print(">. Please enter trip ID to calculate total cost: ");
-        String tripID = scanner.next();
-
-        int foundIndex = tripExistCheck(tripID);
-        if (foundIndex < 0) {
-            System.out.println(">. Trip not found.\n");
-            return;
-        }
-
-        Trip trip = service.getTrip(foundIndex);
-        try {
-            double totalCost = trip.calculateTotalCost();
-            recentTrips.addRecent(trip);
-
-            System.out.println();
-            System.out.println(">. Total Cost for Trip " + tripID + ": $" + String.format("%.2f", totalCost));
-            System.out.println();
-        } catch (EntityNotFoundException e) {
-            System.out.println(">. Error calculating trip total: " + e.getMessage());
-            System.out.println();
-        }
-    }
-
-    private static void deepCopyTransportation() {
-        List<Transportation> original = service.getTransportations();
-        List<Transportation> deepCopy = new ArrayList<>();
-
-        for (Transportation transportation : original) {
-            if (transportation instanceof Flight) {
-                deepCopy.add(new Flight((Flight) transportation));
-            } else if (transportation instanceof Train) {
-                deepCopy.add(new Train((Train) transportation));
-            } else if (transportation instanceof Bus) {
-                deepCopy.add(new Bus((Bus) transportation));
-            }
-        }
-
-        System.out.println();
-        System.out.println(">. Deep copy of transportation list created successfully.");
-        System.out.println(">. Original list size: " + original.size());
-        System.out.println(">. Deep copy list size: " + deepCopy.size());
-        System.out.println();
-    }
-
-    private static void deepCopyAccommodation() {
-        List<Accommodation> original = service.getAccomodations();
-        List<Accommodation> deepCopy = new ArrayList<>();
-
-        for (Accommodation accommodation : original) {
-            if (accommodation instanceof Hotel) {
-                deepCopy.add(new Hotel((Hotel) accommodation));
-            } else if (accommodation instanceof Hostel) {
-                deepCopy.add(new Hostel((Hostel) accommodation));
-            }
-        }
-
-        System.out.println();
-        System.out.println(">. Deep copy of accommodation list created successfully.");
-        System.out.println(">. Original list size: " + original.size());
-        System.out.println(">. Deep copy list size: " + deepCopy.size());
-        System.out.println();
     }
 
     private static void printPreloadedData() {
@@ -1165,16 +1188,12 @@ public class SmartTravelDriver {
             System.out.println("=== Predefined Scenario Loaded ===");
             System.out.println("Clients:");
             System.out.println(printAllClientsIncludingInvalid());
-
             System.out.println("Trips:");
             System.out.println(printAllTripsIncludingInvalid());
-
             System.out.println("Transportation:");
             System.out.println(printAllTransportationsIncludingInvalid());
-
             System.out.println("Accommodation:");
             System.out.println(printAllAccommodationsIncludingInvalid());
-
             System.out.println("==================================");
         } catch (Exception e) {
             System.out.println(">. Preloaded data has some invalid entries. Continuing to menu.");
@@ -1182,66 +1201,34 @@ public class SmartTravelDriver {
     }
 
     private static boolean hasAnyClient() {
-        return !service.getClients().isEmpty();
+        return service.getClientCount() > 0;
     }
 
     private static boolean hasAnyTrip() {
-        return !service.getTrips().isEmpty();
+        return service.getTripCount() > 0;
     }
 
     private static boolean hasAnyTransportation() {
-        return !service.getTransportations().isEmpty();
+        return service.getTransportationCount() > 0;
     }
 
     private static boolean hasAnyAccommodation() {
-        return !service.getAccomodations().isEmpty();
+        return service.getAccommodationCount() > 0;
     }
 
     private static int clientExistCheck(String clientID) {
-        if (clientID == null || clientID.trim().isEmpty()) {
-            return -1;
-        }
-
-        if (!hasAnyClient()) {
-            return -2;
-        }
-
         return service.getClientIndexById(clientID);
     }
 
     private static int tripExistCheck(String tripID) {
-        if (tripID == null || tripID.trim().isEmpty()) {
-            return -1;
-        }
-
-        if (!hasAnyTrip()) {
-            return -2;
-        }
-
         return service.getTripIndexById(tripID);
     }
 
     private static int transportExistCheck(String transportID) {
-        if (transportID == null || transportID.trim().isEmpty()) {
-            return -1;
-        }
-
-        if (!hasAnyTransportation()) {
-            return -2;
-        }
-
         return service.getTransportationIndexById(transportID);
     }
 
     private static int accommodationExistCheck(String accommodationID) {
-        if (accommodationID == null || accommodationID.trim().isEmpty()) {
-            return -1;
-        }
-
-        if (!hasAnyAccommodation()) {
-            return -2;
-        }
-
         return service.getAccommodationIndexById(accommodationID);
     }
 
@@ -1263,11 +1250,13 @@ public class SmartTravelDriver {
 
     private static double readDouble(String prompt) {
         System.out.print(prompt);
+
         while (!scanner.hasNextDouble()) {
             System.out.println(">. Invalid number. Please enter a decimal value.");
             scanner.next();
             System.out.print(prompt);
         }
+
         return scanner.nextDouble();
     }
 
@@ -1345,217 +1334,5 @@ public class SmartTravelDriver {
         }
 
         return output.toString();
-    }
-
-    private static List<Trip> filterTrips(Predicate<Trip> predicate) {
-        List<Trip> result = new ArrayList<>();
-
-        for (Trip trip : service.getTrips()) {
-            if (predicate.test(trip)) {
-                result.add(trip);
-            }
-        }
-
-        return result;
-    }
-
-    private static void printTripList(List<Trip> trips) {
-        if (trips == null || trips.isEmpty()) {
-            System.out.println(">. No matching trips found.\n");
-            return;
-        }
-
-        for (Trip trip : trips) {
-            try {
-                System.out.println(">. " + trip + " | Total Cost: $" + String.format("%.2f", trip.calculateTotalCost()));
-            } catch (EntityNotFoundException e) {
-                System.out.println(">. " + trip + " | Total Cost: unavailable");
-            }
-        }
-        System.out.println();
-    }
-
-    private static <T extends Comparable<? super T>> List<T> copyAndSortNaturally(List<T> source) {
-        List<T> sorted = new ArrayList<>();
-
-        if (source == null) {
-            return sorted;
-        }
-
-        for (T item : source) {
-            if (item != null) {
-                sorted.add(item);
-            }
-        }
-
-        for (int i = 0; i < sorted.size() - 1; i++) {
-            int bestIndex = i;
-
-            for (int j = i + 1; j < sorted.size(); j++) {
-                if (sorted.get(j).compareTo(sorted.get(bestIndex)) < 0) {
-                    bestIndex = j;
-                }
-            }
-
-            if (bestIndex != i) {
-                T temp = sorted.get(i);
-                sorted.set(i, sorted.get(bestIndex));
-                sorted.set(bestIndex, temp);
-            }
-        }
-
-        return sorted;
-    }
-
-    private static List<Client> filterValidClients(List<Client> clients) {
-        List<Client> filtered = new ArrayList<>();
-        if (clients == null || clients.isEmpty()) {
-            return filtered;
-        }
-
-        List<String> invalidIds = new ArrayList<>();
-        for (int i = 0; i < SmartTravelService.getInvalidClientCount(); i++) {
-            String row = SmartTravelService.getInvalidClientRow(i);
-            if (row == null) {
-                continue;
-            }
-
-            String[] parts = row.split(";", -1);
-            if (parts.length > 0) {
-                String id = parts[0].trim();
-                if (!id.isEmpty()) {
-                    invalidIds.add(id);
-                }
-            }
-        }
-
-        for (Client client : clients) {
-            if (client == null) {
-                continue;
-            }
-
-            boolean matchesInvalid = false;
-            for (String invalidId : invalidIds) {
-                if (client.getId().equalsIgnoreCase(invalidId)) {
-                    matchesInvalid = true;
-                    break;
-                }
-            }
-
-            if (!matchesInvalid) {
-                filtered.add(client);
-            }
-        }
-
-        return filtered;
-    }
-
-    private static List<Transportation> filterValidTransportations(List<Transportation> transportations) {
-        List<Transportation> filtered = new ArrayList<>();
-        if (transportations == null || transportations.isEmpty()) {
-            return filtered;
-        }
-
-        List<String> invalidIds = new ArrayList<>();
-        for (int i = 0; i < SmartTravelService.getInvalidTransportationCount(); i++) {
-            String row = SmartTravelService.getInvalidTransportationRow(i);
-            if (row == null) {
-                continue;
-            }
-
-            String[] parts = row.split(";", -1);
-            if (parts.length > 1) {
-                String id = parts[1].trim();
-                if (!id.isEmpty()) {
-                    invalidIds.add(id);
-                }
-            }
-        }
-
-        for (Transportation transportation : transportations) {
-            if (transportation == null) {
-                continue;
-            }
-
-            boolean matchesInvalid = false;
-            for (String invalidId : invalidIds) {
-                if (transportation.getId().equalsIgnoreCase(invalidId)) {
-                    matchesInvalid = true;
-                    break;
-                }
-            }
-
-            if (!matchesInvalid) {
-                filtered.add(transportation);
-            }
-        }
-
-        return filtered;
-    }
-
-    private static List<Accommodation> filterValidAccommodations(List<Accommodation> accommodations) {
-        List<Accommodation> filtered = new ArrayList<>();
-        if (accommodations == null || accommodations.isEmpty()) {
-            return filtered;
-        }
-
-        for (Accommodation accommodation : accommodations) {
-            if (accommodation != null) {
-                filtered.add(accommodation);
-            }
-        }
-
-        return filtered;
-    }
-
-    private static List<Trip> filterValidTrips(SmartTravelService currentService, List<Trip> trips) throws EntityNotFoundException {
-        List<Trip> filtered = new ArrayList<>();
-        if (trips == null || trips.isEmpty()) {
-            return filtered;
-        }
-
-        List<String> invalidIds = new ArrayList<>();
-        for (int i = 0; i < SmartTravelService.getInvalidTripCount(); i++) {
-            String row = SmartTravelService.getInvalidTripRow(i);
-            if (row == null) {
-                continue;
-            }
-
-            String[] parts = row.split(";", -1);
-            if (parts.length > 0) {
-                String id = parts[0].trim();
-                if (!id.isEmpty()) {
-                    invalidIds.add(id);
-                }
-            }
-        }
-
-        for (Trip trip : trips) {
-            if (trip == null) {
-                continue;
-            }
-
-            boolean matchesInvalid = false;
-            for (String invalidId : invalidIds) {
-                if (trip.getId().equalsIgnoreCase(invalidId)) {
-                    matchesInvalid = true;
-                    break;
-                }
-            }
-
-            if (matchesInvalid) {
-                continue;
-            }
-
-            int tripIndex = tripExistCheck(trip.getId());
-            if (tripIndex < 0) {
-                continue;
-            }
-
-            currentService.calculateTripTotal(tripIndex);
-            filtered.add(trip);
-        }
-
-        return filtered;
     }
 }
