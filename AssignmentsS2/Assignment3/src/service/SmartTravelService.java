@@ -9,8 +9,8 @@ import java.util.List;
 
 import AssignmentsS2.Assignment3.src.client.Client;
 import AssignmentsS2.Assignment3.src.exceptions.*;
-import AssignmentsS2.Assignment3.src.persistence.*;
 import AssignmentsS2.Assignment3.src.interfaces.Identifiable;
+import AssignmentsS2.Assignment3.src.persistence.*;
 import AssignmentsS2.Assignment3.src.travel.*;
 
 public class SmartTravelService {
@@ -22,7 +22,7 @@ public class SmartTravelService {
 
     private static final List<Client> clients = new ArrayList<>();
     private static final List<Trip> trips = new ArrayList<>();
-    private static final List<Accommodation> accomodations = new ArrayList<>();
+    private static final List<Accommodation> accommodations = new ArrayList<>();
     private static final List<Transportation> transportations = new ArrayList<>();
 
     // Keep these because your existing flow still references them.
@@ -56,7 +56,7 @@ public class SmartTravelService {
     }
 
     public List<Accommodation> getAccomodations() {
-        return accomodations;
+        return accommodations;
     }
 
     public void setClients(List<Client> updatedClients) {
@@ -74,10 +74,8 @@ public class SmartTravelService {
     }
 
     public void setAccomodations(List<Accommodation> updatedAccomodations) {
-        replaceCollection(accomodations, updatedAccomodations, MAX_ACCOMMODATIONS, "accommodations");
+        replaceCollection(accommodations, updatedAccomodations, MAX_ACCOMMODATIONS, "accommodations");
     }
-
-
 
     private static <T> void replaceCollection(List<T> target, List<T> source, int max, String typeName) {
         target.clear();
@@ -87,42 +85,31 @@ public class SmartTravelService {
         }
 
         for (T item : source) {
-            if (item == null)
+            if (item == null) {
                 continue;
+            }
 
-            if (target.size() >= max)
+            if (target.size() >= max) {
                 throw new IllegalStateException("Too many " + typeName + ". Max is " + max + ".");
+            }
 
             target.add(item);
         }
     }
 
-    public Client getClient(int index) {
-        if (index < 0 || index >= clients.size()) {
-            return null;
-        }
-        return clients.get(index);
-    }
+    public Client getClient(int index) {return getCollection(clients, index);}
 
-    public Trip getTrip(int index) {
-        if (index < 0 || index >= trips.size()) {
-            return null;
-        }
-        return trips.get(index);
-    }
+    public Trip getTrip(int index) {return getCollection(trips, index);}
 
-    public Transportation getTransportation(int index) {
-        if (index < 0 || index >= transportations.size()) {
-            return null;
-        }
-        return transportations.get(index);
-    }
+    public Transportation getTransportation(int index) {return getCollection(transportations, index);}
 
-    public Accommodation getAccommodation(int index) {
-        if (index < 0 || index >= accomodations.size()) {
+    public Accommodation getAccommodation(int index) {return getCollection(accommodations, index);}
+
+    private <T> T getCollection(List<T> collection, int index) {
+        if (index < 0 || index >= collection.size()) {
             return null;
         }
-        return accomodations.get(index);
+        return collection.get(index);
     }
 
     public int getClientCount() {
@@ -138,28 +125,20 @@ public class SmartTravelService {
     }
 
     public int getAccommodationCount() {
-        return accomodations.size();
+        return accommodations.size();
     }
 
     /* =========================
        Index helpers for driver
        ========================= */
 
-    public int getClientIndexById(String id) {
-        return indexOfId(clients, id);
-    }
+    public int getClientIndexById(String id) {return indexOfId(clients, id);}
 
-    public int getTripIndexById(String id) {
-        return indexOfId(trips, id);
-    }
+    public int getTripIndexById(String id) {return indexOfId(trips, id);}
 
-    public int getTransportationIndexById(String id) {
-        return indexOfId(transportations, id);
-    }
+    public int getTransportationIndexById(String id) {return indexOfId(transportations, id);}
 
-    public int getAccommodationIndexById(String id) {
-        return indexOfId(accomodations, id);
-    }
+    public int getAccommodationIndexById(String id) {return indexOfId(accommodations, id);}
 
     private static <T extends Identifiable> int indexOfId(List<T> items, String id) {
         String normalizedId = normalize(id);
@@ -179,43 +158,30 @@ public class SmartTravelService {
 
     public boolean removeClientById(String id) {
         int index = getClientIndexById(id);
-        if (index < 0) {
-            return false;
-        }
-
-        clients.remove(index);
-        refreshClientAmountsSpent();
-        return true;
+        return removeItemById(clients, id, index);
     }
 
     public boolean removeTripById(String id) {
         int index = getTripIndexById(id);
-        if (index < 0) {
-            return false;
-        }
-
-        trips.remove(index);
-        refreshClientAmountsSpent();
-        return true;
+        return removeItemById(trips, id, index);
     }
 
     public boolean removeTransportationById(String id) {
         int index = getTransportationIndexById(id);
-        if (index < 0) {
-            return false;
-        }
-
-        transportations.remove(index);
-        return true;
+        return removeItemById(transportations, id, index);
     }
 
     public boolean removeAccommodationById(String id) {
         int index = getAccommodationIndexById(id);
+        return removeItemById(accommodations, id, index);
+    }
+
+    private <T> boolean removeItemById(List<T> collection, String id, int index) {
         if (index < 0) {
             return false;
         }
 
-        accomodations.remove(index);
+        collection.remove(index);
         return true;
     }
 
@@ -513,7 +479,7 @@ public class SmartTravelService {
             throw new EntityNotFoundException("Accommodation ID not found: " + accommodationId);
         }
 
-        for (Accommodation accommodation : accomodations) {
+        for (Accommodation accommodation : accommodations) {
             if (accommodation != null && accommodation.getId().equalsIgnoreCase(normalizedAccommodationId)) {
                 return accommodation;
             }
@@ -617,76 +583,19 @@ public class SmartTravelService {
        Printing
        ========================= */
 
-    public static String printClients() {
+    public static String printClients() {return printCollection(clients, "clients");}
+
+    public static String printTrips() {return printCollection(trips, "trips");}
+
+    public static String printTransportations() {return printCollection(transportations, "transportations");}
+
+    public static String printAccomodations() {return printCollection(accommodations, "accommodations");}
+
+    private static <T> String printCollection(List<T> collection, String type) {
         StringBuilder output = new StringBuilder();
-
-        for (Client client : clients) {
-            if (client != null) {
-                output.append(">. ").append(client).append("\n");
-            }
-        }
-
-        output.append("\n");
-        return output.toString();
-    }
-
-    public static String printTrips() {
-        StringBuilder output = new StringBuilder();
-
-        for (Trip trip : trips) {
-            if (trip != null) {
-                output.append(">. ").append(trip).append("\n");
-            }
-        }
-
-        output.append("\n");
-        return output.toString();
-    }
-
-    public static String printTransportations() {
-        StringBuilder output = new StringBuilder();
-
-        if (transportations.isEmpty()) {
-            output.append(">. No transportation options available.\n\n");
-            return output.toString();
-        }
-
-        for (Transportation transportation : transportations) {
-            if (transportation != null) {
-                output.append(">. ").append(transportation).append("\n");
-            }
-        }
-
-        output.append("\n");
-        return output.toString();
-    }
-
-    public static String printAccomodations() {
-        StringBuilder output = new StringBuilder();
-
-        if (accomodations.isEmpty()) {
-            output.append(">. No accomodations available.\n\n");
-            return output.toString();
-        }
-
-        for (Accommodation accommodation : accomodations) {
-            if (accommodation != null) {
-                output.append(">. ").append(accommodation).append("\n");
-            }
-        }
-
-        output.append("\n");
-        return output.toString();
-    }
-
-    public static <T> String printCollection(List<T> collection) {
-        StringBuilder output = new StringBuilder();
-
-        if (collection.get(0) != null && collection.get(0) instanceof Client)
-            collection = (List<T>) clients;
 
         if (collection == null || collection.isEmpty()) {
-            output.append(">. No accomodations available.\n\n");
+            output.append(">. No " + type +" available.\n\n");
             return output.toString();
         }
 
@@ -768,8 +677,8 @@ public class SmartTravelService {
                     transportationsFile
             );
             AccommodationFileManager.saveAccomodations(
-                    accomodations.toArray(new Accommodation[0]),
-                    accomodations.size(),
+                    accommodations.toArray(new Accommodation[0]),
+                    accommodations.size(),
                     accomodationsFile
             );
             TripFileManager.saveTrips(trips.toArray(new Trip[0]), trips.size(), tripsFile);
@@ -873,7 +782,7 @@ public class SmartTravelService {
         clients.clear();
         trips.clear();
         transportations.clear();
-        accomodations.clear();
+        accommodations.clear();
 
         if (choice) {
             // Clients
@@ -993,7 +902,7 @@ public class SmartTravelService {
 
     private static void tryLoadHotel(String name, String location, double pricePerNight, int starRating) {
         try {
-            accomodations.add(new Hotel(name, location, pricePerNight, starRating));
+            accommodations.add(new Hotel(name, location, pricePerNight, starRating));
         } catch (Exception e) {
             addInvalidRow("accommodations",
                     "HOTEL;" + name + ";" + location + ";" + pricePerNight + ";" + starRating
@@ -1003,7 +912,7 @@ public class SmartTravelService {
 
     private static void tryLoadHostel(String name, String location, double pricePerNight, int sharedBeds) {
         try {
-            accomodations.add(new Hostel(name, location, pricePerNight, sharedBeds));
+            accommodations.add(new Hostel(name, location, pricePerNight, sharedBeds));
         } catch (Exception e) {
             addInvalidRow("accommodations",
                     "HOSTEL;" + name + ";" + location + ";" + pricePerNight + ";" + sharedBeds
@@ -1074,7 +983,7 @@ public class SmartTravelService {
         }
 
         int maxAccommodationId = -1;
-        for (Accommodation accommodation : accomodations) {
+        for (Accommodation accommodation : accommodations) {
             maxAccommodationId = Math.max(
                     maxAccommodationId,
                     extractNumericId(accommodation == null ? null : accommodation.getId(), "A")

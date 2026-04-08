@@ -22,7 +22,7 @@ public class ClientFileManager {
                 continue;
             }
 
-            String csvLine = clients[i].getClientId() + ";" + clients[i].getFirstName() + ";" +
+            String csvLine = clients[i].getId() + ";" + clients[i].getFirstName() + ";" +
                 clients[i].getLastName() + ";" + clients[i].getEmailAdress();
             outputStream.println(csvLine);
             outputLine++;

@@ -130,6 +130,19 @@ public class SmartTravelDriver {
         System.out.println("Program Termination Successful!");
     }
 
+    private static void runPredefinedScenario() {
+        try {
+            SmartTravelService.testingScenario(true);
+            System.out.println();
+            System.out.println(">. Predefined scenario loaded successfully.");
+            System.out.println();
+            printPreloadedData();
+        } catch (Exception e) {
+            System.out.println(">. Error loading predefined scenario: " + e.getMessage());
+            System.out.println();
+        }
+    }
+
     private static boolean clientManagement() {
         do {
             backToSubmenu = true;
@@ -1315,29 +1328,9 @@ public class SmartTravelDriver {
         return output.toString();
     }
 
-    // private static String printAllAccommodationsIncludingInvalid() {
-    //     StringBuilder output = new StringBuilder();
-    //     output.append(SmartTravelService.printAccomodations());
-
-    //     int invalidCount = SmartTravelService.getInvalidAccomodationCount();
-    //     if (invalidCount > 0) {
-    //         output.append(">. Invalid Accommodation Entries:\n");
-    //         for (int i = 0; i < invalidCount; i++) {
-    //             String row = SmartTravelService.getInvalidAccomodationRow(i);
-    //             if (row != null) {
-    //                 output.append(">. [INVALID] ").append(row).append("\n");
-    //             }
-    //         }
-    //         output.append("\n");
-    //     }
-
-    //     return output.toString();
-    // }
-
     private static String printAllAccommodationsIncludingInvalid() {
         StringBuilder output = new StringBuilder();
-        List<Accommodation> a = new ArrayList<>();
-        output.append(SmartTravelService.printCollection(a));
+        output.append(SmartTravelService.printAccomodations());
 
         int invalidCount = SmartTravelService.getInvalidAccomodationCount();
         if (invalidCount > 0) {
@@ -1353,25 +1346,6 @@ public class SmartTravelDriver {
 
         return output.toString();
     }
-
-    // private static String printAllIncludingInvalid() {
-    //     StringBuilder output = new StringBuilder();
-    //     output.append(SmartTravelService.printAccomodations());
-
-    //     int invalidCount = SmartTravelService.getInvalidAccomodationCount();
-    //     if (invalidCount > 0) {
-    //         output.append(">. Invalid Accommodation Entries:\n");
-    //         for (int i = 0; i < invalidCount; i++) {
-    //             String row = SmartTravelService.getInvalidAccomodationRow(i);
-    //             if (row != null) {
-    //                 output.append(">. [INVALID] ").append(row).append("\n");
-    //             }
-    //         }
-    //         output.append("\n");
-    //     }
-
-    //     return output.toString();
-    // }
 
     private static List<Trip> filterTrips(Predicate<Trip> predicate) {
         List<Trip> result = new ArrayList<>();

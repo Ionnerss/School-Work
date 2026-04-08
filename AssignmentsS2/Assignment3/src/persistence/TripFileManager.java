@@ -26,10 +26,10 @@ public class TripFileManager {
                     continue;
                 }
 
-                String accomodationId = (trips[i].geAccomodationId() == null) ? "" : trips[i].geAccomodationId();
-                String transportId = (trips[i].geTransportationId() == null) ? "" : trips[i].geTransportationId();
+                String accomodationId = (trips[i].getAccomodationId() == null) ? "" : trips[i].getAccomodationId();
+                String transportId = (trips[i].getTransportationId() == null) ? "" : trips[i].getTransportationId();
 
-                String csvLine = trips[i].getTripId() + ";" + trips[i].getClientId() + ";"
+                String csvLine = trips[i].getId() + ";" + trips[i].getClientId() + ";"
                         + accomodationId + ";" + transportId + ";"
                         + trips[i].getDestination() + ";" + trips[i].getDurationInDays() + ";" + trips[i].getBasePrice();
 
