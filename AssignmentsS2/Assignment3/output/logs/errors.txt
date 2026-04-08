@@ -1,0 +1,2 @@
+[08:32:20.051152] clients.csv line 11 | reason: Last name cannot be null. | data: C1011;abba;;ab@gmail.com
+[08:33:33.424719800] clients.csv line 11 | reason: Last name cannot be null. | data: C1011;abba;;ab@gmail.com
