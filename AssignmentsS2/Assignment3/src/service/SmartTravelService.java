@@ -628,21 +628,10 @@ public class SmartTravelService {
 
             ensureOutputDirectories(folderPath);
 
-            Client[] loadedClients = new Client[MAX_CLIENTS];
-            ClientFileManager.loadClients(loadedClients, clientsFile);
-            setClients(arrayToList(loadedClients));
-
-            Transportation[] loadedTransportations = new Transportation[MAX_TRANSPORTATIONS];
-            TransportationFileManager.loadTransportations(loadedTransportations, transportationsFile);
-            setTransportations(arrayToList(loadedTransportations));
-
-            Accommodation[] loadedAccommodations = new Accommodation[MAX_ACCOMMODATIONS];
-            AccommodationFileManager.loadAccomodations(loadedAccommodations, accomodationsFile);
-            setAccomodations(arrayToList(loadedAccommodations));
-
-            Trip[] loadedTrips = new Trip[MAX_TRIPS];
-            TripFileManager.loadTrips(loadedTrips, tripsFile);
-            setTrips(arrayToList(loadedTrips));
+            setClients(GenericFileManager.load(clientsFile, Client.class));
+            setTransportations(GenericFileManager.load(transportationsFile, Transportation.class));
+            setAccomodations(GenericFileManager.load(accomodationsFile, Accommodation.class));
+            setTrips(GenericFileManager.load(tripsFile, Trip.class));
 
             syncIdsFromCurrentData();
 
@@ -670,18 +659,10 @@ public class SmartTravelService {
             resetOutputFolders(folderPath);
             ensureOutputDirectories(folderPath);
 
-            ClientFileManager.saveClients(clients.toArray(new Client[0]), clients.size(), clientsFile);
-            TransportationFileManager.saveTransportations(
-                    transportations.toArray(new Transportation[0]),
-                    transportations.size(),
-                    transportationsFile
-            );
-            AccommodationFileManager.saveAccomodations(
-                    accommodations.toArray(new Accommodation[0]),
-                    accommodations.size(),
-                    accomodationsFile
-            );
-            TripFileManager.saveTrips(trips.toArray(new Trip[0]), trips.size(), tripsFile);
+            GenericFileManager.save(clients, clientsFile);
+            GenericFileManager.save(transportations, transportationsFile);
+            GenericFileManager.save(accommodations, accomodationsFile);
+            GenericFileManager.save(trips, tripsFile);
 
             System.out.println();
             System.out.println(">. Data saved successfully to output/data/*.csv.");
@@ -691,22 +672,6 @@ public class SmartTravelService {
             System.out.println(">. Error saving data: " + e.getMessage());
             System.out.println();
         }
-    }
-
-    private static <T> List<T> arrayToList(T[] array) {
-        List<T> list = new ArrayList<>();
-
-        if (array == null) {
-            return list;
-        }
-
-        for (T item : array) {
-            if (item != null) {
-                list.add(item);
-            }
-        }
-
-        return list;
     }
 
     public void ensureOutputDirectories() throws IOException {

@@ -31,8 +31,10 @@ public class RecentList<T> {
             return;
         }
 
-        for (int i = maxToShow; i > -1; i--) {
-            System.out.println(">. " + (maxToShow - i) + ". " + list.get(i));
+        int limit = Math.min(maxToShow, list.size());
+
+        for (int i = 0; i < limit; i++) {
+            System.out.println(">. " + (i + 1) + ". " + list.get(i));
         }
     }
 }
