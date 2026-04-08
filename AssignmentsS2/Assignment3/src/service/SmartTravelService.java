@@ -20,6 +20,8 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
+import java.io.FileInputStream;
+import java.util.Scanner;
 
 import AssignmentsS2.Assignment3.src.client.Client;
 import AssignmentsS2.Assignment3.src.exceptions.*;
@@ -794,19 +796,35 @@ public class SmartTravelService {
             return;
         }
 
-        Path path = Paths.get(filepath);
-        String sourceFile = (path.getFileName() == null) ? filepath : path.getFileName().toString();
+        String sourceFile = Paths.get(filepath).getFileName().toString();
+        int outputLine = countLines(filepath);
 
         try (PrintWriter outputStream = new PrintWriter(new BufferedWriter(new FileWriter(filepath, true)))) {
             for (String row : rows) {
-                if (row != null) {
-                    outputStream.println(prefix + row);
+                if (row == null) {
+                    continue;
                 }
+
+                String csvLine = prefix + row;
+                outputStream.println(csvLine);
+                outputLine++;
+
+                ErrorLogger.log(sourceFile, "Invalid predefined entry preserved", outputLine, csvLine);
             }
-        } catch (IOException e) {
-            ErrorLogger.log(sourceFile, "Unable to append invalid rows: " + e.getMessage(), 0, filepath);
-            throw e;
         }
+    }
+
+    private int countLines(String filepath) throws IOException {
+        int count = 0;
+
+        try (Scanner inputStream = new Scanner(new FileInputStream(filepath))) {
+            while (inputStream.hasNextLine()) {
+                inputStream.nextLine();
+                count++;
+            }
+        }
+
+        return count;
     }
 
     public void ensureOutputDirectories() throws IOException {
@@ -858,7 +876,6 @@ public class SmartTravelService {
         deleteDirectoryContents(outputPath.resolve("dashboard"));
         deleteDirectoryContents(outputPath.resolve("charts"));
 
-        // Keep logs. Deleting them makes it look like logging stopped working.
         Files.createDirectories(outputPath.resolve("logs"));
     }
 
@@ -1112,6 +1129,24 @@ public class SmartTravelService {
         } catch (Exception e) {
             addInvalidTripRow(tripId + ";" + clientId + ";" + accommodationId + ";" + transportationId + ";"
                     + destination + ";" + duration + ";" + basePrice + " [" + e.getMessage() + "]");
+        }
+    }
+
+    public static void registerInvalidRow(Class<?> clazz, String row) {
+        if (row == null) {
+            return;
+        }
+
+        String cleanedRow = row.trim();
+
+        if (clazz == Client.class) {
+            addInvalidClientRow(cleanedRow);
+        } else if (clazz == Trip.class) {
+            addInvalidTripRow(cleanedRow);
+        } else if (clazz == Transportation.class) {
+            addInvalidTransportationRow(cleanedRow);
+        } else if (clazz == Accommodation.class) {
+            addInvalidAccomodationRow(cleanedRow);
         }
     }
 
