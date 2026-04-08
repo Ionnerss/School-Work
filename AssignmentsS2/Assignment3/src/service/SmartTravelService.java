@@ -682,8 +682,11 @@ public class SmartTravelService {
     public static <T> String printCollection(List<T> collection) {
         StringBuilder output = new StringBuilder();
 
+        if (collection.get(0) != null && collection.get(0) instanceof Client)
+            collection = (List<T>) clients;
+
         if (collection == null || collection.isEmpty()) {
-            output.append(">. No items available.\n\n");
+            output.append(">. No accomodations available.\n\n");
             return output.toString();
         }
 
