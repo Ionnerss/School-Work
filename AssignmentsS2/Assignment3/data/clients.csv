@@ -5,8 +5,8 @@ C1004;Emma;Wilson;emma.wilson@usa.com
 C1005;Miguel;Gomez;miguel.gomez@spain.com
 C1006;John;Smith;john.smith@canada.com
 C1007;Alice;Johnson;alice.johnson@uk.com
-C1008;Bob Browm;bob.brown@australia.com;missing.c1008@invalid.com
+C1008;Bob Browm;Unknown;bob.brown@australia.com
 C1009;Diana;Prince;diana.prince@greece.com
 C1010;Lee;Kim;lee.kim@korea.com
-C1011;Mig;Gomez;miguel.gomez@spain.com
-INVALID_PREDEFINED_CLIENT;C1008;Bob Browm;bob.brown@australia.com; [Email cannot be null.]
+INVALID_PREDEFINED_CLIENT;C1008;Bob Browm;;bob.brown@australia.com [Last name cannot be null.]
+INVALID_PREDEFINED_CLIENT;C1011;Mig;Gomez;miguel.gomez@spain.com [A client with this email already exists.]

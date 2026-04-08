@@ -1,2 +1,15 @@
-[13:34:23.180990] clients.csv line 2 | reason: Client data is incomplete, missing info. | data: C1003;;Tanaka;aiko.tanaka@japan.com
-[13:34:23.188740] trips.csv line 5 | reason: Client ID not found: C1003 | data: T2006;C1003;A4004;TR3005;Tokyo;8;225.0
+[08:01:06.432478300] clients.csv line 12 | reason: Invalid predefined entry preserved | data: INVALID_PREDEFINED_CLIENT;C1008;Bob Browm;bob.brown@australia.com; [Email cannot be null.]
+[08:01:06.442881] trips.csv line 1 | reason: Specific trip data is empty. | data: null
+[08:01:06.443880700] trips.csv line 2 | reason: Invalid predefined entry preserved | data: INVALID_PREDEFINED_TRIP;T2001;C1001;A4001;TR3001;Paris;5;150.0 [Accommodation ID not found: A4001]
+[08:01:06.443880700] trips.csv line 3 | reason: Invalid predefined entry preserved | data: INVALID_PREDEFINED_TRIP;T2003;C1002;A4002;TR3003;Venice;7;200.0 [Accommodation ID not found: A4002]
+[08:01:06.443880700] trips.csv line 4 | reason: Invalid predefined entry preserved | data: INVALID_PREDEFINED_TRIP;T2004;C1009;A4003;;Paris;4;175.0 [Accommodation ID not found: A4003]
+[08:01:06.445879800] trips.csv line 5 | reason: Invalid predefined entry preserved | data: INVALID_PREDEFINED_TRIP;T2006;C1003;A4004;TR3005;Tokyo;8;225.0 [Accommodation ID not found: A4004]
+[08:01:06.445879800] trips.csv line 6 | reason: Invalid predefined entry preserved | data: INVALID_PREDEFINED_TRIP;T2007;C1001;A4005;;Paris;10;300.0 [Accommodation ID not found: A4005]
+[08:01:06.446880500] trips.csv line 7 | reason: Invalid predefined entry preserved | data: INVALID_PREDEFINED_TRIP;T2008;C1004;;TR3006;London;5;90.0 [Invalid trip base price, must be greater than or equal to 100.]
+[08:01:06.446880500] trips.csv line 8 | reason: Invalid predefined entry preserved | data: INVALID_PREDEFINED_TRIP;T2009;C1007;A4006;TR3007;Rome;7;275.0 [Accommodation ID not found: A4006]
+[08:01:06.446880500] trips.csv line 9 | reason: Invalid predefined entry preserved | data: INVALID_PREDEFINED_TRIP;T2010;C1005;A4003;T5003;Madrid;-2;250.0 [Invalid trip duration, must be between 1 and 20 days (inclusive).]
+[08:01:06.447880300] trips.csv line 10 | reason: Invalid predefined entry preserved | data: INVALID_PREDEFINED_TRIP;T2007;C1006;A4005;T5005;Rome;5;180.0 [Transportation ID not found: T5005]
+[08:01:06.447880300] trips.csv line 11 | reason: Invalid predefined entry preserved | data: INVALID_PREDEFINED_TRIP;T2008;C9999;A4006;T5006;NYC;8;300.0 [Client ID not found: C9999]
+[08:01:06.447880300] trips.csv line 12 | reason: Invalid predefined entry preserved | data: INVALID_PREDEFINED_TRIP;X6008;C1007;A4007;T5007;LA;10;400.0 [Invalid Trip ID format: X6008]
+[08:01:06.448882900] trips.csv line 13 | reason: Invalid predefined entry preserved | data: INVALID_PREDEFINED_TRIP;T2011;C1003;A4104;TR3005;Tokyo;8;225.0 [Accommodation ID not found: A4104]
+[08:01:22.465545500] clients.csv line 11 | reason: Duplicate email found during load. | data: C1011;Mig;Gomez;miguel.gomez@spain.com

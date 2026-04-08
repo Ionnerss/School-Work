@@ -713,7 +713,7 @@ public class SmartTravelService {
             Path basePath = resolveProjectBasePath(folderPath);
             ErrorLogger.setBasePath(basePath.toString());
 
-            Path dataDir = basePath.resolve("output").resolve("data");
+            Path dataDir = basePath.resolve("data");
             String clientsFile = dataDir.resolve("clients.csv").toString();
             String tripsFile = dataDir.resolve("trips.csv").toString();
             String transportationsFile = dataDir.resolve("transports.csv").toString();
@@ -730,7 +730,7 @@ public class SmartTravelService {
             syncIdsFromCurrentData();
 
             System.out.println();
-            System.out.println(">. Data loaded successfully from output/data/*.csv.");
+            System.out.println(">. Data loaded successfully from data/*.csv.");
             System.out.println(">. Errors, if any, were logged to output/logs/errors.txt.");
             System.out.println();
         } catch (IOException e) {
@@ -744,7 +744,7 @@ public class SmartTravelService {
             Path basePath = resolveProjectBasePath(folderPath);
             ErrorLogger.setBasePath(basePath.toString());
 
-            Path dataDir = basePath.resolve("output").resolve("data");
+            Path dataDir = basePath.resolve("data");
             String clientsFile = dataDir.resolve("clients.csv").toString();
             String tripsFile = dataDir.resolve("trips.csv").toString();
             String transportationsFile = dataDir.resolve("transports.csv").toString();
@@ -766,7 +766,7 @@ public class SmartTravelService {
             appendInvalidRows(tripsFile, "INVALID_PREDEFINED_TRIP;", invalidTripRows);
 
             System.out.println();
-            System.out.println(">. Data saved successfully to output/data/*.csv.");
+            System.out.println(">. Data saved successfully to data/*.csv.");
             System.out.println(">. Errors, if any, were logged to output/logs/errors.txt.");
             System.out.println();
         } catch (IOException e) {
@@ -795,8 +795,9 @@ public class SmartTravelService {
 
     public void ensureOutputDirectories(String folderPath) throws IOException {
         Path basePath = resolveProjectBasePath(folderPath);
+
+        Files.createDirectories(basePath.resolve("data"));
         Files.createDirectories(basePath.resolve("output"));
-        Files.createDirectories(basePath.resolve("output").resolve("data"));
         Files.createDirectories(basePath.resolve("output").resolve("logs"));
         Files.createDirectories(basePath.resolve("output").resolve("dashboard"));
         Files.createDirectories(basePath.resolve("output").resolve("charts"));
@@ -825,10 +826,9 @@ public class SmartTravelService {
         Path basePath = resolveProjectBasePath(folderPath);
         Path outputPath = basePath.resolve("output");
 
-        deleteDirectoryContents(outputPath.resolve("data"));
         deleteDirectoryContents(outputPath.resolve("logs"));
         deleteDirectoryContents(outputPath.resolve("dashboard"));
-        deleteDirectoryContents(outputPath.resolve("charts"));
+        deleteDirectoryContents(outputPath.resolve("charts"));  
     }
 
     private void deleteDirectoryContents(Path directory) throws IOException {
@@ -836,11 +836,11 @@ public class SmartTravelService {
             return;
         }
 
-        try (java.util.stream.Stream<Path> stream = Files.list(directory)) {
-            java.util.Iterator<Path> iterator = stream.iterator();
-
-            while (iterator.hasNext()) {
-                Path child = iterator.next();
+        try (var stream = Files.list(directory)) {
+            for (Path child : stream.toList()) {
+                if ("styles.css".equalsIgnoreCase(child.getFileName().toString())) {
+                    continue;
+                }
                 if (Files.isDirectory(child)) {
                     deleteDirectoryContents(child);
                     Files.deleteIfExists(child);
