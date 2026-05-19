@@ -1,48 +1,41 @@
 import java.util.ArrayList;
+import java.util.Arrays;
 
 class Solution {
-    public int romanToInt(String s) {
-        ArrayList<Integer> a = new ArrayList<>();
+    // public int maximum(int[] a) {
+    //     int max = 0;
+    //     if (a.length == 1) return a[0];
+    //     else {
+    //         int[] temp = new int[a.length];
+    //         System.arraycopy(a, 1, temp, 0, a.length);
+    //         max = maximum(temp);
+    //         return 
+    //     }
 
-        for (int i = 0; i < s.length(); i++) {
-            if (i + 1 < s.length() && s.charAt(i) == 'I' && (s.charAt(i + 1) == 'V' || s.charAt(i + 1) == 'X')) {
-                a.add(convert(s.charAt(i + 1)) - convert(s.charAt(i)));
-                i++;
-                continue;
-            }
 
-            if (i + 1 < s.length() && s.charAt(i) == 'X' && (s.charAt(i + 1) == 'L' || s.charAt(i + 1) == 'C')) {
-                a.add(convert(s.charAt(i + 1)) - convert(s.charAt(i)));
-                i++;
-                continue;
-            }
 
-            if (i + 1 < s.length() && s.charAt(i) == 'C' && (s.charAt(i + 1) == 'D' || s.charAt(i + 1) == 'M')) {
-                a.add(convert(s.charAt(i + 1)) - convert(s.charAt(i)));
-                i++;
-                continue;
-            }
+    // }
+    // int counter = 0;
+    // int x = 0;
+    // public int pairs(int[] a) {
+    //     if (a.length < 2) return 
+    //     if (counter == 2) return a[0];
 
-            a.add(convert(s.charAt(i)));
-        }
+    //     if (a[0] != x) counter = 0;
+    //     else counter++;
 
-        int sum = 0;
+    //     int[] temp = new int[a.length];
+    //     System.arraycopy(a, 1, temp, 0, a.length);
+    //     pairs(temp);
+    // }
 
-        for (int i = 0; i < a.size(); i++) {
-            sum += a.get(i);
-        }
+    public int pairs(int[] a) {
+        if (a.length < 2) return -1;
 
-        return sum;
+        if (a[0] == a[1]) return a[0];
+        
+        int[] temp = new int[a.length];
+        System.arraycopy(a, 1, temp, 0, a.length);
+        return pairs(temp);
     }
-
-    public int convert(char c) {
-        if (c == 'I') return 1;
-        else if (c == 'V') return 5;
-        else if (c == 'X') return 10;
-        else if (c == 'L') return 50;
-        else if (c == 'C') return 100;
-        else if (c == 'D') return 500;
-        else if (c == 'M') return 1000;
-        else return 0;
-    }
-}
+} 

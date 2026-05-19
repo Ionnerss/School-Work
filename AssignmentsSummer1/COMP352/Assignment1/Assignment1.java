@@ -92,10 +92,11 @@ public class Assignment1 {
         System.out.print("""
             STATISTICS:
             - Amount of possible paths found: %d
-            - Path with shortest amount of turns: %d
-            - Path with biggest amount of turns: %d
+            - Path with shortest amount of turns: %s
+            - Path with biggest amount of turns: %s
 
-        """.formatted(pathCount, shortestTurns, longestTurns));
+        """.formatted(pathCount, (shortestTurns == Integer.MAX_VALUE ? "Unditerminable" : String.valueOf(shortestTurns)), 
+                                (longestTurns == Integer.MIN_VALUE ? "Unditerminable" : String.valueOf(longestTurns))));
     }
 
     private static void generateGrid() {
