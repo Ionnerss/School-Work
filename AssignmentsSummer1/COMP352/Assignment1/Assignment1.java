@@ -88,14 +88,23 @@ public class Assignment1 {
         else
             exploreIterative(grid, 0, 0, NONE, 0);
 
+    
         System.out.println();
         System.out.print("""
             STATISTICS:
             - Amount of possible paths found: %d
-            - Path with shortest amount of turns: %d
-            - Path with biggest amount of turns: %d
+            - Path with shortest amount of turns: %s
+            - Path with biggest amount of turns: %s
 
-        """.formatted(pathCount, shortestTurns, longestTurns));
+            - Space complexity of the program: O(R x C)         //Where R = rows, C = columns
+                *because the program stores a 2D grid of size rows x cols.
+
+            - Time complexity of the program: O(2^(R + C))      //Where R = rows, C = columns
+                *because from each valid cell, the algorithm tries up to 2 possible moves: right and down.
+
+        """.formatted(pathCount, (shortestTurns == Integer.MAX_VALUE ? "Undefined" : Integer.toString(shortestTurns)), 
+                                (longestTurns == Integer.MIN_VALUE ? "Undefined" : Integer.toString(longestTurns))
+        ));
     }
 
     private static void generateGrid() {
