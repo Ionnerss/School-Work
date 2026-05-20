@@ -1,0 +1,39 @@
+QUESTION #3:
+----------------
+a) n^22 log n + n^7 is Ω(n^6 log n)
+
+    f(n) = n^22 log n + n^7 ; g(n) = n^6 log n
+
+    In this case, the dominant term is n^22 log n
+    Therefore f(n) is Θ(n^22 log n).
+
+    Lets assume for n ≥ 2:
+    n^22 log n > n^6 log n for sufficiently large n
+    => n^22 > n^6
+
+    Therefore, f(n), the left side, grows faster than g(n), the right side, 
+    as such proving the statement n^22 log n + n^7 is Ω(n^6 log n) to be true.
+
+    Since n^22 log n + n^7 ≥ n^22 log n, and n^22 log n ≥ n^6 log n for n ≥ 2,
+    we have: n^22 log n + n^7 ≥ n^6 log n
+
+    Therefore, n^22 log n + n^7 is Ω(n^6 log n).
+
+
+b) (10^7)(n^5) + 5n^4 + 9000000n^2 + n is Θ(n^7)
+
+    f(n) = (10^7)(n^5) + 5n^4 + 9000000n^2 + n ; g(n) = n^7
+
+    In this case, the dominant term is n^5
+    Therefore f(n) is Θ(n^5).
+
+    Lets assume for n ≥ 2:
+    n^5 < n^7
+
+    Therefore, f(n), the left side, grows at a slower pace than g(n), the right side,
+    as such proving the statement (10^7)(n^5) + 5n^4 + 9000000n2 + n is Θ(n^7) to be false.\
+
+    Since (10^7)(n^5) + 5n4 + 9000000n^2 + n ≥ n^5, and n^5 ≤ n^7,
+    we cannot conclude that f(n) is Θ(n^7) due to g(n) having a much higher growth-rate.
+
+    Therefore, (10^7)(n^5) + 5n^4 + 9000000n^2 + n is not Θ(n^7)

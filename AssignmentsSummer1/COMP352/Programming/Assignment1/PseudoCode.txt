@@ -1,0 +1,99 @@
+START PROGRAM
+
+DECLARE global scanner
+DECLARE 2D array grid
+DECLARE rows, columns, obstaclePercentage
+DECLARE pathCount, shortestTurns, longestTurns
+
+DECLARE constants:
+    NONE = 0
+    RIGHT = 1
+    DOWN = 2
+
+CLASS State
+    DECLARE row
+    DECLARE column
+    DECLARE previousDirection
+    DECLARE turnsSoFar
+
+    CONSTRUCTOR State(row, column, previousDirection, turnsSoFar)
+        SET this.row = row
+        SET this.column = column
+        SET this.previousDirection = previousDirection
+        SET this.turnsSoFar = turnsSoFar
+END CLASS
+
+CLASS StateStack
+    DECLARE array of State objects
+    DECLARE top
+
+    CONSTRUCTOR StateStack(capacity)
+        CREATE array with given capacity
+        SET top = -1
+
+    METHOD isEmpty()
+        RETURN true if top equals -1
+        OTHERWISE return false
+
+    METHOD push(state)
+        IF stack is full THEN
+            PRINT "Stack overflow"
+            RETURN
+        END IF
+
+        INCREASE top by 1
+        STORE state at data[top]
+
+    METHOD pop()
+        IF stack is empty THEN
+            RETURN null
+        END IF
+
+        SET temp = data[top]
+        DECREASE top by 1
+        RETURN temp
+END CLASS
+
+MAIN METHOD
+
+    PRINT welcome message
+
+    ASK user for number of rows
+    STORE input in rows
+
+    ASK user for number of columns
+    STORE input in columns
+
+    ASK user for obstacle percentage
+    STORE input in obstaclePercentage
+
+    IF obstaclePercentage is less than 0 OR greater than 100 THEN
+        THROW invalid percentage error
+    END IF
+
+    CREATE grid with size rows x columns
+
+    CALL generateGrid()
+    CALL displayGrid()
+
+    ASK user to choose algorithm:
+        1 = recursive
+        2 = iterative
+
+    SET shortestTurns = very large number
+    SET longestTurns = very small number
+
+    IF user chooses 1 THEN
+        CALL exploreRecursive(grid, 0, 0, NONE, 0)
+    ELSE
+        CALL exploreIterative(grid, 0, 0, NONE, 0)
+    END IF
+
+    PRINT statistics:
+        pathCount
+        shortestTurns, or Undefined if no path exists
+        longestTurns, or Undefined if no path exists
+        space complexity
+        time complexity
+
+END PROGRAM
